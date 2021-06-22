@@ -957,11 +957,65 @@
         <div class="column is-flex is-justify-content-center mt-6">
           <button
             class="button custom-button custom-button-send-receive-money is-rounded action"
-            @click="showModalFrameCreditMoney2 = true"
+            @click="showModalFrameCreditMoney3 = true"
           >
             Suivant
           </button>
         </div>
+      </div>
+    </template>
+    <template v-slot:footer>
+      <div></div>
+    </template>
+  </MyModal>
+  <!-- Fin frame 2 crédit -->
+  <!-- début frame 3 crédit -->
+  <MyModal
+    v-if="showModalFrameCreditMoney3"
+    @close="showModalFrameCreditMoney3 = false"
+  >
+    <template v-slot:header>
+      <div
+        class="custom-header-send-money is-flex is-align-items-center is-justify-content-space-between"
+      >
+        <div class="is-flex is-align-items-center ml-5">
+          <div
+            class="is-flex is-align-items-center is-justify-content-space-between"
+          >
+            <a
+              class="p-2 mr-3 ml-3"
+              @click="showModalFrameCreditMoney3 = false"
+            >
+              <img
+                class="cross-shape"
+                src="../../assets/media/Arrow-Shape.png"
+                alt="arrow_shape"
+              />
+            </a>
+            <h3 class="custom-header-send-money-title ml-4">
+              Finaliser le Paiement
+            </h3>
+          </div>
+        </div>
+        <a
+          class="mr-5 p-2"
+          @click="
+            (showModalFrameCreditMoney1 = false),
+              (showModalFrameCreditMoney2 = false), (showModalFrameCreditMoney3 = false)
+          "
+        >
+          <img
+            class="cross-shape"
+            src="../../assets/media/Cross-Shape.png"
+            alt="cross_shape"
+          />
+        </a>
+      </div>
+    </template>
+    <template v-slot:body>
+      <div
+        class="is-flex is-flex-direction-column is-justify-content-space-evenly is-align-items-center mt-3"
+      >
       </div>
     </template>
     <template v-slot:footer>

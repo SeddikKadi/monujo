@@ -52,6 +52,7 @@
 <script lang="ts">
 import { inject, reactive } from "vue";
 import { useRouter } from "vue-router";
+import { LokAPI } from 'lokapi';
 
 // const app = Vue.createApp({})
 // app.use(router)
@@ -82,7 +83,7 @@ export default {
           password: data.password,
         });
         data.success = "Connection réussie";
-        setTimeout( () => routeur.push({ path: '/profile'}), 3000);
+        routeur.push({ path: '/profile'})
       } catch (e) {
         // {RequestFailed, APIRequestFailed, InvalidCredentials, InvalidJson}
         console.log("Login failed", e.message);

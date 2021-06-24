@@ -34,9 +34,9 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <router-link to="/register" class="button is-primary">
+            <!-- <router-link to="/register" class="button is-primary">
               <strong>S'inscrire</strong>
-            </router-link>
+            </router-link> -->
             <router-link to="/login" class="button is-light">
               Se connecter
             </router-link>

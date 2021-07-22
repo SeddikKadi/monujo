@@ -68,6 +68,7 @@ class LokAPI extends LokAPIAbstract {
   persistentStore = new cookieStore()
   requestLogin() {
     console.log("Login requested !")
+    return false;
   }
 
 }
@@ -207,6 +208,7 @@ export var moduleLokAPI = {
 
     getUserProfile: (state: any) => {
       return function(): any {
+        console.log(state.userProfile);
         return state.userProfile
       }
     },
@@ -227,4 +229,3 @@ export var moduleLokAPI = {
     }
   }
 }
-

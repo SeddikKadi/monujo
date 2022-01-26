@@ -49,9 +49,9 @@
 
             <hr class="navbar-divider">
 
-            <router-link to="/" @click="logout" class="navbar-item">
+            <a @click="logout" class="navbar-item">
               Déconnexion
-            </router-link>
+            </a>
           </div>
         </div>
 
@@ -73,6 +73,7 @@ import { Options, Vue } from 'vue-class-component';
   methods : {
     logout() {
       this.$store.dispatch("askLogOut")
+      this.$router.push({ name: 'Login' })
     }
   },
   computed: {

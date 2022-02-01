@@ -59,8 +59,10 @@ router.beforeEach((to, from, next) => {
   else next()
 })
 router.beforeEach((to, from, next) => {
+
   if (typeof(to.meta.title) === 'string') {
     document.title = appName + " - " + to.meta.title
+
   }
   next()
 })

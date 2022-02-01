@@ -1,0 +1,6 @@
+{
+	"mapUrl":"https://carte.test.lokavaluto.fr/annuaire#/carte/@45.27,3.99,6z?cat=all",
+	"locapiHost":"test.lokavaluto.fr",
+	"lokapiDb":"odoo"
+
+}

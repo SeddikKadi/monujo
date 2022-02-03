@@ -6,6 +6,8 @@ import Login from "../views/Login.vue";
 import CreateMyAccount from "../views/CreateMyAccount.vue";
 import PendingAccounts from "../views/admin/PendingAccounts.vue";
 
+const appName = require('../../package.json').name;
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/dashboard",
@@ -51,7 +53,7 @@ router.beforeEach((to, from, next) => {
 })
 router.beforeEach((to, from, next) => {
   if(typeof(to.meta.title) === 'string'){
-    document.title = to.meta.title
+    document.title = appName+" - "+to.meta.title
   }
   next()
 })

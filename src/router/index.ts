@@ -9,8 +9,6 @@ import PendingCredits from "../views/admin/PendingCredits.vue";
 
 const appName = require('../../package.json').name;
 
-const appName = require('../../package.json').name;
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/dashboard",
@@ -61,12 +59,8 @@ router.beforeEach((to, from, next) => {
   else next()
 })
 router.beforeEach((to, from, next) => {
-
-
-  if (typeof(to.meta.title) === 'string') {
-    document.title = appName + " - " + to.meta.title
-
-
+  if(typeof(to.meta.title) === 'string'){
+    document.title = appName+" - "+to.meta.title
   }
   next()
 })

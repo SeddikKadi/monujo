@@ -106,7 +106,14 @@ export var moduleLokAPI = {
       commit('setHasUserAccountValidationRights', hasRight)
     },
     async fetchPendingUserAccounts({ commit, state }:any) {
+
+      async function sleep(ms: number) {
+        return new Promise((resolve, reject) => {
+          setTimeout(resolve, ms)
+        })
+      }
       let accounts = await lokApiService.getStagingUserAccounts()
+      await sleep(3000)
       commit('setPendingUserAccounts', accounts)
     },
     async fetchCreditRequestValidationRights({ commit, state }:any) {

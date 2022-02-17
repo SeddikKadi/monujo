@@ -3,11 +3,17 @@
     <div class="container mt-5">
       <div class="columns is-tablet">
         <div class="column">
-          <div
+           <loading v-model:active="this.isLoading"
+                 :can-cancel="false"
+                 :is-full-page="this.fullPage"/>
+          <div 
+            v-if="!this.isLoading"
             class="accounts card custom-card custom-card-padding"
           >
-            <h2 class="custom-card-title">Comptes en attente de validation</h2>
-            <table class="table is-striped is-fullwidth">
+            <div v-if="this.isEmptyList">Aucun compte en attente de validation</div>
+            <div v-else>
+              <h2 class="custom-card-title">Comptes en attente de validation</h2>
+                     <table class="table is-striped is-fullwidth">
               <thead>
                 <tr>
                   <th>Utilisateur</th>
@@ -15,7 +21,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="account in pendingUserAccounts">
+                <tr v-for="account in pendingUserAccounts" :key="account.id">
                   <td>
                     {{account.name}} {{ account.markBackend ? `(via ${account.backendId})` : ""}}
                   </td>
@@ -30,6 +36,7 @@
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </div>
@@ -39,11 +46,24 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import Loading from 'vue-loading-overlay';
 
 @Options({
   name:"PendingAccounts",
-  mounted() {
-    this.$store.dispatch('fetchPendingUserAccounts')
+  components :{ Loading: Loading },
+  data() {
+    return {
+      isLoading: false,
+      fullPage: true,
+      isEmptyList:false
+    }
+  },
+  async mounted() {
+    this.isLoading = true
+    await this.$store.dispatch('fetchPendingUserAccounts')
+    if(this.pendingUserAccounts.length === 0)
+      this.isEmptyList = true
+    this.isLoading = false
   },
   computed: {
     pendingUserAccounts(): Array<any> {

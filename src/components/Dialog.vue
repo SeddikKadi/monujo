@@ -19,7 +19,7 @@
         </p>
       </section>
       <footer class="modal-card-foot is-justify-content-flex-end">
-        <div v-for="button in opts.buttons" :key="button.label">
+        <div v-for="button in opts.buttons" :key="button.id">
           <button
             class="button custom-button custom-inverted ml-2"
             @click="submitInput(button.id)"

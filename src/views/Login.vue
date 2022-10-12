@@ -82,7 +82,15 @@
         success: "",
       }
     },
-    mounted() {
+    async mounted() {
+      const biometryEnabled = (await this.$localSettings.load())?.biometryEnabled
+
+      if (biometryEnabled && await this.$biometry.hasCredentialsAvailable("odoo")) {
+        let credentials = await this.$biometry.challenge("odoo")
+        this.password = credentials.password
+        this.email = credentials.email
+        this.submit()
+      }
       this.email = this.$persistentStore.get("loginEmail")
     },
     methods: {
@@ -125,15 +133,11 @@
         } finally {
           this.$loading.hide()
         }
-        let test = await this.$dialog.show({
-          title: "test",
-          content: "test",
-          buttons: [
-            { label: "Valider", id: "1" },
-            { label: "test", id: "2" },
-          ],
-        })
-        console.log("button: ", test)
+
+        const biometryEnabled = (await this.$localSettings.load())?.biometryEnabled
+        if (biometryEnabled !== false && (await this.$biometry.isAvailable())) {
+          this.$biometry.saveCredentials("odoo")
+        }
       },
     },
   })

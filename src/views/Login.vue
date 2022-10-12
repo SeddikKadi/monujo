@@ -83,12 +83,15 @@
       }
     },
     async mounted() {
-      const biometryEnabled = (await this.$localSettings.load())?.biometryEnabled
+      const biometryEnabled = (await this.$localSettings.load())
+        ?.biometryEnabled
 
-      if (biometryEnabled && await this.$biometry.hasCredentialsAvailable("odoo")) {
-        let credentials = await this.$biometry.challenge("odoo")
+      if (
+        biometryEnabled && (await this.$biometry.hasCredentialsAvailable("login"))
+      ) {
+        let credentials = await this.$biometry.challenge("login")
         this.password = credentials.password
-        this.email = credentials.email
+        this.email = credentials.username
         this.submit()
       }
       this.email = this.$persistentStore.get("loginEmail")
@@ -134,10 +137,38 @@
           this.$loading.hide()
         }
 
-        const biometryEnabled = (await this.$localSettings.load())?.biometryEnabled
-        if (biometryEnabled !== false && (await this.$biometry.isAvailable())) {
-          this.$biometry.saveCredentials("odoo")
+        const biometryAvailable = await this.$biometry.isAvailable()
+        if (!biometryAvailable) return
+
+        const prefs = await this.$localSettings.load()
+        const biometryEnabled = prefs?.biometryEnabled
+        if (biometryEnabled === false) return
+        if (biometryEnabled === null || typeof biometryEnabled === "undefined") {
+          const answer = await this.$dialog.show({
+            title: this.$gettext("Enable biometric login"),
+            content: this.$gettext(
+              "Would you like to use your device's biometric (fingerprint, face recognition, ...) capability to login ?"
+            ),
+            buttons: [
+              { label: this.$gettext("Yes"), id: "yes" },
+              { label: this.$gettext("No"), id: "no" },
+              { label: this.$gettext("Ask me later"), id: "later" },
+            ],
+          })
+          if (answer === "later") return
+          if (answer === "no") {
+            prefs.biometryEnabled = false
+            await this.$localSettings.save(prefs)
+            return
+          }
+          prefs.biometryEnabled = true
+          await this.$localSettings.save(prefs)
         }
+        // biometryEnabled is true
+        await this.$biometry.saveCredentials("login", {
+          username: this.email,
+          password: this.password,
+        })
       },
     },
   })

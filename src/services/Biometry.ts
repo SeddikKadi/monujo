@@ -35,7 +35,7 @@ export default class Biometry {
       console.error(`Unknown realm '${realmId}'`)
       return false
     }
-    const hasCredentials = (await this.store.load()).get("hasCredentials")
+    const hasCredentials = (await this.store.load())?.hasCredentials
     if (!hasCredentials || !hasCredentials[realmId]) {
       return false
     }
@@ -68,7 +68,11 @@ export default class Biometry {
       throw new Error(`Unknown realm '${realmId}'`)
     }
     await NativeBiometric.setCredentials({ ...credentials, ...realm.creds })
-    await this.store.save({ hasCredentials: true })
+    const biometricSettings: any = {
+      hasCredentials: {},
+    }
+    biometricSettings.hasCredentials[realmId] = true
+    await this.store.save(biometricSettings)
   }
 
   public async deleteCredentials(

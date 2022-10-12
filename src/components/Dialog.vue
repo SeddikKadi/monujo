@@ -1,26 +1,33 @@
 <template>
-<div class="modal is-active centered" v-if="visible">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <span class="is-flex is-flex-shrink-0"> </span>
-      <p class="modal-card-title is-title-shrink">
-        {{ opts.title }}
-      </p>
-      <button
-        class="delete"
-        aria-label="close"
-        @click="cancelInput()"
+  <div class="modal is-active centered" v-if="visible">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <span class="is-flex is-flex-shrink-0"> </span>
+        <p class="modal-card-title is-title-shrink">
+          {{ opts.title }}
+        </p>
+        <button
+          class="delete"
+          aria-label="close"
+          @click="cancelInput()"
         ></button>
-    </header>
-    <section class="modal-card-body">
-      <p>
-        {{ opts.content }}
-      </p>
+      </header>
+      <section class="modal-card-body">
+        <p>
+          {{ opts.content }}
+        </p>
       </section>
-    <footer class="modal-card-foot is-justify-content-flex-end">
-      {{ opts.buttons }}
-    </footer>
+      <footer class="modal-card-foot is-justify-content-flex-end">
+        <div v-for="button in opts.buttons" :key="button.label">
+          <button
+            class="button custom-button custom-inverted ml-2"
+            @click="submitInput(button.id)"
+          >
+            {{ button.label }}
+          </button>
+        </div>
+      </footer>
     </div>
   </div>
 </template>
@@ -29,12 +36,12 @@
 
   @Options({
     name: "Dialog",
-    components: {
-    },
+    components: {},
     data() {
       return {
         visible: false,
         callbacks: {},
+        opts: {},
       }
     },
 
@@ -43,14 +50,14 @@
         (opts: any) =>
           new Promise((resolve, reject) => {
             this.callbacks = { resolve, reject }
-            this.show(opts: any)
+            this.show(opts)
           })
       )
     },
     methods: {
-      submitInput(credsInput: string) {
+      submitInput(label: string) {
         this.hide()
-        this.callbacks.resolve(credsInput)
+        this.callbacks.resolve(label)
       },
 
       cancelInput(error?: any) {
@@ -65,7 +72,7 @@
         this.visible = false
       },
 
-      show() {
+      show(opts: any) {
         this.opts = opts
         this.visible = true
       },

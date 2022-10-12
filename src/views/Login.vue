@@ -105,7 +105,9 @@
         } catch (e) {
           // { APIRequestFailed, InvalidCredentials }
           if (e instanceof RestExc.APIRequestFailed) {
-            this.fail = this.$gettext("Request refused by remote server. Contact your administrator")
+            this.fail = this.$gettext(
+              "Request refused by remote server. Contact your administrator"
+            )
             return
           }
           if (e instanceof RestExc.InvalidCredentials) {
@@ -116,11 +118,22 @@
             this.fail = this.$gettext("Request failed to remote server.")
             return
           }
-          this.fail = this.$gettext("Unexpected issue when attempting to connect to remote server.")
+          this.fail = this.$gettext(
+            "Unexpected issue when attempting to connect to remote server."
+          )
           throw e
         } finally {
           this.$loading.hide()
         }
+        let test = await this.$dialog.show({
+          title: "test",
+          content: "test",
+          buttons: [
+            { label: "Valider", id: "1" },
+            { label: "test", id: "2" },
+          ],
+        })
+        console.log("button: ", test)
       },
     },
   })

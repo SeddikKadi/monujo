@@ -4,8 +4,8 @@
       <div class="card">
         <img :src="$config.loginLogoUrl" class="pt-2 pb-5" />
         <form @submit.prevent="submit">
-          <div class="field mb-5">
-            <p class="control has-icons-left has-icons-right">
+          <div class="field mb-5 has-addons">
+            <p class="control has-icons-left is-expanded">
               <input
                 v-model.trim="email"
                 class="input"
@@ -14,9 +14,15 @@
               <span class="icon is-small is-left">
                 <fa-icon icon="envelope" />
               </span>
-              <span class="icon is-small is-right">
-                <fa-icon icon="check" />
-              </span>
+            </p>
+            <p class="control"
+               v-if="biometryEnabled && biometryAvailable">
+              <a class="button is-info">
+                <fa-icon
+                  icon="fingerprint"
+                  @click="requestBiometricAuthentication()"
+                />
+              </a>
             </p>
           </div>
           <div class="field mb-2">
@@ -80,19 +86,15 @@
         password: "",
         fail: "",
         success: "",
+        biometryEnabled: false,    // User preference
+        biometryAvailable: false,  // Biometry available and credential saved
       }
     },
     async mounted() {
-      const biometryEnabled = (await this.$localSettings.load())
-        ?.biometryEnabled
-
-      if (
-        biometryEnabled && (await this.$biometry.hasCredentialsAvailable("login"))
-      ) {
-        let credentials = await this.$biometry.challenge("login")
-        this.password = credentials.password
-        this.email = credentials.username
-        this.submit()
+      this.biometryEnabled = await this.hasBiometricCredentialsEnabled() || false
+      if (this.biometryEnabled && (await this.hasBiometricCredentialsAvailable())) {
+        this.biometryAvailable = true
+        await this.requestBiometricAuthentication()
       }
       this.email = this.$persistentStore.get("loginEmail")
     },
@@ -102,6 +104,30 @@
       },
       openSignupUrl(): void {
         window.open(this.$store.getters.getOdooUrl() + "/web/signup")
+      },
+      async hasBiometricCredentialsEnabled() {
+        return (await this.$localSettings.load())?.biometryEnabled
+      },
+      async hasBiometricCredentialsAvailable() {
+        return (await this.$biometry.hasCredentialsAvailable("login"))
+      },
+      async hasBiometricCredentials() {
+        return (await this.hasBiometricCredentialsEnabled()) &&
+          (await this.hasBiometricCredentialsAvailable())
+      },
+      async requestBiometricAuthentication(): Promise<void> {
+        let credentials: any
+        try {
+          credentials = await this.$biometry.challenge("login")
+        } catch (e) {
+          console.log(e)
+          credentials = false
+        }
+        if (credentials) {
+          this.password = credentials.password
+          this.email = credentials.username
+          this.submit()
+        }
       },
       async submit(): Promise<void> {
         try {
@@ -140,10 +166,13 @@
         const biometryAvailable = await this.$biometry.isAvailable()
         if (!biometryAvailable) return
 
-        const prefs = await this.$localSettings.load()
+        const prefs = await this.$localSettings.load() || {}
         const biometryEnabled = prefs?.biometryEnabled
         if (biometryEnabled === false) return
-        if (biometryEnabled === null || typeof biometryEnabled === "undefined") {
+        if (
+          biometryEnabled === null ||
+          typeof biometryEnabled === "undefined"
+        ) {
           const answer = await this.$dialog.show({
             title: this.$gettext("Enable biometric login"),
             content: this.$gettext(
@@ -155,6 +184,7 @@
               { label: this.$gettext("Ask me later"), id: "later" },
             ],
           })
+          console.log(answer)
           if (answer === "later") return
           if (answer === "no") {
             prefs.biometryEnabled = false
@@ -174,4 +204,9 @@
   })
   export default class Login extends Vue {}
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .control a.is-info {
+    background-color: var(--btn-payer-background-color, blue);
+    z-index: 10;
+  }
+</style>

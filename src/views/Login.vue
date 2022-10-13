@@ -15,8 +15,7 @@
                 <fa-icon icon="envelope" />
               </span>
             </p>
-            <p class="control"
-               v-if="biometryEnabled && biometryAvailable">
+            <p class="control" v-if="biometryEnabled && biometryAvailable">
               <a class="button is-info">
                 <fa-icon
                   icon="fingerprint"
@@ -86,13 +85,17 @@
         password: "",
         fail: "",
         success: "",
-        biometryEnabled: false,    // User preference
-        biometryAvailable: false,  // Biometry available and credential saved
+        biometryEnabled: false, // User preference
+        biometryAvailable: false, // Biometry available and credential saved
       }
     },
     async mounted() {
-      this.biometryEnabled = await this.hasBiometricCredentialsEnabled() || false
-      if (this.biometryEnabled && (await this.hasBiometricCredentialsAvailable())) {
+      this.biometryEnabled =
+        (await this.hasBiometricCredentialsEnabled()) || false
+      if (
+        this.biometryEnabled &&
+        (await this.hasBiometricCredentialsAvailable())
+      ) {
         this.biometryAvailable = true
         await this.requestBiometricAuthentication()
       }
@@ -109,11 +112,13 @@
         return (await this.$localSettings.load())?.biometryEnabled
       },
       async hasBiometricCredentialsAvailable() {
-        return (await this.$biometry.hasCredentialsAvailable("login"))
+        return await this.$biometry.hasCredentialsAvailable("login")
       },
       async hasBiometricCredentials() {
-        return (await this.hasBiometricCredentialsEnabled()) &&
+        return (
+          (await this.hasBiometricCredentialsEnabled()) &&
           (await this.hasBiometricCredentialsAvailable())
+        )
       },
       async requestBiometricAuthentication(): Promise<void> {
         let credentials: any
@@ -166,7 +171,7 @@
         const biometryAvailable = await this.$biometry.isAvailable()
         if (!biometryAvailable) return
 
-        const prefs = await this.$localSettings.load() || {}
+        const prefs = (await this.$localSettings.load()) || {}
         const biometryEnabled = prefs?.biometryEnabled
         if (biometryEnabled === false) return
         if (
@@ -195,18 +200,34 @@
           await this.$localSettings.save(prefs)
         }
         // biometryEnabled is true
-        await this.$biometry.saveCredentials("login", {
-          username: this.email,
-          password: this.password,
-        })
+        const hasCredentialsAvailable =
+          await this.$biometry.hasCredentialsAvailable("login")
+        console.log("has", hasCredentialsAvailable)
+        if (hasCredentialsAvailable) return
+        try {
+          await this.$biometry.saveCredentials("login", {
+            username: this.email,
+            password: this.password,
+          })
+        } catch (e) {
+          this.$msg.error(
+            this.$gettext(
+              "Unexpected issue occurred while saving your credentials"
+            )
+          )
+          throw e
+        }
+
+        this.$msg.success(this.$gettext("Biometrc login successfully set up"))
       },
     },
   })
   export default class Login extends Vue {}
 </script>
 <style scoped lang="scss">
+  @import "@/assets/custom-variables.scss";
   .control a.is-info {
-    background-color: var(--btn-payer-background-color, blue);
+    background-color: var(--btn-payer-background-color, $color-2);
     z-index: 10;
   }
 </style>

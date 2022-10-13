@@ -244,6 +244,9 @@
         ],
       }
     },
+    mounted() {
+      this.$msg.warning("popo")
+    },
     computed: {
       getPlatform(): string {
         return Capacitor.getPlatform()
@@ -353,9 +356,7 @@
           )
           throw e
         }
-        this.$msg.success(
-          this.$gettext("Transaction list downloaded")
-        )
+        this.$msg.success(this.$gettext("Transaction list downloaded"))
       },
       async shareCsvFile() {
         this.selectExportLoader = 2
@@ -368,9 +369,7 @@
           )
           throw e
         }
-        this.$msg.success(
-          this.$gettext("Transaction list shared")
-        )
+        this.$msg.success(this.$gettext("Transaction list shared"))
       },
       makeTimeSpan(timeSpan: any, pos: number, emit: any) {
         emit(

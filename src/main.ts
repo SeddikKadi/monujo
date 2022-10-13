@@ -203,14 +203,17 @@ fetchConfig("config.json").then(async (config: any) => {
       },
     ]
   })
+
   prefsService.register(async () => {
-    return [
-      {
-        group: "security",
-        component: BiometryPrefs,
-        data: {},
-      },
-    ]
+    if (await biometry.isAvailable())
+      return [
+        {
+          group: "security",
+          component: BiometryPrefs,
+          data: {},
+        },
+      ]
+    return []
   })
 
   prefsService.setGroup("language", () => $gettext("Language settings"))

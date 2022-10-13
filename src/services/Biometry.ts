@@ -75,15 +75,15 @@ export default class Biometry {
     await this.store.save(biometricSettings)
   }
 
-  public async deleteCredentials(
-    realmId: string,
-    credentials: any
-  ): Promise<void> {
+  public async deleteCredentials(realmId: string): Promise<void> {
     const realm = this.realms[realmId]
     if (!realm) {
       throw new Error(`Unknown realm '${realmId}'`)
     }
+    const store = await this.store.load()
     await NativeBiometric.deleteCredentials(realm.creds)
-    await this.store.save({})
+    if (store?.hasCredentials && realmId in store.hasCredentials)
+      delete store.hasCredentials[realmId]
+    await this.store.save(store)
   }
 }

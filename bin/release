@@ -1,0 +1,350 @@
+#!/bin/bash
+
+##
+## Code is from libcommon.sh of kal-shlib-common
+##
+
+get_path() { (
+    IFS=:
+    for d in $PATH; do
+        filename="$d/$1"
+        [ -f "$filename" -a -x "$filename" ] && {
+            echo "$d/$1"
+            return 0
+        }
+    done
+    return 1
+) }
+
+
+
+depends() {
+    ## Avoid colliding with variables that are created with depends.
+    local __i __path
+
+    for __i in "$@"; do
+        __path=$(get_path "$__i") ||
+            die "dependency check: couldn't find '$__i' required command."
+        export "$(echo "${__i//[- ]/_}")"="$__path"
+    done
+}
+
+
+## appends a command to the signal handler functions
+#
+# example: trap_add EXIT,INT close_ssh "$ip"
+trap_add() {
+    local sigs="$1" sig cmd prev_cmd new_cmd
+    shift || {
+        echo "${FUNCNAME} usage error" >&2
+        return 1
+    }
+    cmd="$@"
+
+    ## Forcing the next ``$(trap -p)`` to output the current shell's
+    ## traps and our parent's one. Touching any trap will switch
+    ## ``trap -p`` to display the current shell traps. We choose to
+    ## reset KILL signal as it can't be caught anyway.
+    trap -- KILL
+
+    while IFS="," read -d "," sig; do
+        [ "$sig" ] || continue
+        ##
+        ## This subshell call to ``trap`` will be specially
+        ## interpreted as it'll allow to query it's parent shell's
+        ## traps... which means our traps.
+        ##
+        prev_cmd="$(trap -p "$sig")"
+        if [ "$prev_cmd" ]; then
+            prev_cmd=$(eval "set -- $prev_cmd"; echo "$3" )
+            new_cmd="$cmd"$'\n'"${prev_cmd}"
+        else
+            new_cmd="$cmd"
+        fi
+        trap -- "$new_cmd" "$sig" || {
+            echo "unable to add command '$@' to trap $sig" >&2
+            return 1
+        }
+    done < <(echo "$sigs,")
+}
+
+settmpdir() {
+    local varname="${1:-${exname}_TMPDIR}" var
+    var=${!varname}
+    [ "$var" ] && {
+        debug 'Use given $'"$varname"' variable ('"$var"')'
+        return 0
+    }
+    declare -g $varname=$(mktemp -d)
+    trap_add EXIT "rm -rf \"${!varname:?}\" ; debug \"destructed tmp dir ${!varname}.\""
+    debug "Temporary directory set up, variable \$$varname ready."
+}
+
+
+prefix() {
+    sed -r 's/^/'"$*"'/'
+}
+
+
+ansi_color() {
+    local choice="$1"
+
+    if [ "$choice" == "tty" ]; then
+        if [ -t 1 ]; then
+            choice="yes"
+        else
+            choice="no"
+        fi
+    fi
+
+    if [ "$choice" != "no" ]; then
+
+        ANSI_ESC=$'\e['
+        NORMAL="${ANSI_ESC}0m"
+
+        GRAY="${ANSI_ESC}1;30m"
+        RED="${ANSI_ESC}1;31m"
+        GREEN="${ANSI_ESC}1;32m"
+        YELLOW="${ANSI_ESC}1;33m"
+        BLUE="${ANSI_ESC}1;34m"
+        PINK="${ANSI_ESC}1;35m"
+        CYAN="${ANSI_ESC}1;36m"
+        WHITE="${ANSI_ESC}1;37m"
+
+        DARKGRAY="${ANSI_ESC}0;30m"
+        DARKRED="${ANSI_ESC}0;31m"
+        DARKGREEN="${ANSI_ESC}0;32m"
+        DARKYELLOW="${ANSI_ESC}0;33m"
+        DARKBLUE="${ANSI_ESC}0;34m"
+        DARKPINK="${ANSI_ESC}0;35m"
+        DARKCYAN="${ANSI_ESC}0;36m"
+        DARKWHITE="${ANSI_ESC}0;37m"
+
+    else
+
+        NORMAL=
+
+        GRAY=
+        RED=
+        GREEN=
+        YELLOW=
+        BLUE=
+        PINK=
+        CYAN=
+        WHITE=
+
+        DARKGRAY=
+        DARKRED=
+        DARKGREEN=
+        DARKYELLOW=
+        DARKBLUE=
+        DARKPINK=
+        DARKCYAN=
+        DARKWHITE=
+
+    fi
+
+    ansi_color="$choice"
+
+    export SET_COL_CHAR SET_COL_STATUS SET_COL_INFO SET_COL_ELT \
+           SET_BEGINCOL UP DOWN LEFT RIGHT SAVE RESTORE NORMAL \
+           GRAY RED GREEN YELLOW BLUE PINK CYAN WHITE DARKGRAY \
+           DARKRED DARKGREEN DARKYELLOW DARKBLUE DARKPINK DARKCYAN \
+           SUCCESS WARNING FAILURE NOOP ON OFF ERROR ansi_color
+}
+
+e() { printf "%s" "$*"; }
+warn() { echo "${YELLOW}Warning:$NORMAL $*" >&2 ; }
+info() { echo "${BLUE}II$NORMAL $*" >&2 ; }
+debug() { [ -z "$DEBUG" ] || e "$*"$'\n' >&2; }
+err() { echo "${RED}Error:$NORMAL $*" >&2 ; }
+die() { err "$@" ; exit 1; }
+p0() { printf "%s\0" "$@"; }
+
+read-0() {
+    while [ "$1" ]; do
+        IFS=$'\0' read -r -d '' "$1" || return 1
+        shift
+    done
+}
+
+
+##
+## Functions
+##
+
+release:index() {
+    local releases_info
+    releases_info=$(curl -sL "https://docker.0k.io/downloads/lokavaluto-releases.yml") || {
+        echo "Error: Could not load release informations" >&2
+        return 1
+    }
+    echo "$releases_info"
+}
+
+
+config:data() {
+   local currency_id="$1" url
+   releases_info=$(release:index) || return 1
+   url=$(printf "%s" "$releases_info" | yq ."${currency_id}".data)
+   curl -sL "$url" || {
+      err "Could not load config file"
+      return 1
+   }
+}
+
+
+
+##
+## Code
+##
+
+depends yq jq jarsigner
+
+ansi_color tty
+
+
+if ! [ -e .git -a capacitor.config.ts ]; then
+    err "Please run this executable in the root of monujo folder."
+    return 1
+fi
+
+
+## Args
+
+tag="$1"
+if [ -z "$tag" ]; then
+    err "Empty tag specification"
+    exit 1
+fi
+
+app_id="$2"
+if [ -z "$app_id" ]; then
+    err "Empty app id specification"
+    exit 1
+fi
+
+
+rev="${3:-0}"
+if ! [[ "$rev" =~ ^[0-9]+$ ]]; then
+    err "Incorrect rev id '$rev' specified"
+    exit 1
+fi
+
+
+## Code
+
+release_index=$(release:index) || exit 1
+
+release_info=$(e "$release_index" | yq ."$app_id") || exit 1
+
+if [ "$release_info" == "null" ]; then
+    err "unrecognized app id '$app_id', please use one of:"
+    e "$release_index" | yq keys | prefix "  " >&2
+    exit 1
+fi
+
+git_toplevel="$(git rev-parse --show-toplevel)" || {
+    err "Not in a git repository ? (git toplevel not found)."
+    exit 1
+}
+
+dir=$(mktemp -d)
+cd "$dir"
+
+out=$(git clone -qb "$tag" --depth 1 "$git_toplevel" repo 2>&1) || {
+    err "Clone of '$git_toplevel' to '$dir/repo' failed:"
+    e "$out" | prefix "  ${DARKRED}!${NORMAL} " >&2
+    exit 1
+}
+
+
+
+url=$(e "$release_index" | yq .monujo)
+url=https://drive.lokavaluto.fr/s/ppiR9rXk8ZX6H3o/download
+
+cd repo
+rm -rf android dist public resources
+
+out=$(curl -sL "$url" > data.zip) || {
+    err "Download of '$url' failed:"
+    e "$out" | prefix "  ${DARKRED}!${NORMAL} " >&2
+    exit 1
+}
+
+
+out=$(unzip data.zip -d data) || {
+    err "Unzip of downloaded content failed:"
+    e "$out" | prefix "  ${DARKRED}!${NORMAL} " >&2
+    exit 1
+}
+mv data/*/* . || exit 1
+find . -type f -name .DS_\* -delete || exit 1
+
+
+if ! out=$(cat public/config.json | jq) || [ -z "$out" ]; then
+    err "Given 'public/config.json' is invalid."
+    exit 1
+fi
+
+app_dn=$(e "$release_info" | yq .app.id)
+app_name=$(e "$release_info" | yq .app.name)
+
+cat <<EOF > capacitor.config.ts
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: '$app_dn',
+  appName: '$app_name',
+  webDir: 'dist',
+  bundledWebRuntime: false
+};
+
+export default config;
+EOF
+
+npm ci || {
+    err "Unexpected failure of 'npm ci'."
+    exit 1
+}
+
+
+npx cap add android || {
+    err "Unexpected failure of 'npm cap add android'."
+    exit 1
+}
+
+npx cordova-res android --skip-config --copy || {
+    err "Unexpected failure of 'npx cordova-res android --skip-config --copy'."
+    exit 1
+}
+
+## cf: https://github.com/ionic-team/capacitor-assets/issues/110#issuecomment-889076638
+sed -ri 's/@color\//@mipmap\//g' android/app/src/main/res/mipmap-anydpi-v26/ic_launcher*.xml || {
+    err "Unexpected failure from sed on workaround of capacitor bug"
+    exit 1
+}
+
+for dir in android/app/src/main/res/mipmap-*dpi*; do
+    [[ "$dir" == *"anydpi"* ]] && continue
+    [ "$(find "$dir" -maxdepth 1 -mindepth 1 -type f -name '*.png' | wc -l )" == 0 ] && {
+        err "Checking for image file in '$dir' gave no results."
+        exit 1
+    }
+done
+
+npm run gettext:compile || exit 1
+
+
+npm run build || exit 1
+npx cap sync || exit 1
+
+
+version_code=$(bin/tag2vc "$tag" "$rev")
+
+sed -ri 's/^(\s+versionCode\s+).*$/\1'"$version_code"'/g;
+         s/^(\s+versionName\s+).*$/\1'"'$tag'"'/g' \
+             android/app/build.gradle
+
+e "$PWD"
+echo

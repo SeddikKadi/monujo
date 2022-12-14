@@ -9,9 +9,11 @@
     >
       <TransactionListRecent />
     </div>
+
     <div class="modal is-active" v-if="showModal">
       <div class="modal-background"></div>
       <div class="modal-card">
+        <div>test</div>
         <header class="modal-card-head">
           <p class="modal-card-title is-title-shrink">
             <span class="ml-2">{{ $gettext("All transactions") }}</span>
@@ -56,6 +58,7 @@
             />
           </div>
           <div>
+            <div>test</div>
             <button
               class="
                 button

@@ -1,14 +1,14 @@
 import { defineConfig } from "cypress"
 
 export default defineConfig({
-  reporter: "cypress-multi-reporters",
+  reporter: "../../node_modules/cypress-multi-reporters",
   env: {
     rootUrl: "http://localhost:8080/#/",
   },
   reporterOptions: {
     reporterEnabled: "mochawesome",
     mochawesomeReporterOptions: {
-      reportDir: "cypress/reports/mocha",
+      reportDir: "../test/cypress/reports/mocha",
       overwrite: false,
       html: false,
       json: true,

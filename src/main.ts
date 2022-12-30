@@ -1,4 +1,5 @@
 import { LocalStore } from "@lokavaluto/lokapi-browser"
+
 import { createApp } from "vue"
 import "vue-loading-overlay/dist/vue-loading.css"
 

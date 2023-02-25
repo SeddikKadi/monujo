@@ -98,6 +98,12 @@ jobs:
         with:
           name: mocha-report
           path: .reports
+      - name: ⬆ Store video
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-video
+          path: tests/cypress/videos
 
   cypress-report:
     needs: cypress-e2e

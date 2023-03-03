@@ -20,6 +20,7 @@
       right: 0px;
       bottom: 0px;
     "
+    data-cy="map-iframe"
   ></iframe>
 </template>
 

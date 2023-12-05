@@ -7,7 +7,7 @@
       <h5 class="status card-paiement-defaut-carte has-text-right mt-1">
         {{ relativeDateFormat(transaction.date) }}
         <fa-icon
-          v-if="transaction.pending"
+          v-if="transaction?.pending !== undefined"
           :class="{
             hide: transaction.pending,
           }"

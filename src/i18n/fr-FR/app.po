@@ -99,7 +99,9 @@ msgstr "Il y a eu un problème lors de la recherche du destinataire"
 msgid ""
 "An error occurred while withdrawing top-up request, please try again or "
 "contact an administrator"
-msgstr "Une erreur s'est produite lors du retrait de la demande de rechargement, veuillez ré-éssayer ou contacter votre administrateur"
+msgstr ""
+"Une erreur s'est produite lors du retrait de la demande de rechargement, "
+"veuillez ré-éssayer ou contacter votre administrateur"
 
 #: src/views/admin/PendingCredits.vue:168
 msgid "An issue occured upon the approval of the credit request of %{ name }"

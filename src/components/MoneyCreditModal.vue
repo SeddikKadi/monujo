@@ -224,12 +224,12 @@
         this.$msg.success(
           this.$gettext("Top-up request has been successfully created")
         )
-        this.$modal.close(true)
         await this.$modal.open("ConfirmPaymentModal", {
           account,
           transaction: pendingTopUp[0],
           type: "topup",
         })
+        this.$modal.close(true)
       },
       setFocus() {
         this.$nextTick(() => {

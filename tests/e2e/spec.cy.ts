@@ -82,14 +82,18 @@ describe("General processes when logged in", () => {
       cy.contains(".account-backend", "comchain").parents(".account").click()
     })
     cy.topUpButton().should("be.visible")
-    cy.topUpButton().click()
+    cy.transactionList().should("be.visible")
+    cy.get(".transaction-list").then(($transactionList) => {
+      cy.topUpButton().click()
+      if ($transactionList.find(".unpaid-topup").length) {
+        cy.unpaidTopupModal()
+      } else {
+        // top-up empty or invalid amount
+        cy.topupModal()
+      }
+    })
+
     if (Cypress.env("screenshot")) cy.takeScreenshot("top-up")
-
-    // top-up empty or invalid amount
-    cy.amountInput().should("be.visible")
-    cy.amountInput().type("test invalid amount")
-    cy.topUpNextButton().should("be.disabled")
-
     // close top-up modal
     cy.closeModal()
     cy.modal().should("not.exist")

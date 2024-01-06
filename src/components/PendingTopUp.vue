@@ -5,7 +5,7 @@
     :can-cancel="false"
     :is-full-page="false"
   />
-  <div class="section-card" v-if="pendingUnpaidTopUpList.length">
+  <div class="section-card unpaid-topup" v-if="pendingUnpaidTopUpList.length">
     <h2 class="custom-card-title">
       {{ $gettext("Unpaid top-up requests") }}
     </h2>

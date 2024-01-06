@@ -115,6 +115,10 @@ Cypress.Commands.add("resetPasswordLink", () => {
   return cy.get(".links-container").find("button").eq(0).should("be.visible")
 })
 
+Cypress.Commands.add("transactionList", () => {
+  return cy.get("#the-transaction-list").should("be.visible")
+})
+
 Cypress.Commands.add("searchRecipient", (recipient: string) => {
   cy.searchInput().type(recipient)
   cy.firstSearchedRecipient().should("be.visible")
@@ -213,6 +217,23 @@ Cypress.Commands.add("getSignupError", () => {
   return cy.get(".is-danger")
 })
 
+Cypress.Commands.add("topUpModalWarningText", () => {
+  return cy.get(".modal-card-body > .body-content > .is-danger")
+})
+Cypress.Commands.add("topUpModalButtons", () => {
+  cy.get(".modal-card-foot").find("button").should("have.length", 3)
+})
+Cypress.Commands.add("unpaidTopupModal", () => {
+  cy.topUpModalWarningText().should("be.visible")
+  cy.topUpModalButtons()
+})
+
+Cypress.Commands.add("topupModal", () => {
+  cy.amountInput().should("be.visible")
+  cy.amountInput().type("test invalid amount")
+  cy.topUpNextButton().should("be.disabled")
+})
+
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -262,6 +283,11 @@ declare global {
       getConfirmPasswordInput(): Chainable<JQuery<HTMLElement>>
       getButtonSubmit(): Chainable<JQuery<HTMLElement>>
       getSignupError(): Chainable<JQuery<HTMLElement>>
+      topUpModalWarningText(): Chainable<JQuery<HTMLElement>>
+      transactionList(): Chainable<JQuery<HTMLElement>>
+      unpaidTopupModal(): void
+      topupModal(): void
+      topUpModalButtons(): boolean | void
     }
   }
 }

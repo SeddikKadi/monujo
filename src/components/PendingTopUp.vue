@@ -58,6 +58,7 @@
     },
     props: {
       refreshToggle: Boolean,
+      autoRefresh: Boolean,
       account: Object,
     },
     data(this: any) {
@@ -108,6 +109,9 @@
     },
     watch: {
       refreshToggle: async function () {
+        this.fetchTopUpList()
+      },
+      autoRefresh: async function () {
         this.fetchTopUpList()
       },
       isPendingTopUpLoading(newVal: boolean) {

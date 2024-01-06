@@ -118,7 +118,7 @@ msgstr ""
 
 #: src/components/TransactionListModal.vue:342
 #: src/components/TransactionListModal.vue:399
-#: src/components/TransactionListRecent.vue:135
+#: src/components/TransactionListRecent.vue:108
 msgid "An unexpected issue occured while downloading transaction list"
 msgstr ""
 "Il y a eu un problème lors de la tentative de téléchargement de la liste des "
@@ -184,7 +184,7 @@ msgstr ""
 "Une erreur inattendue est survenue pendant le chargement de la liste des "
 "comptes. Veuillez nous excuser pour le désagrément."
 
-#: src/components/MoneyCreditModal.vue:205 src/components/PendingTopUp.vue:89
+#: src/components/MoneyCreditModal.vue:205 src/components/PendingTopUp.vue:90
 #: src/components/TheDashboardFooter.vue:93
 msgid "An unexpected server error occured while fetching pending topup list"
 msgstr ""
@@ -822,7 +822,8 @@ msgstr ""
 #: src/components/ConfirmPaymentModal.vue:85
 #: src/components/ConfirmPaymentModal.vue:97
 msgid "This top-up request is waiting for you to pay it or delete it"
-msgstr "Cette demande de recharge est en attente d'être payée ou supprimée par vous"
+msgstr ""
+"Cette demande de recharge est en attente d'être payée ou supprimée par vous"
 
 #: src/components/ConfirmPaymentModal.vue:108
 #: src/components/ConfirmPaymentModal.vue:88
@@ -1013,7 +1014,9 @@ msgstr "Oui"
 msgid ""
 "You already have a pending top-up. Please either pay or delete it before "
 "proceeding"
-msgstr "Vous avez déjà une demande de rechargement en attente. Veuillez la payer ou la supprimer avant de poursuivre"
+msgstr ""
+"Vous avez déjà une demande de rechargement en attente. Veuillez la payer ou "
+"la supprimer avant de poursuivre"
 
 #: src/components/MoneyTransferModal.vue:325
 msgid "You can not transfer money to your own account"

@@ -12,11 +12,13 @@
       data-testid="pending-topup"
       :account="account"
       :refreshToggle="refreshToggle"
+      :autoRefresh="autoRefresh"
       @triggerTransactionRefresh="trigger"
     />
     <TransactionListRecent
       :account="account"
       :refreshToggle="refreshToggle"
+      :autoRefresh="autoRefresh"
       @triggerTransactionRefresh="trigger"
     />
   </div>
@@ -29,6 +31,20 @@
   import PendingTopUp from "./PendingTopUp.vue"
 
   import { mapModuleState } from "@/utils/vuex"
+
+  let timeout: any
+
+  function clearRefresh() {
+    if (timeout) {
+      clearInterval(timeout)
+      timeout = null
+    }
+  }
+
+  function setupRefresh(fn: () => void, ms: number) {
+    clearRefresh()
+    timeout = setInterval(fn, ms)
+  }
 
   @Options({
     name: "TheTransactionList",
@@ -43,17 +59,38 @@
     data() {
       return {
         isTransactionsLoading: false,
+        autoRefresh: false,
       }
     },
     computed: {
       ...mapModuleState("lokapi", ["transactionsLoading", "lastTransactions"]),
     },
     mounted() {
+      this.setRefreshIfNeeded()
       console.log("TransactionList", this.account)
     },
+    unmounted() {
+      clearRefresh()
+    },
+
     methods: {
       trigger(value: boolean) {
         this.isTransactionsLoading = value
+      },
+
+      setRefreshIfNeeded() {
+        const transactionsRefreshInterval =
+          this.$config.transactionsRefreshInterval || 90
+        if (transactionsRefreshInterval != -1) {
+          setupRefresh(
+            // this.resetTransactionsGen.bind(this.resetTransactionsGen),
+            () => {
+              console.log("autoRefresh")
+              this.autoRefresh = !this.autoRefresh
+            },
+            transactionsRefreshInterval
+          )
+        }
       },
     },
   })

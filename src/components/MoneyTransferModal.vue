@@ -400,10 +400,23 @@
             this.transferOngoing = false
             return
           }
-          if (this.amount > realBal) {
+
+          const amount_cents = parseInt(this.amount.replace(".", ""))
+          const realBal_cents = parseInt(realBal.replace(".", ""))
+          const bal_cents = parseInt(
+            this.ownSelectedAccount.bal.toFixed(2).replace(".", "")
+          )
+
+          if (amount_cents > bal_cents) {
+            this.errors.balance = this.$gettext(
+              "Transaction was refused due to insufficient balance"
+            )
+            return
+          }
+          if (amount_cents > realBal_cents) {
             this.errors.balance = this.$gettext(
               "The last transactions were not yet all processed. " +
-                "To ensure that this transaction can be sent, you need " +
+                "To ensure that this payment can be sent, you need " +
                 "to wait for these pending transactions to be processed. " +
                 "This can take a few minutes. You can also lower your " +
                 "transaction amount underneath %{ realBal } %{ currency }. " +

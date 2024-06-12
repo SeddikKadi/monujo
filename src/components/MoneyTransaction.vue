@@ -19,7 +19,7 @@
           <template v-slot:name>{{ account.name() }}</template>
         </BankAccountItem>
       </div>
-      <div v-if="selectedRecipient">
+      <div v-if="selectedRecipient && selectedRecipient.name !== 'wallet safe'">
         <h2 class="frame3-sub-title mb-3">
           {{ $gettext("To") }}
         </h2>

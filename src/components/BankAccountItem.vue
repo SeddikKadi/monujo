@@ -25,17 +25,73 @@
         <span class="is-size-6-mobile is-size-5-tablet account-curr">{{
           curr
         }}</span>
-        <span
-          :class="{
-            hide: !qrcode,
-          }"
-          class="button is-default is-pulled-right is-rounded refresh ml-2"
-        >
-          <span
-            class="icon is-small"
-            @click="$modal.open('QrCodeModal', { accountId: id })"
+        <span v-if="showActions">
+          <div
+            v-if="$config?.reconversion"
+            class="dropdown"
+            :class="{ 'is-active': dropDownMenuState }"
           >
-            <fa-icon class="qrcode-icon" icon="qrcode" />
+            <div class="dropdown-trigger">
+              <span
+                class="
+                  button
+                  is-default
+                  button-contextual-menu
+                  is-pulled-right is-rounded
+                  refresh
+                  ml-2
+                "
+                aria-haspopup="true"
+                aria-controls="dropdown-menu3"
+              >
+                <span class="icon">
+                  <fa-icon class="qrcode-icon" icon="ellipsis-v" />
+                </span>
+              </span>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+              <div class="dropdown-content">
+                <a
+                  href="#"
+                  class="dropdown-item is-flex"
+                  @click="$modal.open('QrCodeModal', { accountId: id })"
+                >
+                  <div class="mr-5">
+                    <fa-icon class="qrcode-icon" icon="qrcode" />
+                  </div>
+                  <div class="icon is-small">{{ $gettext("Qrcode") }}</div>
+                </a>
+                <a
+                  href="#"
+                  class="dropdown-item is-flex"
+                  @click="
+                    $modal.open('MoneyReconversionModal', {
+                      account: account,
+                      refreshTransaction,
+                    })
+                  "
+                >
+                  <div class="mr-5">
+                    <fa-icon class="qrcode-icon" icon="qrcode" />
+                  </div>
+                  <div class="icon is-small ml-5">
+                    {{ $gettext("Reconversion") }}
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <span
+            v-else
+            :class="{ hide: !showActions }"
+            class="button is-default is-pulled-right is-rounded refresh ml-2"
+          >
+            <span
+              class="icon is-small"
+              @click="$modal.open('QrCodeModal', { accountId: id })"
+            >
+              <fa-icon class="qrcode-icon" icon="qrcode" />
+            </span>
           </span>
         </span>
       </div>
@@ -50,9 +106,9 @@
         :type="account.type"
         :active="account.active"
         :isSub="true"
+        :show-actions="false"
         class="mt-4 subaccount"
         @accountSelected="$emit('accountSelected', account)"
-        :qrcode="false"
         :id="id"
       >
         <template v-slot:name>{{ account.name() }}</template>
@@ -76,13 +132,53 @@
       type: String,
       active: Boolean,
       subAccounts: Array,
+      showActions: Boolean,
       isSub: Boolean,
-      qrcode: Boolean,
       id: Object,
+      account: Object,
+    },
+    data() {
+      return {
+        dropDownMenuState: false,
+      }
     },
     computed: {
       ...mapModuleState("lokapi", ["isMultiCurrency"]),
       ...mapGetters(["numericFormat"]),
+    },
+    unmounted() {
+      if (this.handleCloseContextualMenu) {
+        document.removeEventListener("click", this.handleCloseContextualMenu)
+        this.handleCloseContextualMenu = null
+      }
+    },
+    mounted() {
+      if (this.showActions && this.$config?.reconversion) {
+        const $clickableDropdowns = this.$el.querySelectorAll(
+          ".dropdown:not(.is-hoverable)"
+        )
+        if ($clickableDropdowns.length > 0) {
+          $clickableDropdowns.forEach(($dropdown: any) => {
+            $dropdown
+              .querySelector(".button-contextual-menu")
+              .addEventListener("click", (event: any) => {
+                event.stopPropagation()
+                $dropdown.classList.toggle("is-active")
+              })
+          })
+          this.handleCloseContextualMenu = () => {
+            $clickableDropdowns.forEach(($el: any) => {
+              $el.classList.remove("is-active")
+            })
+          }
+          document.addEventListener("click", this.handleCloseContextualMenu)
+        }
+      }
+    },
+    methods: {
+      refreshTransaction() {
+        this.$emit("refreshTransaction")
+      },
     },
   })
   export default class BankAccountItem extends Vue {}
@@ -127,5 +223,8 @@
         border: 1px #eee solid;
       }
     }
+  }
+  .dropdown-item {
+    font-size: inherit;
   }
 </style>

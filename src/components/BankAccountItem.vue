@@ -1,5 +1,5 @@
 <template>
-  <div class="account" :class="{ active }">
+  <div class="account" :class="{ active: account.active }">
     <div
       class="custom-inner-card card px-5 py-2 is-flex"
       @click="$emit('accountSelected', account)"
@@ -7,15 +7,15 @@
       <div class="is-size-5 is-flex-grow-1">
         <slot name="name">default name</slot>
         <div v-if="isMultiCurrency && !isSub" class="account-backend is-size-6">
-          {{ backend }}
+          {{ account.backend }}
         </div>
       </div>
       <div class="is-align-items-center is-flex">
         <span
           class="is-size-6-mobile is-size-4-tablet account-bal"
-          v-if="active"
+          v-if="account.active"
         >
-          {{ numericFormat(parseFloat(bal)) }}
+          {{ numericFormat(parseFloat(account.bal)) }}
         </span>
         <span
           class="is-size-6-mobile is-size-4-tablet account-bal inactive"
@@ -23,7 +23,7 @@
           >-.---,--</span
         >
         <span class="is-size-6-mobile is-size-5-tablet account-curr">{{
-          curr
+          account.curr
         }}</span>
         <span v-if="showActions">
           <div
@@ -54,7 +54,7 @@
                 <a
                   href="#"
                   class="dropdown-item is-flex"
-                  @click="$modal.open('QrCodeModal', { accountId: id })"
+                  @click="$modal.open('QrCodeModal', { accountId: account.id })"
                 >
                   <div class="mr-5">
                     <fa-icon class="qrcode-icon" icon="qrcode" />
@@ -100,7 +100,7 @@
           >
             <span
               class="icon is-small"
-              @click="$modal.open('QrCodeModal', { accountId: id })"
+              @click="$modal.open('QrCodeModal', { accountId: account.id })"
             >
               <fa-icon class="qrcode-icon" icon="qrcode" />
             </span>
@@ -109,19 +109,19 @@
       </div>
     </div>
 
-    <div class="sub-accounts" v-if="subAccounts && subAccounts.length > 0">
+    <div
+      class="sub-accounts"
+      v-if="
+        account.subAccounts && account.subAccounts.length > 0 && showSubAccounts
+      "
+    >
       <BankAccountItem
-        v-for="account in subAccounts"
-        :bal="account.bal"
-        :curr="account.curr"
-        :backend="account.backend"
-        :type="account.type"
-        :active="account.active"
+        v-for="account in account.subAccounts"
         :isSub="true"
         :show-actions="false"
         class="mt-4 subaccount"
         @accountSelected="$emit('accountSelected', account)"
-        :id="id"
+        :account="account"
       >
         <template v-slot:name>{{ account.name() }}</template>
       </BankAccountItem>
@@ -138,17 +138,10 @@
   @Options({
     name: "BankAccountItem",
     props: {
-      name: String,
-      bal: Number,
-      curr: String,
-      backend: String,
-      type: String,
-      active: Boolean,
-      subAccounts: Array,
       showActions: Boolean,
       isSub: Boolean,
-      id: Object,
       account: Object,
+      showSubAccounts: Boolean,
     },
     data() {
       return {

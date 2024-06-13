@@ -80,18 +80,12 @@
         </h2>
         <BankAccountItem
           v-for="a in activeVirtualAccountsMiddleware"
-          :bal="a.bal"
-          :curr="a.curr"
-          :backend="a.backend"
-          :type="a.type"
-          :active="a.active"
-          :subAccounts="a.subAccounts || []"
           class="mb-5"
           :class="{ selected: a._obj.internalId === account?._obj?.internalId }"
           @accountSelected="$emit('accountSelected', a)"
           :show-actions="true"
-          :id="a.id"
           :account="a"
+          showSubAccounts="true"
           @refreshTransaction="refreshBalanceAndTransactions()"
         >
           <template v-slot:name>{{ a.name() }}</template>
@@ -116,11 +110,7 @@
       </p>
       <BankAccountItem
         v-for="account in inactiveVirtualAccounts"
-        :bal="account.bal"
-        :curr="account.curr"
-        :backend="account.backend"
-        :type="account.type"
-        :active="account.active"
+        :account="account"
       >
         <template v-slot:name>{{ account.name() }}</template>
       </BankAccountItem>

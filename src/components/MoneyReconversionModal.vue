@@ -45,7 +45,6 @@
   import { mapModuleState } from "@/utils/vuex"
   import { e as LokapiExc } from "@lokavaluto/lokapi-browser"
 
-  import "vue-loading-overlay/dist/css/index.css"
   import MoneyTransaction from "@/components//MoneyTransaction.vue"
 
   @Options({

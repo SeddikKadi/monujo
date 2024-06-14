@@ -16,7 +16,8 @@
             :selectedRecipient="selectedRecipient"
             :config="config"
             @update:amount="(x) => (amount = x)"
-            @update:message="(x) => (message = x)"
+            @update:senderMemo="(x) => (senderMemo = x)"
+            @update:recipientMemo="(x) => (recipientMemo = x)"
             @update:isValid="(x) => (isValid = x)"
           />
         </section>
@@ -72,7 +73,8 @@
                   rp: userProfile.id,
                   rpb: $modal.args.value[0].account.id,
                   amount: amount,
-                  message: message,
+                  senderMemo: senderMemo,
+                  recipientMemo: recipientMemo,
                 })
               "
             />
@@ -119,7 +121,8 @@
     data() {
       return {
         amount: null,
-        message: null,
+        senderMemo: null,
+        recipientMemo: null,
         isValid: false,
         config: {},
       }
@@ -128,9 +131,14 @@
       ...mapModuleState("lokapi", ["userProfile"]),
     },
     watch: {
-      message: {
+      senderMemo: {
         handler(newVal, oldVal) {
-          this.config.message = newVal
+          this.config.senderMemo = newVal
+        },
+      },
+      recipientMemo: {
+        handler(newVal, oldVal) {
+          this.config.recipientMemo = newVal
         },
       },
       amount: {

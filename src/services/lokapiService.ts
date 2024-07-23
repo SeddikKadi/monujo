@@ -103,7 +103,8 @@ export class LokAPI extends LokAPIBrowserAbstract {
                     account.getSymbol(),
                   ]).then((vals) => {
                     const [name, bal, curr] = vals.map((a) => (<any>a).value)
-                    const accountData = {
+                    let accountData
+                    accountData = {
                       name,
                       bal,
                       curr,

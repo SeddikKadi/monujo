@@ -256,7 +256,7 @@
       saveSimplifiedAuthPref(accountAuthService: any, userConfigInput: any) {
         this.userAuthPref = [accountAuthService, userConfigInput]
       },
-      createUserAccount: debounceMethod(async function() {
+      createUserAccount: debounceMethod(async function () {
         let userAccount
         try {
           userAccount = await this.$store.dispatch("createUserAccount", [

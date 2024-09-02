@@ -51,6 +51,7 @@
         {{ parentErrors }}
       </div>
       <textarea
+        v-if="!isReconversion"
         @input="handleMessageInput()"
         v-model="message"
         class="custom-textarea textarea mt-5"
@@ -59,7 +60,10 @@
         }"
         :placeholder="$gettext('Add a memo (optional)')"
       ></textarea>
-      <div class="notification is-danger is-light mt-2" v-if="errors.message">
+      <div
+        class="notification is-danger is-light mt-2"
+        v-if="!isReconversion && errors.message"
+      >
         {{ errors.message }}
       </div>
     </div>
@@ -129,6 +133,38 @@
             this.errors.amount = this.$gettext(
               "Amount to request must be a number greater than 0"
             )
+          return
+        }
+
+        const amountStrRaw = this.$refs.amountRequested.value
+        const amountStr = this.amount.toString()
+        // XXXvlab: this is the maximum size of a XXXX.YY that
+        // is safely converted to a number in javascript. (We
+        // can garantee that what the user typed in is
+        // eauivalent to what we get in the code.
+        const maxValue = Number.MAX_SAFE_INTEGER / 2 ** 7
+        if (this.amount > maxValue) {
+          this.errors.amount = this.$gettext(
+            "Amount to send is too large (<= %{ maxValue })",
+            { maxValue }
+          )
+          return
+        }
+
+        const amountParts = amountStrRaw.split(".")
+
+        if (amountParts.length > 1) {
+          if (amountParts[1].length > 2) {
+            this.errors.amount = this.$gettext(
+              "Amount to send must be a number with not more than 2 decimals"
+            )
+            return
+          }
+        }
+        if (amountStr != this.$refs.amountRequested.value) {
+          this.errors.amount = this.$gettext(
+            "Unexpected amount received. Try to reenter your amount, and if the problem persists please contact your administator."
+          )
           return
         }
         this.errors.amountLength = this.amount.length === 0

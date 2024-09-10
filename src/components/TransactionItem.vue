@@ -56,8 +56,17 @@
       }
     },
     mounted() {
+      let safeWalletRecipient
+      try {
+        safeWalletRecipient = this.transaction.parent.parent.safeWalletRecipient
+      } catch(e: any) {
+        // XXXvlab: already reported this error in service/lokapiService.ts
+        // console.error(e.message)
+        this.isReconversion = false
+        return
+      }
       this.isReconversion =
-        this.transaction.parent.parent.safeWalletRecipient.name ===
+        safeWalletRecipient?.name ===
         this.transaction.related
     },
     computed: {

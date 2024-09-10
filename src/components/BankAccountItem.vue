@@ -176,7 +176,7 @@
           )
         } catch (err) {
           throw new UIError(
-            this.$gettext("the Wallet could not be downloaded"),
+            this.$gettext("the wallet could not be downloaded"),
             err
           )
         }

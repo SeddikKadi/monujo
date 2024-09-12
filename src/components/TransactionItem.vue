@@ -66,6 +66,7 @@
         return
       }
       this.isReconversion =
+        this.transaction.amount < 0 &&
         safeWalletRecipient?.name === this.transaction.related
     },
     computed: {

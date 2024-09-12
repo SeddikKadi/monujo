@@ -236,4 +236,10 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Standard syntax */
   }
+  .dropdown-menu {
+    @media screen and (max-width: 768px) {
+      position: absolute;
+      left: -6em;
+    }
+  }
 </style>

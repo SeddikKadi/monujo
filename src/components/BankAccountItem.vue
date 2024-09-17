@@ -80,6 +80,7 @@
                   </div>
                 </a>
                 <a
+                  v-if="account.walletData"
                   href="#"
                   class="dropdown-item is-flex"
                   @click="exportWallet()"
@@ -169,8 +170,9 @@
       }
     },
     methods: {
-      async exportWallet() {
-        const wallet = this.account._obj.jsonData.wallet
+        async exportWallet() {
+            
+        const wallet = this.account.walletData
         try {
           await this.$export.download(
             JSON.stringify(wallet, null, 4),

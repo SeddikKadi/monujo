@@ -67,6 +67,15 @@ export class LokAPI extends LokAPIBrowserAbstract {
                 }
                 return safeWalletRecipient
               }
+              let getWalletData = (account: any) => {
+                let walletData
+                try {
+                  walletData = account.jsonData.wallet
+                } catch (e: any) {
+                  return null
+                }
+                return walletData
+              }
               const userAccountData = {
                 name,
                 bal,
@@ -75,6 +84,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
                 minCreditAmount: userAccount.parent.minCreditAmount,
                 maxCreditAmount: userAccount.parent.maxCreditAmount,
                 safeWalletRecipient: getSafeWalletRecipient(userAccount.parent),
+                walletData: getWalletData(userAccount),
                 userAccountId: userAccount.internalId,
                 currencyId: userAccount.parent.internalId,
                 active: userAccount.active, // FTM only the UserAccount is active or not
@@ -103,6 +113,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
                       safeWalletRecipient: getSafeWalletRecipient(
                         account.parent.parent
                       ),
+                      walletData: getWalletData(account.parent),
                       userAccountId: account.parent.internalId,
                       currencyId: account.parent.parent.internalId,
                       active: account.parent.active, // FTM only the UserAccount is active or not

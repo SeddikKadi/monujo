@@ -52,10 +52,10 @@
                   class="dropdown-item is-flex"
                   @click="$modal.open('QrCodeModal', { accountId: account.id })"
                 >
-                  <div class="mr-5">
+                  <div class="mr-1">
                     <fa-icon class="qrcode-icon" icon="qrcode" />
                   </div>
-                  <div class="icon is-small">{{ $gettext("Qrcode") }}</div>
+                  <div class="is-small ml-1">{{ $gettext("Qrcode") }}</div>
                 </a>
                 <a
                   href="#"
@@ -72,10 +72,10 @@
                     })
                   "
                 >
-                  <div class="mr-5">
+                  <div class="mr-1">
                     <fa-icon class="qrcode-icon" icon="qrcode" />
                   </div>
-                  <div class="icon is-small ml-5">
+                  <div class="is-small ml-1">
                     {{ $gettext("Reconversion") }}
                   </div>
                 </a>
@@ -84,10 +84,10 @@
                   class="dropdown-item is-flex"
                   @click="exportWallet()"
                 >
-                  <div class="mr-5">
+                  <div class="mr-1">
                     <fa-icon class="qrcode-icon" icon="qrcode" />
                   </div>
-                  <div class="icon is-small ml-5">
+                  <div class="is-small ml-1">
                     {{ $gettext("Export wallet") }}
                   </div>
                 </a>
@@ -242,7 +242,8 @@
   .dropdown-menu {
     @media screen and (max-width: 768px) {
       position: absolute;
-      left: -6em;
+      right: 0em;
+      left: unset;
     }
   }
 </style>

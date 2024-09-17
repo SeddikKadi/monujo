@@ -73,7 +73,7 @@
                   "
                 >
                   <div class="mr-1">
-                    <fa-icon class="qrcode-icon" icon="qrcode" />
+                    <fa-icon class="euro-sign" icon="euro-sign" />
                   </div>
                   <div class="is-small ml-1">
                     {{ $gettext("Reconversion") }}
@@ -85,7 +85,7 @@
                   @click="exportWallet()"
                 >
                   <div class="mr-1">
-                    <fa-icon class="qrcode-icon" icon="qrcode" />
+                    <fa-icon class="wallet" icon="wallet" />
                   </div>
                   <div class="is-small ml-1">
                     {{ $gettext("Export wallet") }}

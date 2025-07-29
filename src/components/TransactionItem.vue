@@ -9,7 +9,26 @@
     }"
     @click="openModal()"
   >
-    <div class="amount-col is-flex-direction-column left">
+    <div class="transaction-related">
+      <template v-if="mode !== 'small'">
+        <div
+          v-if="transaction.isTopUp || transaction.isReconversion"
+          class="custom-card-type"
+        >
+          {{
+            transaction.isTopUp ? $gettext("Top-up") : $gettext("Reconversion")
+          }}
+        </div>
+        <div v-else class="custom-card-related">
+          {{ transaction.related }}
+        </div>
+      </template>
+      <div v-if="mode === 'small'" class="custom-card-related related small">
+        {{ transaction.related }}
+      </div>
+    </div>
+
+    <div class="transaction-amount">
       <h3
         :class="[
           transaction.amount.toString().charAt(0) == '-'
@@ -24,27 +43,31 @@
         </div>
         <div class="currency">{{ transaction.currency }}</div>
       </h3>
+    </div>
 
-      <template v-if="mode !== 'small'">
-        <h5
-          v-if="transaction.isTopUp || transaction.isReconversion"
-          class="custom-card-type"
-        >
-          {{
-            transaction.isTopUp ? $gettext("Top-up") : $gettext("Reconversion")
-          }}
-        </h5>
-        <h4 v-else class="custom-card-related">
-          {{ transaction.related }}
-        </h4>
+    <div class="transaction-date card-paiement-defaut-carte">
+      <h4 v-if="mode !== 'small' && transaction.date" class="mt-1 status">
+        {{ dateFormat(transaction.date) }}
+      </h4>
+    </div>
 
-        <h5
-          v-if="!transaction.isTopUp && !transaction.isReconversion"
-          class="has-text-grey-light transaction-desc"
-        >
-          {{ transaction.description }}
-        </h5>
-      </template>
+    <div class="transaction-relative-date">
+      <h5
+        v-if="transaction?.pending !== null || transaction?.date !== null"
+        class="status card-paiement-defaut-carte has-text-right mt-1"
+      >
+        <span v-if="transaction.date">
+          {{ relativeDateFormat(transaction.date) }}
+        </span>
+        <fa-icon
+          :class="{
+            hide:
+              transaction?.pending === true || transaction?.pending === null,
+          }"
+          icon="check"
+          class="fa-thin ml-1"
+        />
+      </h5>
     </div>
     <div
       v-if="
@@ -63,29 +86,11 @@
         />
       </div>
     </div>
-    <div v-if="mode === 'small'" class="custom-card-related related small">
-      {{ transaction.related }}
-    </div>
-    <div
-      v-if="transaction?.pending !== null || transaction?.date !== null"
-      class="is-pulled-right right"
-    >
-      <h5 v-if="mode !== 'small'" class="custom-card-related has-text-right">
-        {{ dateFormat(transaction.date) }}
-      </h5>
-      <h5 class="status card-paiement-defaut-carte has-text-right mt-1">
-        <span v-if="transaction.date">
-          {{ relativeDateFormat(transaction.date) }}
-        </span>
-        <fa-icon
-          :class="{
-            hide:
-              transaction?.pending === true || transaction?.pending === null,
-          }"
-          icon="check"
-          class="fa-thin"
-        />
-      </h5>
+    <div v-if="transaction.description" class="transaction-desc">
+      {{
+        transaction.description
+      }}
+      sjkdbskjbdaakjdbsakjbdjskabdsjbdjsbkdjabskdbakdbsakj
     </div>
   </div>
 </template>
@@ -165,9 +170,11 @@
     text-overflow: ellipsis;
   }
   .transaction-desc {
+    grid-area: desc;
     word-wrap: break-word;
     overflow-wrap: break-word;
     width: 100%;
+    margin-top: 0.7rem;
   }
   .card-paiement-defaut-carte {
     font-style: normal;
@@ -212,72 +219,98 @@
   }
 
   .tx-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "related amount"
+      "date    relative-date"
+      "desc    desc";
+    gap: 0 1em;
     align-items: center;
-    justify-content: center;
     position: relative;
 
-    .left {
-      margin-right: auto;
-      flex: 1 1 0;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
-
-      div.amount {
-        display: inline;
-        border-radius: 1em;
-        padding: 0em 0.5em;
+    &.mode-small {
+      padding: 0.2em !important;
+      align-items: start;
+      .transaction-date {
+        display: none;
       }
-      .currency {
-        display: inline;
-        padding-left: 0.2em;
+      .transaction-related {
+        text-align: left;
+        padding-left: 1em;
       }
     }
-
-    .center {
-      flex-grow: 1;
-      margin: 0 auto; /* centers it if present */
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-
-      .status-label {
-        line-height: 1.2em;
-        text-weight: bold;
-        text-align: center;
-        color: $color-2;
-      }
-      .status-indicator {
-        line-height: 1.5em;
-        text-align: center;
-      }
+    &.cm .transaction-amount .amount {
+      background-color: $barter-bg-color;
     }
+  }
 
-    .right {
-      margin-left: auto;
-      flex-grow: 0;
+  .transaction-related {
+    grid-area: related;
+    min-width: 0;
+    font-weight: 400;
+  }
+
+  .transaction-amount {
+    grid-area: amount;
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .amount {
+      display: inline;
+      border-radius: 1em;
+      padding: 0em 0.2em;
+      font-weight: 400;
+      font-size: 1.35rem;
+      line-height: 1.5rem;
+    }
+    .currency {
+      display: inline;
+      padding-left: 0.2em;
+      font-weight: 400;
+      font-size: 1.4rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  .transaction-date {
+    grid-area: date;
+    align-self: end;
+  }
+
+  .transaction-relative-date {
+    grid-area: relative-date;
+    align-self: end;
+  }
+
+  .center {
+    grid-area: 1 / 1 / 3 / 3;
+    justify-self: center;
+    align-self: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .status-label {
+      line-height: 1.2em;
+      font-weight: bold;
+      text-align: center;
+      color: $color-2;
+    }
+    .status-indicator {
+      line-height: 1.5em;
+      text-align: center;
     }
   }
 
   h3.custom-card-related {
     text-align: left;
-  }
-  .tx-item.mode-small {
-    padding: 0.2em !important;
-  }
-
-  .tx-item.cm .left div.amount {
-    background-color: $barter-bg-color;
-  }
-
-  div.related.small {
-    text-align: left;
-    padding-left: 1em;
-    flex: 2;
-  }
-  .tx-item div.amount-col {
-    flex: 0 1 auto;
   }
 </style>

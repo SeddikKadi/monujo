@@ -53,10 +53,12 @@
     },
     computed: {
       languageOptions() {
-        return Object.entries(this.$language.available).map(([value, label]) => ({
-          value,
-          label,
-        }))
+        return Object.entries(this.$language.available).map(
+          ([value, label]) => ({
+            value,
+            label,
+          })
+        )
       },
     },
     watch: {

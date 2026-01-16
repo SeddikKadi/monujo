@@ -76,6 +76,35 @@ class ExportService {
     }
   }
 
+  public async shareBase64(
+    data: string,
+    fileName: string,
+    message: string
+  ): Promise<any> {
+    const platform = Capacitor.getPlatform()
+    if (platform !== "web") {
+      await Filesystem.writeFile({
+        path: fileName,
+        data: data,
+        directory: Directory.Cache,
+      })
+
+      const fileResult = await Filesystem.getUri({
+        directory: Directory.Cache,
+        path: fileName,
+      })
+
+      await Share.share({
+        title: fileName,
+        text: message,
+        url: fileResult.uri,
+        dialogTitle: message,
+      })
+    } else {
+      console.log(`Share is not yet available on ${platform} platform.`)
+    }
+  }
+
   public async DownloadQrCode(svgQrCode: any, fileName: string) {
     const finalSizeMm = 120 // mm of final printed QrCode
     const resolution = 5 // px/mm

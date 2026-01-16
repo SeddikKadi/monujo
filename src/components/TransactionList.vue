@@ -209,6 +209,8 @@
   import applyDecorators from "@/utils/applyDecorators"
   import { debounceMethod } from "@/utils/debounce"
 
+  import PdfDocument from "@/utils/pdf"
+
   @Options({
     name: "TransactionList",
     components: {
@@ -221,7 +223,12 @@
       recipient: Object,
       account: Object,
     },
-    expose: ["downloadCsvFile", "shareCsvFile"],
+    expose: [
+      "downloadCsvFile",
+      "shareCsvFile",
+      "downloadPdfFile",
+      "sharePdfFile",
+    ],
 
     data(this: any) {
       return {
@@ -457,6 +464,132 @@
           exportFileName,
         }
       },
+
+      getTransactionListExportMessage(this: any): string {
+        let dateBeginStr, dateEndStr
+        if (this.exportDate[0] && this.exportDate[1]) {
+          dateBeginStr = moment(this.exportDate[0]).format("YYYY-MM-DD")
+          dateEndStr = moment(this.exportDate[1]).format("YYYY-MM-DD")
+        } else {
+          dateBeginStr = ""
+          dateEndStr = ""
+        }
+
+        return dateBeginStr && dateEndStr
+          ? this.$gettext(
+              "Transaction list from %{ dateBeginStr } to %{ dateEndStr }",
+              {
+                dateBeginStr,
+                dateEndStr,
+              }
+            )
+          : this.$gettext("Transaction list")
+      },
+
+      async createPdfReport(this: any) {
+        const [dateBegin, dateEnd] = this.exportDate
+
+        let exportFileName
+        if (dateBegin && dateEnd) {
+          const dateBeginStr = moment(dateBegin).format("YYYY-MM-DD")
+          const dateEndStr = moment(dateEnd).format("YYYY-MM-DD")
+          exportFileName = `transactions_${dateBeginStr}_${dateEndStr}.pdf`
+        } else {
+          exportFileName = "transactions.pdf"
+        }
+
+        const toBigInt = (amount: string) => {
+          const [int, frac = ""] = amount.split(".")
+          return BigInt(int + frac.padEnd(2, "0").slice(0, 2))
+        }
+
+        const addAmountUnit = async function* (txIter: any) {
+          for await (const tx of txIter) {
+            tx.amountUnit = toBigInt(String(tx.amount))
+            yield tx
+          }
+        }
+
+        const reportContactInfo =
+          await this.$lokapi.getReportContactInformation()
+
+        const report = new PdfDocument(
+          {
+            issuer: reportContactInfo.issuer,
+            user: reportContactInfo.user,
+            date: {
+              begin: dateBegin,
+              end: dateEnd,
+            },
+          },
+          addAmountUnit(this.getTransactions()),
+          this
+        )
+
+        await report.generate()
+
+        return {
+          exportFileName,
+          report,
+        }
+      },
+
+      downloadPdfFile: applyDecorators(
+        [debounceMethod, showSpinnerMethod(".modal-card-body")],
+        async function (this: any): Promise<void> {
+          this.isTransactionsLoading = true
+          let pdfReport
+
+          try {
+            pdfReport = await this.createPdfReport()
+            pdfReport.report.save(pdfReport.exportFileName)
+          } catch (e) {
+            throw new UIError(
+              this.$gettext("An error occured while creating the PDF file"),
+              e
+            )
+          } finally {
+            this.isTransactionsLoading = false
+          }
+
+          //this.$modal.close()
+          this.$msg.success(this.$gettext("Transaction list downloaded"))
+        }
+      ),
+
+      async sharePdfFile() {
+        let pdfReport
+
+        try {
+          pdfReport = await this.createPdfReport()
+        } catch (e) {
+          throw new UIError(
+            this.$gettext("An error occured while creating the PDF file"),
+            e
+          )
+        }
+
+        const message = this.getTransactionListExportMessage()
+        const pdfDataUri = pdfReport.report.output("datauristring")
+        const pdfBase64 = pdfDataUri.replace(
+          /^data:application\/pdf;filename=[^;]*;base64,|^data:application\/pdf;base64,/,
+          ""
+        )
+
+        try {
+          await this.$export.shareBase64(
+            pdfBase64,
+            pdfReport.exportFileName,
+            message
+          )
+        } catch (e) {
+          this.$msg.error(this.$gettext("Transaction list could not be shared"))
+          throw e
+        }
+        this.$modal.close()
+        this.$msg.success(this.$gettext("Transaction list shared"))
+      },
+
       downloadCsvFile: applyDecorators(
         [debounceMethod, showSpinnerMethod(".modal-card-body")],
         async function (this: any): Promise<void> {
@@ -485,32 +618,12 @@
       ),
       async shareCsvFile() {
         const { csvContent, exportFileName } = await this.createCsvFile()
-        let dateBeginStr, dateEndStr
-        if (this.exportDate[0] && this.exportDate[1]) {
-          dateBeginStr = moment(this.exportDate[0]).format("YYYY-MM-DD")
-          dateEndStr = moment(this.exportDate[1]).format("YYYY-MM-DD")
-        } else {
-          dateBeginStr = ""
-          dateEndStr = ""
-        }
-
-        const message =
-          dateBeginStr && dateEndStr
-            ? this.$gettext(
-                "Transaction list from %{ dateBeginStr } to %{ dateEndStr }",
-                {
-                  dateBeginStr,
-                  dateEndStr,
-                }
-              )
-            : this.$gettext("Transaction list")
+        const message = this.getTransactionListExportMessage()
 
         try {
           await this.$export.share(csvContent, exportFileName, message)
         } catch (e) {
-          this.$msg.error(
-            this.$gettext("Transaction list could not be downloaded")
-          )
+          this.$msg.error(this.$gettext("Transaction list could not be shared"))
           throw e
         }
         this.$modal.close()

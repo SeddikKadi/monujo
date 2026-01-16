@@ -298,7 +298,6 @@
         return this.capabilities.limits.editable
       },
       canChangeStatus() {
-        console.log(`Called canChangeStatus`, this.capabilities.status.editable)
         return this.capabilities.status.editable
       },
       accountTypeWarnings() {
@@ -396,10 +395,13 @@
         } else if (this.userAccount?._obj?.clearCaches) {
           this.userAccount._obj.clearCaches()
         }
-        await Promise.all([this.refreshAccounts(), this.fetchAccountTypes()])
+        await Promise.all([
+          this.refreshAccounts(),
+          this.fetchAccountTypes(),
+          this.fetchCapabilities(),
+        ])
         this.isUserAccountLoaded = true
         await this.initializeAccountForm()
-        await this.fetchCapabilities()
         this.isAccountFormLoaded = true
         this.refreshToggle = !this.refreshToggle
       },
@@ -441,7 +443,6 @@
         } catch (err: any) {
           console.error("Failed to fetch account edit capabilities", err)
         }
-        console.log(`capabilities:`, this.capabilities)
         this.emitAccountFormChange()
       },
       async fetchAccountTypes() {
@@ -561,7 +562,6 @@
       },
 
       emitAccountFormChange() {
-        console.log(`emitting: canChangeStatus: ${this.canChangeStatus}`)
         this.$emit("accountFormChange", {
           form: { ...this.accountForm },
           isChanged: this.isAccountFormChanged,

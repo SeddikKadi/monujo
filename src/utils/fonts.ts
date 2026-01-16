@@ -29,8 +29,11 @@ import {
   faWallet,
   faEuroSign,
   faAngleDown,
+  faAngleUp,
   faCircleInfo,
   faList,
+  faFilePdf,
+  faFileCsv,
 } from "@fortawesome/free-solid-svg-icons"
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
@@ -65,8 +68,11 @@ library.add(
   faWallet,
   faEuroSign,
   faAngleDown,
+  faAngleUp,
   faCircleInfo,
-  faList
+  faList,
+  faFilePdf,
+  faFileCsv
 )
 
 export default FontAwesomeIcon

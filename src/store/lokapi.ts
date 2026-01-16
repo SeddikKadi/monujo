@@ -62,7 +62,7 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
       async fetchAccounts({ commit, state }: any) {
         commit("setAccountsLoading", true)
         commit("setAccountsLoadingErrors", [])
-        lokApiService.clearCaches()
+        lokApiService.flushBackendCaches()
         let virtualAccountTreeArtifacts
         try {
           virtualAccountTreeArtifacts =

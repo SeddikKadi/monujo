@@ -158,17 +158,6 @@
             :key="transaction"
             :transaction="transaction"
             :account="account"
-            @click="
-              $modal.open('ConfirmPaymentModal', {
-                transaction,
-                type: transaction.isReconversion
-                  ? 'reconversion'
-                  : transaction.isTopUp
-                  ? 'topup'
-                  : 'transactionDetail',
-                account,
-              })
-            "
           />
           <Loading
             v-if="transactionBatchLoader.isNewBatchLoading"

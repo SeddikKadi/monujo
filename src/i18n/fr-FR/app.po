@@ -45,7 +45,7 @@ msgstr[1] "%{ pinLength } chiffres"
 msgid "About %{ appName }"
 msgstr "À propos de %{ appName }"
 
-#: src/components/TransactionList.vue:430
+#: src/components/TransactionList.vue:419
 msgid "Account"
 msgstr "Compte"
 
@@ -120,7 +120,7 @@ msgstr "Avez-vous déjà créé un compte ?"
 #: src/components/MoneyTransaction.vue:21
 #: src/components/MoneyTransaction.vue:22
 #: src/components/MoneyTransaction.vue:30
-#: src/components/TransactionList.vue:426 src/views/admin/PendingCredits.vue:39
+#: src/components/TransactionList.vue:415 src/views/admin/PendingCredits.vue:39
 #: src/views/admin/PendingCredits.vue:40 src/views/admin/PendingCredits.vue:43
 msgid "Amount"
 msgstr "Montant"
@@ -146,7 +146,7 @@ msgstr "Le montant envoyé doit être un nombre n'ayant pas plus de 2 décimales
 msgid "An error occured during the scan process"
 msgstr "Une erreur est survenue lors du processus de scan"
 
-#: src/components/TransactionList.vue:479
+#: src/components/TransactionList.vue:468
 msgid "An error occured while creating the CSV file"
 msgstr "Une erreur est survenue lors de la creation du ficher CSV"
 
@@ -183,15 +183,15 @@ msgstr ""
 "de transaction"
 
 #: src/components/RecipientSelector.vue:139
-#: src/components/TransactionList.vue:274
+#: src/components/TransactionList.vue:263
 msgid "An unexpected issue occured while downloading recipient list"
 msgstr ""
 "Il y a eu un problème lors de la tentative de téléchargement de la liste des "
 "destinataires"
 
-#: src/components/TransactionList.vue:290
-#: src/components/TransactionList.vue:397
-#: src/components/TransactionListRecent.vue:119
+#: src/components/TransactionList.vue:279
+#: src/components/TransactionList.vue:386
+#: src/components/TransactionListRecent.vue:109
 msgid "An unexpected issue occured while downloading transaction list"
 msgstr ""
 "Il y a eu un problème lors de la tentative de téléchargement de la liste des "
@@ -291,7 +291,7 @@ msgstr ""
 "Il y a eu un problème lors du rafraichissement de la liste des demandes de "
 "validation de portefeuilles"
 
-#: src/components/MoneyCreditModal.vue:177 src/components/PendingTopUp.vue:148
+#: src/components/MoneyCreditModal.vue:177 src/components/PendingTopUp.vue:151
 #: src/components/TheDashboardFooter.vue:114
 msgid "An unexpected server error occured while fetching pending topup list"
 msgstr ""
@@ -450,12 +450,12 @@ msgstr "Demandes de crédit"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: src/components/TransactionList.vue:427 src/views/admin/PendingCredits.vue:42
+#: src/components/TransactionList.vue:416 src/views/admin/PendingCredits.vue:42
 #: src/views/admin/PendingCredits.vue:43 src/views/admin/PendingCredits.vue:46
 msgid "Date"
 msgstr "Date"
 
-#: src/components/TransactionList.vue:242
+#: src/components/TransactionList.vue:231
 msgid "day"
 msgstr "jour"
 
@@ -468,7 +468,7 @@ msgstr "jour"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/components/TransactionList.vue:428
+#: src/components/TransactionList.vue:417
 msgid "Description"
 msgstr "Description"
 
@@ -635,7 +635,7 @@ msgstr "Format du code QR invalide"
 
 #: src/components/ConfirmPaymentModal.vue:274
 #: src/components/ConfirmPaymentModal.vue:372
-#: src/components/TransactionItem.vue:115
+#: src/components/TransactionItem.vue:142
 msgid "invoiced"
 msgstr "facturée"
 
@@ -693,11 +693,11 @@ msgstr "Montant minimum à créditer : "
 msgid "Money reconversion"
 msgstr "Reconversion"
 
-#: src/components/TransactionList.vue:244
+#: src/components/TransactionList.vue:233
 msgid "month"
 msgstr "mois"
 
-#: src/components/TransactionList.vue:441
+#: src/components/TransactionList.vue:430
 msgid "mutual"
 msgstr "mutuel"
 
@@ -755,14 +755,14 @@ msgstr "Aucun destinataire de paiement à afficher"
 msgid "No top up request awaiting approval"
 msgstr "Aucune demande de crédit en attente de validation"
 
-#: src/components/TransactionList.vue:115
-#: src/components/TransactionList.vue:116
+#: src/components/TransactionList.vue:105
+#: src/components/TransactionList.vue:106
+#: src/components/TransactionList.vue:154
+#: src/components/TransactionList.vue:156
+#: src/components/TransactionList.vue:160
 #: src/components/TransactionList.vue:162
-#: src/components/TransactionList.vue:164
-#: src/components/TransactionList.vue:166
-#: src/components/TransactionList.vue:170
-#: src/components/TransactionList.vue:178
-#: src/components/TransactionList.vue:183
+#: src/components/TransactionList.vue:167
+#: src/components/TransactionList.vue:172
 msgid "No transaction found"
 msgstr "Aucune transaction à afficher"
 
@@ -859,7 +859,7 @@ msgid "Payment will be done in %{nbTransactions} transactions:"
 msgstr "Le paiement sera effectué en %{nbTransactions} opérations :"
 
 #: src/components/PendingTopUp.vue:18 src/components/PendingTopUp.vue:19
-#: src/components/PendingTopUp.vue:26 src/components/PendingTopUp.vue:33
+#: src/components/PendingTopUp.vue:27 src/components/PendingTopUp.vue:34
 msgid "Pending top-up requests"
 msgstr "Demandes de crédit en cours"
 
@@ -940,7 +940,7 @@ msgstr "Préférences"
 
 #: src/components/ConfirmPaymentModal.vue:275
 #: src/components/ConfirmPaymentModal.vue:373
-#: src/components/TransactionItem.vue:116
+#: src/components/TransactionItem.vue:143
 msgid "processed"
 msgstr "traitée"
 
@@ -964,7 +964,7 @@ msgstr "Code QR portefeuille - %{ name }"
 
 #: src/components/ConfirmPaymentModal.vue:273
 #: src/components/ConfirmPaymentModal.vue:371
-#: src/components/TransactionItem.vue:114
+#: src/components/TransactionItem.vue:141
 msgid "received"
 msgstr "reçue"
 
@@ -1001,7 +1001,7 @@ msgstr ""
 #: src/components/MoneyTransferModal.vue:77
 #: src/components/MoneyTransferModal.vue:94
 #: src/components/TransactionItem.vue:20 src/components/TransactionItem.vue:25
-#: src/components/TransactionItem.vue:29 src/components/TransactionItem.vue:31
+#: src/components/TransactionItem.vue:30 src/components/TransactionItem.vue:32
 msgid "Reconversion"
 msgstr "Reconversion"
 
@@ -1017,7 +1017,7 @@ msgstr "Reconversion %{ reconversionStatus }"
 msgid "Reconversion details"
 msgstr "Détails de la reconversion"
 
-#: src/components/TransactionList.vue:442
+#: src/components/TransactionList.vue:431
 msgid "reconvertible"
 msgstr "reconvertible"
 
@@ -1083,12 +1083,11 @@ msgstr "Enregistrer"
 msgid "Security settings"
 msgstr "Préférences de sécurité"
 
+#: src/components/TransactionListRecent.vue:33
+#: src/components/TransactionListRecent.vue:34
 #: src/components/TransactionListRecent.vue:41
-#: src/components/TransactionListRecent.vue:43
-#: src/components/TransactionListRecent.vue:44
-#: src/components/TransactionListRecent.vue:51
-#: src/components/TransactionListRecent.vue:52
-#: src/components/TransactionListRecent.vue:56
+#: src/components/TransactionListRecent.vue:42
+#: src/components/TransactionListRecent.vue:46
 msgid "See more"
 msgstr "Voir tout"
 
@@ -1125,7 +1124,7 @@ msgstr "Envoyer de l'argent"
 
 #: src/components/ConfirmPaymentModal.vue:272
 #: src/components/ConfirmPaymentModal.vue:369
-#: src/components/TransactionItem.vue:113
+#: src/components/TransactionItem.vue:140
 msgid "sent"
 msgstr "envoyée"
 
@@ -1190,11 +1189,11 @@ msgstr "Créer un compte"
 msgid "Simplified authentication for this device"
 msgstr "Authentification simplifiée sur ce périphérique"
 
-#: src/components/TransactionList.vue:424
+#: src/components/TransactionList.vue:413
 msgid "Source"
 msgstr "Source"
 
-#: src/components/TransactionList.vue:425
+#: src/components/TransactionList.vue:414
 msgid "Target"
 msgstr "Destination"
 
@@ -1229,7 +1228,7 @@ msgstr ""
 "utilisables."
 
 #: src/components/PendingTopUp.vue:33 src/components/PendingTopUp.vue:34
-#: src/components/PendingTopUp.vue:54
+#: src/components/PendingTopUp.vue:56
 msgid ""
 "The following top up have been paid and are waiting for an administrator of "
 "your local currency to validate them."
@@ -1238,7 +1237,7 @@ msgstr ""
 "de votre monnaie locale les valide."
 
 #: src/components/PendingTopUp.vue:22 src/components/PendingTopUp.vue:23
-#: src/components/PendingTopUp.vue:30 src/components/PendingTopUp.vue:37
+#: src/components/PendingTopUp.vue:31 src/components/PendingTopUp.vue:38
 msgid "The following top up requests await payment by third party"
 msgstr ""
 "Les demandes de rechargement suivantes attendent d'être réglées par un tiers"
@@ -1379,12 +1378,12 @@ msgid "Top up requests await approval"
 msgstr "Opérations de crédit en attente de validation"
 
 #: src/components/PendingTopUp.vue:29 src/components/PendingTopUp.vue:30
-#: src/components/PendingTopUp.vue:50
+#: src/components/PendingTopUp.vue:52
 msgid "Top up waiting admin validation"
 msgstr "Rechargement en attente de validation de la part d'un administrateur"
 
 #: src/components/TransactionItem.vue:20 src/components/TransactionItem.vue:25
-#: src/components/TransactionItem.vue:29 src/components/TransactionItem.vue:31
+#: src/components/TransactionItem.vue:30 src/components/TransactionItem.vue:32
 msgid "Top-up"
 msgstr "Rechargement"
 
@@ -1416,24 +1415,24 @@ msgstr "Rechargement demandé"
 msgid "Transaction details"
 msgstr "Détails de l'opération"
 
-#: src/components/TransactionList.vue:517
+#: src/components/TransactionList.vue:506
 msgid "Transaction list"
 msgstr "Liste des opérations"
 
-#: src/components/TransactionList.vue:489
-#: src/components/TransactionList.vue:523
+#: src/components/TransactionList.vue:478
+#: src/components/TransactionList.vue:512
 msgid "Transaction list could not be downloaded"
 msgstr "La liste des transactions n'a pas pu être téléchargée"
 
-#: src/components/TransactionList.vue:494
+#: src/components/TransactionList.vue:483
 msgid "Transaction list downloaded"
 msgstr "Liste des transactions téléchargée"
 
-#: src/components/TransactionList.vue:510
+#: src/components/TransactionList.vue:499
 msgid "Transaction list from %{ dateBeginStr } to %{ dateEndStr }"
 msgstr "Liste des transactions du %{ dateBeginStr } au %{ dateEndStr }"
 
-#: src/components/TransactionList.vue:528
+#: src/components/TransactionList.vue:517
 msgid "Transaction list shared"
 msgstr "Liste des transactions partagée"
 
@@ -1599,7 +1598,7 @@ msgstr "Export du portefeuille"
 msgid "Wallet registration unexpectedly failed"
 msgstr "Création de compte interrompue inopinément."
 
-#: src/components/TransactionList.vue:243
+#: src/components/TransactionList.vue:232
 msgid "week"
 msgstr "semaine"
 
@@ -1611,7 +1610,7 @@ msgstr ""
 "Souhaitez-vous vous logger en utilisant les capacités biométriques de votre "
 "périphérique (empreinte digitale, reconnaissance faciale, ...)"
 
-#: src/components/TransactionList.vue:245
+#: src/components/TransactionList.vue:234
 msgid "year"
 msgstr "année"
 

@@ -36,7 +36,12 @@
         </div>
       </div>
       <div class="is-align-items-center is-flex bal">
-        <span class="account-bal" v-if="account?.active && isActiveAccount">
+        <span
+          class="account-bal"
+          v-if="
+            showInactiveAccountBalance || (account?.active && isActiveAccount)
+          "
+        >
           {{ numericFormat(parseFloat(account?.bal)) }}
         </span>
         <span class="account-bal inactive" v-else>{{
@@ -72,6 +77,7 @@
         class="mt-4 subaccount"
         @accountSelected="$emit('accountSelected', account)"
         :account="account"
+        :showInactiveAccountBalance="showInactiveAccountBalance"
       >
         <template v-slot:name>{{ account.name() }}</template>
       </BankAccountItem>
@@ -101,6 +107,7 @@
       account: Object,
       showSubAccounts: Boolean,
       disableDropDown: Boolean,
+      showInactiveAccountBalance: Boolean,
     },
     data() {
       return {

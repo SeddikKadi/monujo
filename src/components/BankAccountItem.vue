@@ -113,10 +113,18 @@
     },
     async mounted() {
       if (this.account.isBarter) {
-        this.barterLimits = {
-          min: await this.account._obj.getLowLimit(),
-          max: await this.account._obj.getHighLimit(),
+        const o = this.account._obj
+        let min, max
+        try {
+          ;[min, max] = await Promise.all([o.getLowLimit(), o.getHighLimit()])
+        } catch (err) {
+          console.error(
+            "An unexpected server error occurred while fetching barter limits",
+            err
+          )
+          return
         }
+        this.barterLimits = { min, max }
       }
     },
     methods: {

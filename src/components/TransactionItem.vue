@@ -28,7 +28,10 @@
 
       <template v-if="mode !== 'small'">
         <h5
-          v-if="transaction.isTopUp || transaction.isReconversion"
+          v-if="
+            (transaction.isTopUp || transaction.isReconversion) &&
+            type !== 'topUpsPendingForApproval'
+          "
           class="custom-card-type"
         >
           {{

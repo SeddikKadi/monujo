@@ -349,7 +349,12 @@ fetchConfig("config.json").then(async (config: any) => {
             name: $gettext("QR code wallet - %{name}", {
               name: store.state.lokapi.userProfile.name,
             }),
-            data: { rp: store.state.lokapi.userProfile.id, rpb: obj.id },
+            data: {
+              rp:
+                obj.administrativeBackendId ||
+                store.state.lokapi.userProfile.id,
+              rpb: obj.id,
+            },
           }),
       })
     }

@@ -93,6 +93,38 @@ export function showSpinnerMethod(
   }
 }
 
+export function showLoadingClassMethod(
+  selector: string,
+  className: string,
+  condition?: (this: any) => boolean
+) {
+  return function <T extends (this: any, ...args: any[]) => Promise<any>>(
+    fn: T
+  ): T {
+    return async function (
+      this: any,
+      ...args: Parameters<T>
+    ): Promise<ReturnType<T>> {
+      const shouldApply = !condition || condition.call(this)
+      let element: HTMLElement | null = null
+      if (shouldApply) {
+        if (this && this.$el && this.$el instanceof HTMLElement) {
+          element = this.$el?.querySelector(selector)
+          if (!element) element = document.querySelector(selector)
+        } else {
+          element = document.querySelector(selector)
+        }
+        if (element) element.classList.add(className)
+      }
+      try {
+        return await fn.apply(this, args)
+      } finally {
+        if (element) element.classList.remove(className)
+      }
+    } as unknown as T
+  }
+}
+
 // XXXvlab: use any[]
 export function showSpinner(selector: string) {
   return function (

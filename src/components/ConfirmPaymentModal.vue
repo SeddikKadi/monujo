@@ -45,25 +45,19 @@
             v-html="amountSentence"
           ></p>
 
-          <!-- TopUp status message -->
-          <div v-if="topUpStatusMessage">
-            <h2 class="frame3-sub-title">
-              {{ topUpStatusMessage }}
-            </h2>
-            <!-- Requester info (when not own request) -->
-            <div v-if="showRequesterInfo">
-              <h2 class="frame3-sub-title">{{ $gettext("by") }}</h2>
-              <p
-                class="
-                  frame3-sub-title
-                  has-text-weight-bold
-                  is-size-3
-                  hide-overflow
-                "
-              >
-                {{ requesterName }}
-              </p>
-            </div>
+          <!-- Requester info (when not own request) -->
+          <div v-if="showRequesterInfo">
+            <h2 class="frame3-sub-title">{{ $gettext("by") }}</h2>
+            <p
+              class="
+                frame3-sub-title
+                has-text-weight-bold
+                is-size-3
+                hide-overflow
+              "
+            >
+              {{ requesterName }}
+            </p>
           </div>
 
           <!-- Regular transaction recipient -->
@@ -79,6 +73,13 @@
             >
               {{ recipientName }}
             </p>
+          </div>
+
+          <!-- TopUp status message -->
+          <div v-if="topUpStatusMessage">
+            <h2 class="frame3-sub-title">
+              {{ topUpStatusMessage }}
+            </h2>
           </div>
 
           <!-- Reconversion status indicator -->
@@ -143,6 +144,13 @@
         </div>
         <button
           class="button custom-button-modal has-text-weight-medium"
+          @click="handleApprove"
+          v-if="showApproveButton"
+        >
+          <span>{{ $gettext("Approve") }}</span>
+        </button>
+        <button
+          class="button custom-button-modal has-text-weight-medium"
           @click="$modal.close()"
         >
           <span>{{ $gettext("Ok") }}</span>
@@ -158,7 +166,7 @@
   import { getCurrentInstance } from "vue"
   import moment from "moment"
   import { UIError } from "../exception"
-  import { showSpinnerMethod } from "@/utils/showSpinner"
+  import { showSpinnerMethod, replaceWithLoader } from "@/utils/showSpinner"
   import { debounceMethod } from "@/utils/debounce"
   import applyDecorators from "@/utils/applyDecorators"
   import TransactionItem from "./TransactionItem.vue"
@@ -235,6 +243,9 @@
       isPaymentConfirmation() {
         return this.type === "paymentConfirmation"
       },
+      isPendingApproval() {
+        return this.type === "topUpsPendingForApproval"
+      },
 
       // ─── Derived Display Properties ───
       modalTitle() {
@@ -243,6 +254,7 @@
           paymentConfirmation: this.$gettext("Payment confirmation"),
           topup: this.$gettext("Top-up details"),
           reconversion: this.$gettext("Reconversion details"),
+          topUpsPendingForApproval: this.$gettext("Top-up request"),
         }
         return titles[this.type] || ""
       },
@@ -261,11 +273,15 @@
             this.$gettext("Reconversion %{ reconversionStatus }", {
               reconversionStatus: this.reconversionStatus,
             }),
+          topUpsPendingForApproval: () =>
+            this.$gettext("Pending top-up requested"),
         }
         return titles[this.type]?.() || ""
       },
       icon() {
-        return this.isTopUp ? "plus-circle" : "fa-check"
+        return this.isTopUp || this.isPendingApproval
+          ? "plus-circle"
+          : "fa-check"
       },
       showPendingTopUpWarning() {
         return this.args.source === "askTopUp"
@@ -303,6 +319,12 @@
         )
       },
       topUpStatusMessage() {
+        if (this.isPendingApproval) {
+          return this.$gettext(
+            "This top-up request has been paid by the user and is waiting for approval"
+          )
+        }
+
         if (this.isTopUpAwaitingAdminApproval) {
           return this.$gettext(
             "This top-up request is waiting for an administrator of your local currency to validate it"
@@ -321,7 +343,10 @@
       },
       showRequesterInfo() {
         const requester = this.transactions[0].requester
-        return requester !== undefined && requester.id !== this.userProfile.id
+        return (
+          this.isPendingApproval ||
+          (requester !== undefined && requester.id !== this.userProfile.id)
+        )
       },
       requesterName() {
         return this.transactions[0].requester?.name || ""
@@ -395,9 +420,18 @@
         )
       },
       showRecipientInfo() {
-        return !this.isReconversion && !this.transactions[0].isTopUp
+        const requester = this.transactions[0].requester
+        const recipient = this.transactions[0].related
+        // XXXvlab: 2026-03-02 comparison by name is much weaker than by id
+        return (
+          (this.isPendingApproval &&
+            requester !== undefined &&
+            requester.name !== recipient) ||
+          (!this.isReconversion && !this.transactions[0].isTopUp)
+        )
       },
       recipientLabel() {
+        if (this.isPendingApproval) return this.$gettext("for")
         return this.transactionTotalAmount < 0
           ? this.$gettext("to")
           : this.$gettext("from")
@@ -414,6 +448,9 @@
       },
       hasMultipleTransactions() {
         return this.transactions.length > 1
+      },
+      showApproveButton() {
+        return this.isPendingApproval
       },
     },
     methods: {
@@ -522,6 +559,37 @@
         this.args.refreshAccounts?.(true)
         this.$modal.close()
       },
+      handleApprove: applyDecorators(
+        [debounceMethod, showSpinnerMethod(".modal-card-body")],
+        async function (this: any): Promise<void> {
+          const transaction = this.transactions[0]
+          try {
+            await transaction.validate()
+          } catch (err: any) {
+            if (err.message === "User canceled the dialog box") {
+              return
+            }
+            this.$msg.error(
+              this.$gettext(
+                "An issue occurred upon the approval of the credit request of %{ name }",
+                { name: transaction.related }
+              )
+            )
+            throw err
+          }
+          this.$msg.success(
+            this.$gettext(
+              "Top up request from %{ name } of %{ amount } %{ currency } was validated.",
+              {
+                name: transaction.related,
+                amount: transaction.amount,
+                currency: transaction.currency,
+              }
+            )
+          )
+          await this.closeAndRefresh()
+        }
+      ),
     },
   })
   export default class ConfirmPaymentModal extends Vue {}

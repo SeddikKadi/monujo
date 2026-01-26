@@ -109,6 +109,10 @@
     props: {
       showAll: Boolean,
       currency: Object,
+      purpose: {
+        type: String,
+        default: "transfer",
+      },
     },
     data() {
       return {
@@ -208,7 +212,20 @@
             )
           }
           const { rp, rpb } = resultData
-          if (rp === this.userProfile.id) {
+          if (
+            this.purpose !== "transfer" &&
+            (resultData.amount ||
+              resultData.senderMemo ||
+              resultData.recipientMemo)
+          ) {
+            this.$msg.error(
+              this.$gettext(
+                "This QR code is for a payment request, not a wallet identifier"
+              )
+            )
+            return
+          }
+          if (this.purpose === "transfer" && rp === this.userProfile.id) {
             this.$msg.error(
               this.$gettext("You can not transfer money to your own account")
             )
@@ -227,30 +244,32 @@
             throw err
           }
 
-          let isTransactionAllowed = null
-          try {
-            isTransactionAllowed =
-              await recipient.isTransferAllowedByAdministrativeBackend()
-          } catch (err) {
-            this.$msg.error(
-              this.$gettext(
-                "An unexpected error occured while verifying transaction authorizations."
+          if (this.purpose === "transfer") {
+            let isTransactionAllowed = null
+            try {
+              isTransactionAllowed =
+                await recipient.isTransferAllowedByAdministrativeBackend()
+            } catch (err) {
+              this.$msg.error(
+                this.$gettext(
+                  "An unexpected error occured while verifying transaction authorizations."
+                )
               )
-            )
-            console.log(
-              "Exception while verifying transaction authorizations:",
-              err
-            )
-            return
-          }
-          if (!isTransactionAllowed) {
-            this.$msg.error(
-              this.$gettext(
-                "You are not allowed to send money to %{ recipientName }",
-                { recipientName: recipient.name }
+              console.log(
+                "Exception while verifying transaction authorizations:",
+                err
               )
-            )
-            return
+              return
+            }
+            if (!isTransactionAllowed) {
+              this.$msg.error(
+                this.$gettext(
+                  "You are not allowed to send money to %{ recipientName }",
+                  { recipientName: recipient.name }
+                )
+              )
+              return
+            }
           }
           this.$emit("clickRecipient", {
             recipient,

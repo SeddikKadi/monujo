@@ -3,6 +3,15 @@ import Loading from "vue-loading-overlay"
 import "vue-loading-overlay/dist/css/index.css"
 import "@/utils/showSpinner.scss"
 
+// Patch vue-loading-overlay to accept string sizes (e.g., "2em", "75px")
+const sizeType = [Number, String]
+Loading.props.width = sizeType
+Loading.props.height = sizeType
+if (Loading.components?.Spinner) {
+  Loading.components.Spinner.props.width = { type: sizeType, default: 64 }
+  Loading.components.Spinner.props.height = { type: sizeType, default: 64 }
+}
+
 export function replaceWithLoader(
   this: any,
   selector: string,

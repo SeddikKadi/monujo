@@ -34,7 +34,9 @@
         <span class="account-bal" v-if="account?.active">
           {{ numericFormat(parseFloat(account?.bal)) }}
         </span>
-        <span class="account-bal inactive" v-else>-.---,--</span>
+        <span class="account-bal inactive" v-else>{{
+          numericPlaceholder(10000000)
+        }}</span>
         <span class="account-curr">{{ account?.curr || "--" }}</span>
         <span
           v-if="!disableDropDown"
@@ -109,7 +111,7 @@
         )
       },
       ...mapModuleState("lokapi", ["isMultiCurrency"]),
-      ...mapGetters(["numericFormat"]),
+      ...mapGetters(["numericFormat", "numericPlaceholder"]),
     },
     async mounted() {
       if (this.account.isBarter) {

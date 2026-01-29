@@ -2,7 +2,7 @@
   <div
     class="account"
     :class="{
-      active: account.active,
+      active: account.active && account.isActiveAccount,
       'type-barter': account?._obj?.isBarter && account._obj.isBarter,
     }"
     @click="isSub || isAccountSelected || $emit('accountSelected', account)"
@@ -18,20 +18,25 @@
           {{ account?.backend }}
         </div>
       </div>
+
       <div class="barter-limits" v-if="account.isBarter">
         <div class="max">
           {{
-            barterLimits?.max ? numericFormat(parseFloat(barterLimits.max)) : ""
+            barterLimits?.max
+              ? numericFormat(parseFloat(barterLimits.max))
+              : numericPlaceholder(1000)
           }}
         </div>
         <div class="min">
           {{
-            barterLimits?.min ? numericFormat(parseFloat(barterLimits.min)) : ""
+            barterLimits?.min
+              ? numericFormat(parseFloat(barterLimits.min))
+              : numericPlaceholder(-1000)
           }}
         </div>
       </div>
       <div class="is-align-items-center is-flex bal">
-        <span class="account-bal" v-if="account?.active">
+        <span class="account-bal" v-if="account?.active && isActiveAccount">
           {{ numericFormat(parseFloat(account?.bal)) }}
         </span>
         <span class="account-bal inactive" v-else>{{
@@ -109,6 +114,9 @@
           this.account.length == 1 &&
           this.account[0] instanceof LokapiExc.BackendUnavailableTransient
         )
+      },
+      isActiveAccount() {
+        return this.account.isActiveAccount
       },
       ...mapModuleState("lokapi", ["isMultiCurrency"]),
       ...mapGetters(["numericFormat", "numericPlaceholder"]),

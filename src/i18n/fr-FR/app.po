@@ -154,7 +154,7 @@ msgstr "Une erreur est survenue lors de la creation du ficher CSV"
 msgid "An error occured while searching recipient"
 msgstr "Il y a eu un problème lors de la recherche du destinataire"
 
-#: src/services/lokapiService.ts:278
+#: src/services/lokapiService.ts:296
 msgid "An error occurred while adding to favorites."
 msgstr "Une erreur est survenue lors de la mise en favoris."
 
@@ -166,7 +166,7 @@ msgstr ""
 "Une erreur s'est produite lors de la suppression de la demande de "
 "rechargement, veuillez ré-éssayer ou contacter votre administrateur"
 
-#: src/services/lokapiService.ts:282
+#: src/services/lokapiService.ts:300
 msgid "An error occurred while removing from favorites."
 msgstr "Une erreur est survenue lors de la suppression du favori."
 
@@ -475,6 +475,13 @@ msgid_plural "digits"
 msgstr[0] "chiffre"
 msgstr[1] "chiffres"
 
+#: src/components/TheBankAccountList.vue:101
+#: src/components/TheBankAccountList.vue:102
+#: src/components/TheBankAccountList.vue:146
+#: src/components/TheBankAccountList.vue:149
+msgid "Disabled accounts"
+msgstr "Comptes désactivés"
+
 #: src/views/admin/PendingAccounts.vue:72
 #: src/views/admin/PendingAccounts.vue:73
 #: src/views/admin/PendingAccounts.vue:75
@@ -552,7 +559,7 @@ msgstr "Le langage \"%{ lang }\" n'a pas pu être chargé"
 msgid "Failed to read the file contents"
 msgstr "Le contenu du fichier n'a pas pu être lu"
 
-#: src/components/TheBankAccountList.vue:235
+#: src/components/TheBankAccountList.vue:261
 msgid "Failed to refresh account informations"
 msgstr "Échec de la mise à jour des informations du compte"
 
@@ -919,7 +926,7 @@ msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
 #: src/components/CreateAccount.vue:414 src/components/CreateAccount.vue:462
-#: src/services/lokapiService.ts:288
+#: src/services/lokapiService.ts:306
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
 
@@ -1193,10 +1200,21 @@ msgstr "Momentanément indisponible - veuillez rafraîchir"
 msgid "Terms of Service"
 msgstr "CGU"
 
-#: src/components/TheBankAccountList.vue:124
-#: src/components/TheBankAccountList.vue:127
-#: src/components/TheBankAccountList.vue:86
+#: src/components/TheBankAccountList.vue:105
+#: src/components/TheBankAccountList.vue:106
+#: src/components/TheBankAccountList.vue:150
+#: src/components/TheBankAccountList.vue:153
+msgid ""
+"The accounts listed below are disabled, if this is not expected please "
+"contact an administrator"
+msgstr ""
+"Les comptes listés ci-dessous sont désactivés, si cela n'est pas ce à quoi "
+"vous vous attendiez, veuillez contacter un administrateur"
+
+#: src/components/TheBankAccountList.vue:125
+#: src/components/TheBankAccountList.vue:128
 #: src/components/TheBankAccountList.vue:87
+#: src/components/TheBankAccountList.vue:88
 msgid ""
 "The accounts listed below have been subjected to a creation request. Once "
 "the creation request is approved, these accounts will become usable."
@@ -1653,10 +1671,10 @@ msgstr "vos comptes"
 msgid "Your credentials will be saved after your next login"
 msgstr "Vos identifiants seront enregistrés après votre prochaine connexion"
 
-#: src/components/TheBankAccountList.vue:120
-#: src/components/TheBankAccountList.vue:123
-#: src/components/TheBankAccountList.vue:82
+#: src/components/TheBankAccountList.vue:121
+#: src/components/TheBankAccountList.vue:124
 #: src/components/TheBankAccountList.vue:83
+#: src/components/TheBankAccountList.vue:84
 msgid "your pending accounts"
 msgstr "vos comptes en attente de création"
 

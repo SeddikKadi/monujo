@@ -69,6 +69,9 @@ export class LokAPI extends LokAPIBrowserAbstract {
             : "",
           userAccount.getAccounts().catch((e: any) => e),
           userAccount.isBusinessForFinanceBackend().catch((e: any) => e),
+          userAccount.isActiveAccount
+            ? userAccount.isActiveAccount().catch((e: any) => e)
+            : true,
         ])
         vals = vals.filter(isFulfilled).map((v) => v.value)
         const exceptions = vals.filter((v) => v instanceof Error)
@@ -93,8 +96,14 @@ export class LokAPI extends LokAPIBrowserAbstract {
           )
           return
         }
-        const [name, bal, curr, moneyAccounts, isBusinessForFinanceBackend] =
-          vals
+        const [
+          name,
+          bal,
+          curr,
+          moneyAccounts,
+          isBusinessForFinanceBackend,
+          isActiveAccount,
+        ] = vals
         const _errorLogged: any[] = []
         const getSafeWalletRecipient = (account: any) => {
           let safeWalletRecipient
@@ -131,6 +140,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
           currencyId: userAccount.parent.internalId,
           isBusinessForFinanceBackend,
           active: userAccount.active, // FTM only the UserAccount is active or not
+          isActiveAccount,
           id: userAccount.internalId,
           isTopUpAllowed: userAccount.isTopUpAllowed,
           subAccounts: [],
@@ -146,10 +156,17 @@ export class LokAPI extends LokAPIBrowserAbstract {
               account.getBalance("pending"),
               account.getSymbol(),
               account.isBusinessForFinanceBackend(),
+              userAccount.isActiveAccount
+                ? userAccount.isActiveAccount()
+                : Promise.resolve(true),
             ])
-            const [name, bal, curr, isBusinessForFinanceBackend] = vals.map(
-              (a) => (<any>a).value
-            )
+            const [
+              name,
+              bal,
+              curr,
+              isBusinessForFinanceBackend,
+              isActiveAccount,
+            ] = vals.map((a) => (<any>a).value)
             const accountData = {
               name,
               bal,
@@ -164,6 +181,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
               userAccountId: account.parent.internalId,
               currencyId: account.parent.parent.internalId,
               active: account.parent.active, // FTM only the UserAccount is active or not
+              isActiveAccount: isActiveAccount,
               id: account.internalId,
               isTopUpAllowed: userAccount.isTopUpAllowed,
               _obj: account,

@@ -143,9 +143,9 @@ describe("BankAccountItem.vue", () => {
         testError
       )
 
-      // Component should not crash and limits should not be displayed
-      expect(wrapper.find(".barter-limits .min").text()).toBe("")
-      expect(wrapper.find(".barter-limits .max").text()).toBe("")
+      // Component should not crash and limits should show placeholders
+      expect(wrapper.find(".barter-limits .min").text()).toBe("-----")
+      expect(wrapper.find(".barter-limits .max").text()).toBe("----")
     })
 
     it("catches and logs errors from getHighLimit without crashing", async () => {
@@ -178,9 +178,9 @@ describe("BankAccountItem.vue", () => {
         testError
       )
 
-      // Component should not crash and limits should not be displayed
-      expect(wrapper.find(".barter-limits .min").text()).toBe("")
-      expect(wrapper.find(".barter-limits .max").text()).toBe("")
+      // Component should not crash and limits should show placeholders
+      expect(wrapper.find(".barter-limits .min").text()).toBe("-----")
+      expect(wrapper.find(".barter-limits .max").text()).toBe("----")
     })
   })
 })

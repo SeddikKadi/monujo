@@ -288,11 +288,20 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
         }
       },
       availableVirtualAccounts: (state: any) => {
-        return state.virtualAccountTree.filter((a: any) => a.active === true)
+        return state.virtualAccountTree.filter(
+          (a: any) => a.active === true && a.isActiveAccount === true
+        )
+      },
+      pathologicalVirtualAccounts: (state: any) => {
+        return state.virtualAccountTree.filter(
+          (a: any) => a.isActiveAccount === false && a.active === true
+        )
       },
       activeVirtualAccounts: (state: any) => {
         return state.virtualAccountTree.filter(
-          (a: any) => a?.active === true || a instanceof Array
+          (a: any) =>
+            (a?.active === true && a.isActiveAccount === true) ||
+            a instanceof Array
         )
       },
       inactiveVirtualAccounts: (state: any) => {

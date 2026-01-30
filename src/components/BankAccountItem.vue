@@ -42,7 +42,7 @@
         <span class="account-bal inactive" v-else>{{
           numericPlaceholder(10000000)
         }}</span>
-        <span class="account-curr">{{ account?.curr || "--" }}</span>
+        <span class="account-curr ml-1">{{ account?.curr || "--" }}</span>
         <span
           v-if="!disableDropDown"
           :class="{
@@ -182,6 +182,9 @@
     }
   }
 
+  .sub-accounts {
+    margin-left: 1.6em;
+  }
   .account-name,
   .account-bal,
   .account-curr {

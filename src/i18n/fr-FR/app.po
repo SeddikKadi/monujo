@@ -53,20 +53,6 @@ msgstr "Compte"
 msgid "Account creations waiting for approval"
 msgstr "Comptes en attente de validation"
 
-#: src/views/admin/PendingAccounts.vue:31
-#: src/views/admin/PendingAccounts.vue:32
-#: src/views/admin/PendingAccounts.vue:38
-#, fuzzy
-msgid "Accounts waiting for approval"
-msgstr "Comptes en attente de validation"
-
-#: src/views/admin/PendingAccounts.vue:41
-#: src/views/admin/PendingAccounts.vue:42
-#: src/views/admin/PendingAccounts.vue:48
-#, fuzzy
-msgid "Action"
-msgstr "Authentification"
-
 #: src/components/MoneyTransferModal.vue:454
 msgid "Add"
 msgstr "Ajouter"
@@ -135,8 +121,7 @@ msgstr "Avez-vous déjà créé un compte ?"
 #: src/components/MoneyTransaction.vue:21
 #: src/components/MoneyTransaction.vue:22
 #: src/components/MoneyTransaction.vue:30
-#: src/components/TransactionList.vue:415 src/views/admin/PendingCredits.vue:39
-#: src/views/admin/PendingCredits.vue:40 src/views/admin/PendingCredits.vue:43
+#: src/components/TransactionList.vue:415
 msgid "Amount"
 msgstr "Montant"
 
@@ -196,13 +181,6 @@ msgstr ""
 msgid "An error occurred while removing from favorites."
 msgstr "Une erreur est survenue lors de la suppression du favori."
 
-#: src/views/admin/PendingCredits.vue:167
-#, fuzzy
-msgid "An issue occured upon the approval of the credit request of %{ name }"
-msgstr ""
-"Il y a eu un problème lors de la tentative de validation de la demande de "
-"crédit de %{ name }"
-
 #: src/components/ConfirmPaymentModal.vue:573
 msgid "An issue occurred upon the approval of the credit request of %{ name }"
 msgstr ""
@@ -239,7 +217,6 @@ msgstr ""
 "nous excuser pour la gêne occasionnée."
 
 #: src/components/PendingAccounts.vue:147
-#: src/views/admin/PendingAccounts.vue:179
 msgid ""
 "An unexpected issue occurred while approving the wallet account creation of "
 "user %{ name }"
@@ -263,7 +240,6 @@ msgstr ""
 "pour le désagrément."
 
 #: src/components/PendingAccounts.vue:192
-#: src/views/admin/PendingAccounts.vue:224
 msgid ""
 "An unexpected issue occurred while discarding the wallet account creation of "
 "user %{ name }"
@@ -283,9 +259,7 @@ msgstr ""
 "opérations de votre compte. Veuillez nous excuser pour le désagrément."
 
 #: src/components/PendingAccounts.vue:12 src/components/PendingAccounts.vue:8
-#: src/components/PendingAccounts.vue:9 src/views/admin/PendingAccounts.vue:10
-#: src/views/admin/PendingAccounts.vue:11
-#: src/views/admin/PendingAccounts.vue:14
+#: src/components/PendingAccounts.vue:9
 msgid ""
 "An unexpected issue occurred while loading the pending account list. Sorry "
 "for the inconvenience."
@@ -294,7 +268,6 @@ msgstr ""
 "comptes. Veuillez nous excuser pour le désagrément."
 
 #: src/components/PendingCredits.vue:4 src/components/PendingCredits.vue:5
-#: src/views/admin/PendingCredits.vue:10 src/views/admin/PendingCredits.vue:9
 msgid ""
 "An unexpected issue occurred while loading the top up request list. Sorry "
 "for the inconvenience"
@@ -322,8 +295,6 @@ msgstr ""
 "destinataire"
 
 #: src/components/PendingAccounts.vue:217 src/components/PendingCredits.vue:74
-#: src/views/admin/PendingAccounts.vue:249
-#: src/views/admin/PendingCredits.vue:205
 msgid "An unexpected issue occurred while updating the pending accounts list"
 msgstr ""
 "Il y a eu un problème lors du rafraichissement de la liste des demandes de "
@@ -356,15 +327,6 @@ msgstr ""
 #: src/components/PendingAccounts.vue:62 src/components/PendingAccounts.vue:63
 #: src/components/PendingAccounts.vue:66 src/components/PendingAccounts.vue:67
 #: src/components/PendingAccounts.vue:70 src/components/PendingAccounts.vue:78
-#: src/views/admin/PendingAccounts.vue:105
-#: src/views/admin/PendingAccounts.vue:87
-#: src/views/admin/PendingAccounts.vue:88
-#: src/views/admin/PendingAccounts.vue:94
-#: src/views/admin/PendingAccounts.vue:97 src/views/admin/PendingCredits.vue:45
-#: src/views/admin/PendingCredits.vue:46 src/views/admin/PendingCredits.vue:49
-#: src/views/admin/PendingCredits.vue:76 src/views/admin/PendingCredits.vue:77
-#: src/views/admin/PendingCredits.vue:78 src/views/admin/PendingCredits.vue:80
-#: src/views/admin/PendingCredits.vue:83
 msgid "Approve"
 msgstr "Valider"
 
@@ -484,8 +446,7 @@ msgstr "Tableau de bord"
 msgid "Dashboard admin"
 msgstr "Tableau de bord Administrateur"
 
-#: src/components/TransactionList.vue:416 src/views/admin/PendingCredits.vue:42
-#: src/views/admin/PendingCredits.vue:43 src/views/admin/PendingCredits.vue:46
+#: src/components/TransactionList.vue:416
 msgid "Date"
 msgstr "Date"
 
@@ -520,12 +481,7 @@ msgstr "Comptes désactivés"
 
 #: src/components/PendingAccounts.vue:47 src/components/PendingAccounts.vue:48
 #: src/components/PendingAccounts.vue:51 src/components/PendingAccounts.vue:55
-#: src/components/PendingAccounts.vue:59 src/views/admin/PendingAccounts.vue:72
-#: src/views/admin/PendingAccounts.vue:73
-#: src/views/admin/PendingAccounts.vue:75
-#: src/views/admin/PendingAccounts.vue:79
-#: src/views/admin/PendingAccounts.vue:82
-#: src/views/admin/PendingAccounts.vue:86
+#: src/components/PendingAccounts.vue:59
 msgid "Discard"
 msgstr "Annuler"
 
@@ -783,13 +739,6 @@ msgstr "Suivant"
 msgid "No"
 msgstr "Non"
 
-#: src/views/admin/PendingAccounts.vue:27
-#: src/views/admin/PendingAccounts.vue:28
-#: src/views/admin/PendingAccounts.vue:31
-#, fuzzy
-msgid "No account pending for approval"
-msgstr "Comptes en attente de validation"
-
 #: src/components/TransactionListRecent.vue:23
 #: src/components/TransactionListRecent.vue:24
 #: src/components/TransactionListRecent.vue:31
@@ -804,11 +753,6 @@ msgstr "Aucune opération dans votre historique"
 #: src/components/RecipientSelector.vue:78
 msgid "No recipients found"
 msgstr "Aucun destinataire de paiement à afficher"
-
-#: src/views/admin/PendingCredits.vue:26 src/views/admin/PendingCredits.vue:27
-#, fuzzy
-msgid "No top up request awaiting approval"
-msgstr "Opérations de crédit en attente de validation"
 
 #: src/components/TransactionList.vue:105
 #: src/components/TransactionList.vue:106
@@ -1452,18 +1396,11 @@ msgid "Top up my account"
 msgstr "Créditer mon compte"
 
 #: src/components/ConfirmPaymentModal.vue:581
-#: src/views/admin/PendingCredits.vue:184
 msgid ""
 "Top up request from %{ name } of %{ amount } %{ currency } was validated."
 msgstr ""
 "La demande de crédit de %{ name } d'un montant de %{ amount } %{ currency } "
 "a été validée"
-
-#: src/views/admin/PendingCredits.vue:30 src/views/admin/PendingCredits.vue:31
-#: src/views/admin/PendingCredits.vue:34
-#, fuzzy
-msgid "Top up requests await approval"
-msgstr "Opérations de crédit en attente de validation"
 
 #: src/components/PendingCredits.vue:23 src/components/PendingCredits.vue:24
 msgid "Top up requests waiting for approval"
@@ -1651,20 +1588,15 @@ msgstr "Utiliser le même mémo pour le destinataire"
 
 #: src/components/TheNavBar.vue:36 src/components/TheNavBar.vue:37
 #: src/components/TheNavBar.vue:54 src/components/TheNavBar.vue:59
-#: src/components/TheNavBar.vue:64 src/views/admin/PendingAccounts.vue:38
-#: src/views/admin/PendingAccounts.vue:39
-#: src/views/admin/PendingAccounts.vue:45 src/views/admin/PendingCredits.vue:36
-#: src/views/admin/PendingCredits.vue:37 src/views/admin/PendingCredits.vue:40
+#: src/components/TheNavBar.vue:64
 msgid "User"
 msgstr "Utilisateur"
 
 #: src/components/PendingAccounts.vue:156
-#: src/views/admin/PendingAccounts.vue:188
 msgid "User %{ name }'s account creation was approved"
 msgstr "Le compte de l'utilisateur %{ name } a été validé"
 
 #: src/components/PendingAccounts.vue:201
-#: src/views/admin/PendingAccounts.vue:233
 msgid "User %{ name }'s account creation was discarded"
 msgstr ""
 "La demande d'activation de portefeuille de l'utilisateur %{ name } a été "
@@ -1766,10 +1698,6 @@ msgstr ""
 #: src/components/TransactionListRecent.vue:16
 #: src/components/TransactionListRecent.vue:20
 #: src/components/TransactionListRecent.vue:23
-#: src/views/admin/PendingAccounts.vue:18
-#: src/views/admin/PendingAccounts.vue:19
-#: src/views/admin/PendingAccounts.vue:22 src/views/admin/PendingCredits.vue:17
-#: src/views/admin/PendingCredits.vue:18
 msgid ""
 "You can try to refresh the page, if the issue persists, you may want to "
 "contact your administrator"

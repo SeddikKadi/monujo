@@ -95,7 +95,9 @@
       const [opts] = this.$modal.args.value
       const { account } = opts
       const subAccounts =
-        getUserAccount(account) === account._obj ? account.subAccounts : [account]
+        getUserAccount(account) === account._obj
+          ? account.subAccounts
+          : [account]
       this.creditableMoneyAccounts = subAccounts.filter(
         (a: any) => a.creditable
       )

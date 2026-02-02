@@ -44,6 +44,7 @@
         <section class="modal-card-body">
           <RecipientInfo
             :recipient="recipient"
+            :toggleRefreshBadge="toggleRefreshBadge"
             ref="recipientInfo"
             @accountFormChange="handleAccountFormChange"
           />
@@ -99,6 +100,7 @@
         accountForm: null,
         isAccountFormChanged: false,
         isFormValid: false,
+        toggleRefreshBadge: false,
         isActiveAccount: false,
       }
     },
@@ -130,20 +132,24 @@
         [showSpinnerMethod(".modal-card")],
         async function (this: any): Promise<void> {
           const { status, accountType, highLimit, lowLimit } = this.accountForm
-          let tx
           try {
-            tx = await this.recipient.updateAccount(
+            await this.recipient.updateAccount(
               status,
               accountType,
               lowLimit,
               highLimit
             )
+            const account = await this.$lokapi.getAccountFromRecipient(
+              this.recipient
+            )
+            this.isActiveAccount = account.isActiveAccount
           } catch (err: any) {
             throw new UIError(
               this.$gettext("An error occured while updating account"),
               err
             )
           }
+          this.toggleRefreshBadge = !this.toggleRefreshBadge
           this.$msg.success(this.$gettext("Account successfully updated"))
         }
       ),

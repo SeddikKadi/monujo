@@ -232,6 +232,7 @@
 
     .currency-supply {
       background-color: $inner-card-label-background-color;
+      color: $inner-card-label-text-color;
       border-radius: 20px;
       padding: 0 0.5em;
     }

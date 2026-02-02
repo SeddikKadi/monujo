@@ -66,6 +66,14 @@
           </button>
           <button
             type="button"
+            class="button is-pay is-rounded mr-2"
+            @click="handleCreditMoney"
+            :disabled="!isActiveAccount"
+          >
+            {{ $gettext("Credit money") }}
+          </button>
+          <button
+            type="button"
             class="button is-pay is-rounded"
             :disabled="!isAccountFormChanged || !isFormValid"
             @click="handleSaveAccountChanges"
@@ -101,6 +109,7 @@
         isAccountFormChanged: false,
         isFormValid: false,
         canChangeStatus: true,
+        isActiveAccount: false,
       }
     },
     created() {
@@ -108,8 +117,13 @@
       this.currency = opts.currency
     },
     methods: {
-      handleClickRecipient(data: any): void {
+      async handleClickRecipient(data: any): Promise<void> {
         this.recipient = data.recipient
+        const account = await this.$lokapi.getAccountFromRecipient(
+          this.recipient,
+          this.currency
+        )
+        this.isActiveAccount = account.isActiveAccount
         this.$modal.next()
       },
 
@@ -184,6 +198,12 @@
           await (this.$refs as any).recipientInfo.refreshAll()
         }
       ),
+      handleCreditMoney() {
+        const recipientInfo = this.$refs.recipientInfo as any
+        if (recipientInfo) {
+          recipientInfo.openCreditMoney()
+        }
+      },
     },
   })
   export default class InspectRecipientModal extends Vue {}

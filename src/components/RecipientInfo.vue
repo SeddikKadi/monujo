@@ -623,6 +623,14 @@
         })
       },
 
+      openCreditMoney() {
+        this.$modal.open("MoneyTransferModal", {
+          recipient: this.recipient,
+          account: this.userAccount,
+          transactionType: "adminCredit",
+          refreshAccounts: () => this.refreshAccounts(),
+        })
+      },
       async refreshAccounts() {
         try {
           this.userAccount = await this.$lokapi.getAccountFromRecipient(
@@ -675,6 +683,11 @@
   }
   .section-card {
     padding: 0.8em;
+    // Ensure enough vertical space for the "Account type" dropdown menu
+    // to open fully without being clipped by the modal footer, even when
+    // the currency has no mutual credit limits section (which would
+    // otherwise make the section short).
+    min-height: 14em;
   }
 
   .account-action-row {

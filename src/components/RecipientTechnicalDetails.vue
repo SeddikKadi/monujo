@@ -9,10 +9,12 @@
         <span class="label">{{ $gettext("Administrative backend id:") }}</span
         ><span class="value">{{ recipient.id }}</span>
       </div>
-      <div class="info-row">
-        <span class="label">{{ $gettext("Wallet URI:") }}</span
-        ><span class="value">{{ recipient.internalId }}</span>
-      </div>
+    </div>
+    <div class="info-row">
+      <span class="label">{{ $gettext("Wallet URI:") }}</span>
+    </div>
+    <div class="wallet-uri">
+      <span class="value">{{ recipient.internalId }}</span>
     </div>
     <div class="info-row">
       <span class="label">{{ $gettext("Wallet QR Code:") }}</span>
@@ -79,5 +81,13 @@
       width: 100%;
       height: auto;
     }
+  }
+
+  .wallet-uri {
+    .value {
+      margin: 0;
+    }
+    font-size: 0.73rem;
+    font-family: monospace;
   }
 </style>

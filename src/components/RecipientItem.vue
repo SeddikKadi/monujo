@@ -81,5 +81,9 @@
   }
   .recipient-icon {
     position: relative;
+
+    &.is-active span {
+      color: #ffb800;
+    }
   }
 </style>

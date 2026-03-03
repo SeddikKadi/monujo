@@ -7,7 +7,6 @@
           is-default
           button-contextual-menu
           is-pulled-right is-rounded
-          refresh
           ml-2
         "
         aria-haspopup="true"
@@ -46,7 +45,6 @@
       is-default
       button-contextual-menu
       is-pulled-right is-rounded
-      refresh
       ml-2
     "
     @click="$dropdownMenu.listItems(object)[0].action(this)"
@@ -104,7 +102,6 @@
   export default class DropdownMenu extends Vue {}
 </script>
 <style lang="scss" scoped>
-  @import "../assets/custom-variables";
   .dropdown-item {
     font-size: inherit;
     -webkit-user-select: none; /* Chrome, Safari, Opera */

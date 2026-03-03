@@ -320,13 +320,6 @@
   .search-bar-container {
     width: 75%;
   }
-  .qrcode-icon {
-    font-size: 1.5em;
-    opacity: 0.8;
-    padding: 0.1em;
-    border: 0.2em solid #e8e8e8;
-    border-radius: 5px;
-  }
   .custom-search-bar input {
     background: #ffffff;
     border: 1px solid #e8e8e8;

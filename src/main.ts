@@ -342,7 +342,15 @@ fetchConfig("config.json").then(async (config: any) => {
       items.push({
         label: $gettext("QR code"),
         icon: "qrcode",
-        action: () => modal.open("QrCodeModal", { accountId: obj.id }),
+        action: () =>
+          modal.open("QrCodeModal", {
+            title: $gettext("QR code"),
+            label: $gettext("Please scan the QR code above to proceed"),
+            name: $gettext("QR code wallet - %{name}", {
+              name: store.state.lokapi.userProfile.name,
+            }),
+            data: { rp: store.state.lokapi.userProfile.id, rpb: obj.id },
+          }),
       })
     }
     if (

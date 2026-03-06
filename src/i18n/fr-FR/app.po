@@ -363,13 +363,9 @@ msgstr ""
 "Choisissez le mot de passe de votre portefeuille. Il est différent de celui "
 "de votre compte utilisateur et ne concerne que votre portefeuille."
 
-#: src/components/MoneyRequestModal.vue:67
-#: src/components/MoneyRequestModal.vue:68
-#: src/components/MoneyRequestModal.vue:89
-#: src/components/MoneyRequestModal.vue:93
-#: src/components/MoneyRequestModal.vue:99 src/components/QrCodeModal.vue:32
-#: src/components/QrCodeModal.vue:33 src/components/QrCodeModal.vue:40
-#: src/components/QrCodeModal.vue:46 src/components/QrCodeModal.vue:49
+#: src/components/QrCodeModal.vue:29 src/components/QrCodeModal.vue:30
+#: src/components/QrCodeModal.vue:37 src/components/QrCodeModal.vue:43
+#: src/components/QrCodeModal.vue:46
 msgid "Close"
 msgstr "Fermer"
 
@@ -542,7 +538,7 @@ msgstr "Activer le login biométrique"
 msgid "Enter your password"
 msgstr "Entrez votre mot de passe"
 
-#: src/main.ts:374
+#: src/main.ts:382
 msgid "Export wallet"
 msgstr "Exporter le portefeuille"
 
@@ -586,11 +582,11 @@ msgstr "De"
 msgid "From"
 msgstr "Depuis"
 
+#: src/components/MoneyRequestModal.vue:19
 #: src/components/MoneyRequestModal.vue:20
-#: src/components/MoneyRequestModal.vue:21
-#: src/components/MoneyRequestModal.vue:25
-#: src/components/MoneyRequestModal.vue:31
-#: src/components/MoneyRequestModal.vue:37
+#: src/components/MoneyRequestModal.vue:24
+#: src/components/MoneyRequestModal.vue:30
+#: src/components/MoneyRequestModal.vue:36
 msgid "Generate QR code"
 msgstr "Générer le code QR"
 
@@ -915,13 +911,7 @@ msgstr ""
 "Attention, ce mot de passe n'est pas récupérable, alors veillez à le garder "
 "dans un endroit sûr et accessible."
 
-#: src/components/MoneyRequestModal.vue:58
-#: src/components/MoneyRequestModal.vue:59
-#: src/components/MoneyRequestModal.vue:80
-#: src/components/MoneyRequestModal.vue:84
-#: src/components/MoneyRequestModal.vue:88 src/components/QrCodeModal.vue:23
-#: src/components/QrCodeModal.vue:24 src/components/QrCodeModal.vue:31
-#: src/components/QrCodeModal.vue:35
+#: src/components/MoneyRequestModal.vue:109 src/main.ts:348
 msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
@@ -946,15 +936,15 @@ msgstr "traitée"
 msgid "Profile"
 msgstr "Profil"
 
-#: src/main.ts:343
+#: src/main.ts:343 src/main.ts:347
 msgid "QR code"
 msgstr "Code QR"
 
-#: src/components/MoneyRequestModal.vue:158
+#: src/components/MoneyRequestModal.vue:96
 msgid "QR code - Payment request to %{ name } of %{ amount } %{ currency }"
 msgstr "Code QR - demande de paiement à %{ name } de %{ amount } %{ currency }"
 
-#: src/components/QrCodeModal.vue:75
+#: src/main.ts:349
 msgid "QR code wallet - %{name}"
 msgstr "Code QR portefeuille - %{ name }"
 
@@ -1033,12 +1023,10 @@ msgstr "Recevoir"
 msgid "Request failed to remote server."
 msgstr "La requête a échoué, impossible de joindre le serveur distant."
 
-#: src/components/MoneyRequestModal.vue:12
-#: src/components/MoneyRequestModal.vue:36
-#: src/components/MoneyRequestModal.vue:37
-#: src/components/MoneyRequestModal.vue:58
+#: src/components/MoneyRequestModal.vue:108
+#: src/components/MoneyRequestModal.vue:11
+#: src/components/MoneyRequestModal.vue:6
 #: src/components/MoneyRequestModal.vue:7
-#: src/components/MoneyRequestModal.vue:8
 msgid "Request money"
 msgstr "Recevoir"
 
@@ -1565,7 +1553,7 @@ msgstr "Compte déjà créé"
 msgid "Wallet creation unexpectedly failed."
 msgstr "Création de compte interrompue inopinément."
 
-#: src/main.ts:386
+#: src/main.ts:394
 msgid "Wallet export"
 msgstr "Export du portefeuille"
 

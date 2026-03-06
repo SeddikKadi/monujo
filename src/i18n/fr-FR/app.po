@@ -277,7 +277,7 @@ msgstr ""
 "Une erreur inattendue est survenue pendant le chargement des portefeuilles. "
 "Veuillez nous excuser pour le désagrément."
 
-#: src/components/RecipientItem.vue:62
+#: src/components/RecipientItem.vue:63
 msgid ""
 "An unexpected issue occurred while switching this recipient favorite status"
 msgstr ""

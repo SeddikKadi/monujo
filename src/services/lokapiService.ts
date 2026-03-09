@@ -146,6 +146,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
           subAccounts: [],
           _obj: userAccount,
           creditable: false,
+          isVirtualRoot: false,
         }
 
         // Query moneyAccounts in this userAccount
@@ -191,11 +192,13 @@ export class LokAPI extends LokAPIBrowserAbstract {
                   ? false
                   : isBusinessForFinanceBackend,
               isBarter: account.isBarter,
+              isVirtualRoot: false,
             }
             allMoneyAccounts.push(accountData)
             if (moneyAccounts.length === 1) {
               // replace the userAccount
               accountData.id = userAccountData.id
+              accountData.isVirtualRoot = true
               replaceOrInsertElt(
                 virtualAccountTree,
                 accountData,
@@ -215,6 +218,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
         )
 
         if (moneyAccounts && moneyAccounts.length !== 1) {
+          userAccountData.isVirtualRoot = true
           replaceOrInsertElt(
             virtualAccountTree,
             userAccountData,

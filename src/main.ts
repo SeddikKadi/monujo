@@ -338,7 +338,7 @@ fetchConfig("config.json").then(async (config: any) => {
   const dropdown = useDropdownMenu()
   dropdown.register((obj: any) => {
     let items = []
-    if (store.state.lokapi.virtualAccountTree.includes(obj)) {
+    if (obj.isVirtualRoot) {
       items.push({
         label: $gettext("QR code"),
         icon: "qrcode",
@@ -354,7 +354,7 @@ fetchConfig("config.json").then(async (config: any) => {
       })
     }
     if (
-      store.state.lokapi.virtualAccountTree.includes(obj) &&
+      obj.isVirtualRoot &&
       obj?.safeWalletRecipient &&
       config?.disableReconversion !== true
     ) {
@@ -377,7 +377,7 @@ fetchConfig("config.json").then(async (config: any) => {
         },
       })
     }
-    if (obj.walletData && store.state.lokapi.virtualAccountTree.includes(obj)) {
+    if (obj.walletData && obj.isVirtualRoot) {
       items.push({
         label: $gettext("Export wallet"),
         icon: "wallet",

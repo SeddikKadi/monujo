@@ -198,7 +198,6 @@
     },
     mounted() {
       const accountsRefreshInterval = this.$config.accountsRefreshInterval || 90
-
       if (accountsRefreshInterval != -1) {
         if (interval) clearInterval(interval)
 
@@ -268,7 +267,6 @@
               a?.active && a?._obj.internalId === this.account?._obj.internalId
           )
           const balance = account?.bal
-
           if (balanceOrig === balance) {
             if (Date.now() - startTime < maxDuration) {
               setTimeout(checkBalance, 200)

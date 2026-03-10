@@ -553,7 +553,7 @@ msgstr "Le langage \"%{ lang }\" n'a pas pu être chargé"
 msgid "Failed to read the file contents"
 msgstr "Le contenu du fichier n'a pas pu être lu"
 
-#: src/components/TheBankAccountList.vue:261
+#: src/components/TheBankAccountList.vue:260
 msgid "Failed to refresh account informations"
 msgstr "Échec de la mise à jour des informations du compte"
 

@@ -144,6 +144,11 @@
   import { mapModuleState } from "@/utils/vuex"
   import RecipientItem from "@/components/RecipientItem.vue"
   import BankAccountItem from "@/components/BankAccountItem.vue"
+  import {
+    AMOUNT_MAX_SAFE_VALUE,
+    isAmountTooLarge,
+    hasExcessDecimals,
+  } from "@/utils/amount"
 
   @Options({
     name: "MoneyTransaction",
@@ -234,29 +239,22 @@
 
         const amountStrRaw = this.$refs.amountRequested.value
         const amountStr = this.amount.toString()
-        // XXXvlab: this is the maximum size of a XXXX.YY that
-        // is safely converted to a number in javascript. (We
-        // can garantee that what the user typed in is
-        // eauivalent to what we get in the code.
-        const maxValue = 2 ** 46
-        if (this.amount >= maxValue) {
+        if (isAmountTooLarge(this.amount)) {
           this.errors.amount = this.$gettext(
             "Amount to send is too large (<= %{ maxValue })",
-            { maxValue }
+            { maxValue: AMOUNT_MAX_SAFE_VALUE }
+          )
+          return
+        }
+
+        if (hasExcessDecimals(amountStrRaw)) {
+          this.errors.amount = this.$gettext(
+            "Amount to send must be a number with not more than 2 decimals"
           )
           return
         }
 
         const amountParts = amountStrRaw.split(".")
-
-        if (amountParts.length > 1) {
-          if (amountParts[1].length > 2) {
-            this.errors.amount = this.$gettext(
-              "Amount to send must be a number with not more than 2 decimals"
-            )
-            return
-          }
-        }
         if (
           !(
             amountStr == this.$refs.amountRequested.value ||

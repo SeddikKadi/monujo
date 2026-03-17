@@ -1,38 +1,5 @@
 <template>
   <main class="main pb-4">
-    <div v-if="getUnconfiguredBackends().length > 1" class="container">
-      <div class="columns mt-5">
-        <div class="column">
-          <div class="card custom-card-wallet">
-            <div class="">
-              <ul>
-                <template v-for="(backend, index) in getUnconfiguredBackends()">
-                  <div
-                    v-bind:class="{
-                      'is-wallet-active': form.accountBackend === backend,
-                    }"
-                    @click="form.accountBackend = backend"
-                    class="
-                      button
-                      is-wallet
-                      has-text-weight-medium
-                      is-rounded
-                      ml-3
-                    "
-                  >
-                    <li>
-                      <a class="wallet-tab">
-                        <div>{{ backend }}</div>
-                      </a>
-                    </li>
-                  </div>
-                </template>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="container mt-5">
       <div class="columns">
         <div class="column">
@@ -74,6 +41,30 @@
                     v-if="walletAction === 'create'"
                     :class="{ 'section-body': canImport }"
                   >
+                    <div
+                      v-if="getUnconfiguredBackends().length > 1"
+                      class="field mb-3 is-flex is-align-items-center"
+                    >
+                      <label class="has-text-weight-bold mr-3">{{
+                        $gettext("Currency:")
+                      }}</label>
+                      <div class="buttons mb-0">
+                        <template
+                          v-for="backend in getUnconfiguredBackends()"
+                          :key="backend"
+                        >
+                          <button
+                            :class="{
+                              'is-primary': form.accountBackend === backend,
+                            }"
+                            @click="form.accountBackend = backend"
+                            class="button is-rounded"
+                          >
+                            {{ backend }}
+                          </button>
+                        </template>
+                      </div>
+                    </div>
                     <p class="mb-3">
                       {{
                         $gettext(
@@ -209,7 +200,6 @@
                     <div
                       v-for="configurableBackend in configurableBackends"
                       :key="configurableBackend"
-                      class="mb-3"
                     >
                       <input
                         class="fileInput"
@@ -235,7 +225,7 @@
                                   backendName:
                                     configurableBackend.backend.jsonData.type.split(
                                       ':'
-                                    )[0],
+                                    )[1],
                                 }
                               )
                             : $gettext('Upload wallet file...')
@@ -407,6 +397,15 @@
           } catch (err: any) {
             if (err.message === "User canceled the dialog box") {
               return false
+            }
+            if (err instanceof LokAPIExc.CurrencyMismatch) {
+              throw new UIError(
+                this.$gettext(
+                  'This wallet belongs to the currency "%{ currency }" and does not match the selected currency.',
+                  { currency: err.currency }
+                ),
+                err
+              )
             }
             if (err instanceof LokAPIExc.CurrencyNotAvailable) {
               throw new UIError(

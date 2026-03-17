@@ -390,9 +390,9 @@ msgstr "Identification biométrique mise en place"
 msgid "by"
 msgstr "par"
 
-#: src/components/CreateAccount.vue:59 src/components/CreateAccount.vue:60
-#: src/components/CreateAccount.vue:61 src/components/CreateAccount.vue:64
-#: src/components/CreateAccount.vue:76 src/components/CreateAccount.vue:79
+#: src/components/CreateAccount.vue:42 src/components/CreateAccount.vue:44
+#: src/components/CreateAccount.vue:45 src/components/CreateAccount.vue:57
+#: src/components/CreateAccount.vue:70
 msgid ""
 "Choose the password for your wallet. It is different from your user account "
 "password and is only related to your wallet."
@@ -434,14 +434,13 @@ msgstr "Contactez votre administrateur si elle ne s'affiche pas"
 msgid "Converted"
 msgstr "Converti"
 
-#: src/components/CreateAccount.vue:112 src/components/CreateAccount.vue:113
-#: src/components/CreateAccount.vue:114 src/components/CreateAccount.vue:117
-#: src/components/CreateAccount.vue:129 src/components/CreateAccount.vue:164
-#: src/components/CreateAccount.vue:40 src/components/CreateAccount.vue:41
-#: src/components/CreateAccount.vue:45 src/components/CreateAccount.vue:51
-#: src/components/CreateAccount.vue:52 src/components/CreateAccount.vue:53
-#: src/components/CreateAccount.vue:56 src/components/CreateAccount.vue:58
-#: src/components/CreateAccount.vue:64 src/components/TheBankAccountList.vue:58
+#: src/components/CreateAccount.vue:11 src/components/CreateAccount.vue:110
+#: src/components/CreateAccount.vue:12 src/components/CreateAccount.vue:155
+#: src/components/CreateAccount.vue:20 src/components/CreateAccount.vue:22
+#: src/components/CreateAccount.vue:23 src/components/CreateAccount.vue:25
+#: src/components/CreateAccount.vue:31 src/components/CreateAccount.vue:95
+#: src/components/CreateAccount.vue:97 src/components/CreateAccount.vue:98
+#: src/components/TheBankAccountList.vue:58
 #: src/components/TheBankAccountList.vue:59
 #: src/components/TheBankAccountList.vue:64
 #: src/components/TheBankAccountList.vue:74
@@ -454,8 +453,8 @@ msgstr "Converti"
 msgid "Create my wallet"
 msgstr "Créer mon portefeuille"
 
-#: src/components/CreateAccount.vue:39 src/components/CreateAccount.vue:40
-#: src/components/CreateAccount.vue:44 src/components/TheBankAccountList.vue:55
+#: src/components/CreateAccount.vue:10 src/components/CreateAccount.vue:11
+#: src/components/TheBankAccountList.vue:55
 #: src/components/TheBankAccountList.vue:56
 #: src/components/TheBankAccountList.vue:61
 #: src/components/TheBankAccountList.vue:71
@@ -467,6 +466,12 @@ msgstr "Créer mon portefeuille"
 #: src/components/TheNavBar.vue:88
 msgid "Create or import my wallet"
 msgstr "Créer ou importer mon portefeuille"
+
+#: src/components/CreateAccount.vue:28 src/components/CreateAccount.vue:30
+#: src/components/CreateAccount.vue:31 src/components/CreateAccount.vue:43
+#: src/components/CreateAccount.vue:46 src/components/CreateAccount.vue:49
+msgid "Currency:"
+msgstr ""
 
 #: src/components/TheNavBar.vue:32 src/components/TheNavBar.vue:33
 #: src/components/TheNavBar.vue:50 src/components/TheNavBar.vue:55
@@ -593,7 +598,7 @@ msgstr "Échec de l'authentification. Veuillez ré-essayer."
 msgid "Failed to load language \"%{ lang }\""
 msgstr "Le langage \"%{ lang }\" n'a pas pu être chargé"
 
-#: src/components/CreateAccount.vue:392
+#: src/components/CreateAccount.vue:382
 msgid "Failed to read the file contents"
 msgstr "Le contenu du fichier n'a pas pu être lu"
 
@@ -653,9 +658,9 @@ msgstr "Les codes PINs entrés ne sont pas identiques"
 msgid "Help"
 msgstr "Aide"
 
-#: src/components/CreateAccount.vue:135 src/components/CreateAccount.vue:136
-#: src/components/CreateAccount.vue:140 src/components/CreateAccount.vue:191
-#: src/components/CreateAccount.vue:195 src/components/CreateAccount.vue:200
+#: src/components/CreateAccount.vue:120 src/components/CreateAccount.vue:121
+#: src/components/CreateAccount.vue:182 src/components/CreateAccount.vue:186
+#: src/components/CreateAccount.vue:191
 msgid "Import an existing wallet"
 msgstr "Importer un portefeuille existant"
 
@@ -857,10 +862,9 @@ msgstr "Opération annulée"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/components/CreateAccount.vue:111 src/components/CreateAccount.vue:124
-#: src/components/CreateAccount.vue:130 src/components/CreateAccount.vue:94
-#: src/components/CreateAccount.vue:95 src/components/CreateAccount.vue:96
-#: src/components/CreateAccount.vue:99
+#: src/components/CreateAccount.vue:115 src/components/CreateAccount.vue:121
+#: src/components/CreateAccount.vue:77 src/components/CreateAccount.vue:79
+#: src/components/CreateAccount.vue:80 src/components/CreateAccount.vue:92
 msgid "Password confirmation"
 msgstr "Confirmation du mot de passe"
 
@@ -884,7 +888,7 @@ msgstr "Le mot de passe doit contenir au moins un caractère spécial"
 msgid "Password should use at least one uppercase character"
 msgstr "Le mot de passe doit contenir au moins une lettre majuscule"
 
-#: src/components/CreateAccount.vue:442
+#: src/components/CreateAccount.vue:441
 msgid "Passwords do not match"
 msgstr "Le mot de passe entré n'est pas identique"
 
@@ -984,9 +988,9 @@ msgstr ""
 "Pensez à vérifier dans la liste des transactions si votre transaction y "
 "apparaît bien."
 
-#: src/components/CreateAccount.vue:122 src/components/CreateAccount.vue:123
-#: src/components/CreateAccount.vue:124 src/components/CreateAccount.vue:127
-#: src/components/CreateAccount.vue:139 src/components/CreateAccount.vue:178
+#: src/components/CreateAccount.vue:105 src/components/CreateAccount.vue:107
+#: src/components/CreateAccount.vue:108 src/components/CreateAccount.vue:120
+#: src/components/CreateAccount.vue:169
 msgid ""
 "Please note that this password can not be retrieved, so be sure to keep it "
 "in a safe and reachable place."
@@ -998,7 +1002,7 @@ msgstr ""
 msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
-#: src/components/CreateAccount.vue:423 src/components/CreateAccount.vue:471
+#: src/components/CreateAccount.vue:422 src/components/CreateAccount.vue:470
 #: src/services/lokapiService.ts:465
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
@@ -1231,7 +1235,7 @@ msgstr "%{amount} envoyé"
 msgid "Settings"
 msgstr "Préférences"
 
-#: src/components/CreateAccount.vue:492
+#: src/components/CreateAccount.vue:491
 msgid ""
 "Settings for simplified authentication were not saved correctly... Please "
 "try again in the \"Settings\" page or contact your administrator"
@@ -1459,7 +1463,15 @@ msgstr ""
 "Cette demande de recharge est en attente de validation par un administrateur "
 "de votre monnaie locale"
 
-#: src/components/CreateAccount.vue:413
+#: src/components/CreateAccount.vue:403
+msgid ""
+"This wallet belongs to the currency \"%{ currency }\" and does not match the "
+"selected currency."
+msgstr ""
+"Ce portefeuille appartient à la monnaie « %{ currency } » et ne correspond "
+"pas à la monnaie sélectionnée."
+
+#: src/components/CreateAccount.vue:412
 msgid ""
 "This wallet belongs to the currency \"%{ currency }\" which is not available "
 "on this server."
@@ -1623,7 +1635,7 @@ msgstr ""
 "Veuillez contacter votre administrateur."
 
 # Erreur inattendue
-#: src/components/CreateAccount.vue:403
+#: src/components/CreateAccount.vue:393
 msgid "Unexpected format of file"
 msgstr "Erreure Inattendue"
 
@@ -1641,7 +1653,7 @@ msgstr ""
 "serveur distant."
 
 # Erreur inattendue
-#: src/components/CreateAccount.vue:398
+#: src/components/CreateAccount.vue:388
 msgid "Unexpected type of file"
 msgstr "Erreure Inattendue"
 
@@ -1652,20 +1664,19 @@ msgstr ""
 "Utilisateur ou e-mail inconnu. Veuillez vous assurer de fournir un nom "
 "d'utilisateur ou une adresse e-mail valide."
 
-#: src/components/CreateAccount.vue:231
+#: src/components/CreateAccount.vue:221
 msgid "Upload <b>%{ backendName }</b> wallet file..."
 msgstr "Importer un fichier portefeuille <b>%{ backendName }</b>"
 
-#: src/components/CreateAccount.vue:160 src/components/CreateAccount.vue:161
-#: src/components/CreateAccount.vue:165 src/components/CreateAccount.vue:216
-#: src/components/CreateAccount.vue:225 src/components/CreateAccount.vue:228
-#: src/components/CreateAccount.vue:241
+#: src/components/CreateAccount.vue:145 src/components/CreateAccount.vue:146
+#: src/components/CreateAccount.vue:207 src/components/CreateAccount.vue:216
+#: src/components/CreateAccount.vue:219 src/components/CreateAccount.vue:231
 msgid "Upload wallet file..."
 msgstr "Importer un fichier portefeuille…"
 
-#: src/components/CreateAccount.vue:150 src/components/CreateAccount.vue:151
-#: src/components/CreateAccount.vue:155 src/components/CreateAccount.vue:206
-#: src/components/CreateAccount.vue:215 src/components/CreateAccount.vue:218
+#: src/components/CreateAccount.vue:135 src/components/CreateAccount.vue:136
+#: src/components/CreateAccount.vue:197 src/components/CreateAccount.vue:206
+#: src/components/CreateAccount.vue:209
 msgid "Upload&nbsp;<b>%{ backendName }</b>&nbsp;wallet file..."
 msgstr "Importer un fichier portefeuille&nbsp;<b>%{ backendName }</b>"
 
@@ -1721,11 +1732,11 @@ msgid "Value must not have more than 2 decimals."
 msgstr ""
 "La valeur indiquée doit être un nombre n'ayant pas plus de 2 décimales."
 
-#: src/components/CreateAccount.vue:478
+#: src/components/CreateAccount.vue:477
 msgid "Wallet already created"
 msgstr "Compte déjà créé"
 
-#: src/components/CreateAccount.vue:469
+#: src/components/CreateAccount.vue:468
 msgid "Wallet creation unexpectedly failed."
 msgstr "Création de compte interrompue inopinément."
 
@@ -1739,7 +1750,7 @@ msgstr "Export du portefeuille"
 msgid "Wallet QR Code:"
 msgstr "Code QR du portefeuille :"
 
-#: src/components/CreateAccount.vue:421
+#: src/components/CreateAccount.vue:420
 msgid "Wallet registration unexpectedly failed"
 msgstr "Création de compte interrompue inopinément."
 

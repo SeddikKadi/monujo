@@ -408,6 +408,15 @@
             if (err.message === "User canceled the dialog box") {
               return false
             }
+            if (err instanceof LokAPIExc.CurrencyNotAvailable) {
+              throw new UIError(
+                this.$gettext(
+                  'This wallet belongs to the currency "%{ currency }" which is not available on this server.',
+                  { currency: err.currency }
+                ),
+                err
+              )
+            }
             throw new UIError(
               this.$gettext("Wallet registration unexpectedly failed") +
                 " " +

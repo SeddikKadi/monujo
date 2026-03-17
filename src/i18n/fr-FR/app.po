@@ -884,7 +884,7 @@ msgstr "Le mot de passe doit contenir au moins un caractère spécial"
 msgid "Password should use at least one uppercase character"
 msgstr "Le mot de passe doit contenir au moins une lettre majuscule"
 
-#: src/components/CreateAccount.vue:433
+#: src/components/CreateAccount.vue:442
 msgid "Passwords do not match"
 msgstr "Le mot de passe entré n'est pas identique"
 
@@ -998,7 +998,7 @@ msgstr ""
 msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
-#: src/components/CreateAccount.vue:414 src/components/CreateAccount.vue:462
+#: src/components/CreateAccount.vue:423 src/components/CreateAccount.vue:471
 #: src/services/lokapiService.ts:465
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
@@ -1231,7 +1231,7 @@ msgstr "%{amount} envoyé"
 msgid "Settings"
 msgstr "Préférences"
 
-#: src/components/CreateAccount.vue:483
+#: src/components/CreateAccount.vue:492
 msgid ""
 "Settings for simplified authentication were not saved correctly... Please "
 "try again in the \"Settings\" page or contact your administrator"
@@ -1458,6 +1458,14 @@ msgid ""
 msgstr ""
 "Cette demande de recharge est en attente de validation par un administrateur "
 "de votre monnaie locale"
+
+#: src/components/CreateAccount.vue:413
+msgid ""
+"This wallet belongs to the currency \"%{ currency }\" which is not available "
+"on this server."
+msgstr ""
+"Ce portefeuille appartient à la monnaie « %{ currency } » qui n'est pas "
+"disponible sur ce serveur."
 
 #: src/components/ConfirmPaymentModal.vue:434
 msgid "to"
@@ -1713,11 +1721,11 @@ msgid "Value must not have more than 2 decimals."
 msgstr ""
 "La valeur indiquée doit être un nombre n'ayant pas plus de 2 décimales."
 
-#: src/components/CreateAccount.vue:469
+#: src/components/CreateAccount.vue:478
 msgid "Wallet already created"
 msgstr "Compte déjà créé"
 
-#: src/components/CreateAccount.vue:460
+#: src/components/CreateAccount.vue:469
 msgid "Wallet creation unexpectedly failed."
 msgstr "Création de compte interrompue inopinément."
 
@@ -1731,7 +1739,7 @@ msgstr "Export du portefeuille"
 msgid "Wallet QR Code:"
 msgstr "Code QR du portefeuille :"
 
-#: src/components/CreateAccount.vue:412
+#: src/components/CreateAccount.vue:421
 msgid "Wallet registration unexpectedly failed"
 msgstr "Création de compte interrompue inopinément."
 

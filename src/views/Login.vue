@@ -1,5 +1,5 @@
 <template>
-  <section id="login" tabindex="0" @keyup.enter="submit()">
+  <section id="login" tabindex="0">
     <div class="login-container">
       <div class="card">
         <img

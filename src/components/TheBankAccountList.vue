@@ -325,4 +325,11 @@
     justify-content: center;
     display: flex;
   }
+  .account:not(.active) {
+    opacity: 0.6;
+  }
+  .account:not(.selected) :deep(.custom-inner-card) {
+    opacity: 0.8;
+    border: 1px #eee solid;
+  }
 </style>

@@ -221,7 +221,6 @@
   }
   .account:not(.subaccount) {
     &:not(.active) {
-      opacity: 0.6;
       .custom-inner-card {
         border: 2px #eee solid;
         box-shadow: none;
@@ -230,12 +229,6 @@
 
     &.selected {
       background-color: transparent;
-    }
-    &:not(.selected) {
-      .custom-inner-card {
-        opacity: 0.8;
-        border: 1px #eee solid;
-      }
     }
   }
   .dropdown-item {

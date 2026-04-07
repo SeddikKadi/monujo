@@ -177,7 +177,7 @@ msgid "An error occured while retrieving account information"
 msgstr ""
 "Une erreur est survenue lors de récuperation des informations du compte."
 
-#: src/components/RecipientSelector.vue:242
+#: src/components/RecipientSelector.vue:245
 msgid "An error occured while searching recipient"
 msgstr "Il y a eu un problème lors de la recherche du destinataire"
 
@@ -213,7 +213,7 @@ msgstr ""
 "Il y a eu un problème lors de la tentative de validation de la demande de "
 "crédit de %{ name }"
 
-#: src/components/RecipientSelector.vue:254
+#: src/components/RecipientSelector.vue:257
 msgid "An unexpected error occured while verifying transaction authorizations."
 msgstr ""
 "Une erreur inattendue est survenue lors de la vérification des autorisations "
@@ -1444,7 +1444,7 @@ msgstr "La transaction a été envoyée mais aucune confirmation n'a été reçu
 msgid "This fiels can not be empty."
 msgstr "Ce champs est obligatoire."
 
-#: src/components/RecipientSelector.vue:222
+#: src/components/RecipientSelector.vue:225
 msgid "This QR code is for a payment request, not a wallet identifier"
 msgstr "Ce QR code représente une demande de transfert, pas un portefeuille"
 
@@ -1790,11 +1790,11 @@ msgstr ""
 "Vous avez déjà une demande de rechargement en attente. Veuillez la payer ou "
 "la supprimer avant de poursuivre"
 
-#: src/components/RecipientSelector.vue:266
+#: src/components/RecipientSelector.vue:269
 msgid "You are not allowed to send money to %{ recipientName }"
 msgstr "Vous n'êtes pas autorisé à envoyer de l'argent à %{recipientName}"
 
-#: src/components/RecipientSelector.vue:230
+#: src/components/RecipientSelector.vue:233
 msgid "You can not transfer money to your own account"
 msgstr "Vous ne pouvez pas envoyer de l'argent vers votre propre compte."
 

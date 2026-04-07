@@ -211,6 +211,9 @@
               err
             )
           }
+          if (resultData.amount != null) {
+            resultData.amount = parseFloat(resultData.amount).toFixed(2)
+          }
           const { rp, rpb } = resultData
           if (
             this.purpose !== "transfer" &&

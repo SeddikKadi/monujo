@@ -51,6 +51,16 @@ export default class Biometry {
     return true
   }
 
+  public async getSavedUsername(realmId: string): Promise<string | null> {
+    const realm = this.realms[realmId]
+    if (!realm) {
+      console.error(`Unknown realm '${realmId}'`)
+      return null
+    }
+    const savedUsername = (await this.store.load())?.savedUsername
+    return savedUsername?.[realmId] || null
+  }
+
   public async challenge(realmId: string): Promise<any> {
     const realm = this.realms[realmId]
     if (!realm) {
@@ -76,10 +86,11 @@ export default class Biometry {
       throw new Error(`Unknown realm '${realmId}'`)
     }
     await NativeBiometric.setCredentials({ ...credentials, ...realm.creds })
-    const biometricSettings: any = {
-      hasCredentials: {},
-    }
+    const biometricSettings: any = (await this.store.load()) || {}
+    biometricSettings.hasCredentials = biometricSettings.hasCredentials || {}
+    biometricSettings.savedUsername = biometricSettings.savedUsername || {}
     biometricSettings.hasCredentials[realmId] = true
+    biometricSettings.savedUsername[realmId] = credentials.username.toLowerCase()
     await this.store.save(biometricSettings)
   }
 
@@ -92,6 +103,8 @@ export default class Biometry {
     await NativeBiometric.deleteCredentials(realm.creds)
     if (store?.hasCredentials && realmId in store.hasCredentials)
       delete store.hasCredentials[realmId]
+    if (store?.savedUsername && realmId in store.savedUsername)
+      delete store.savedUsername[realmId]
     await this.store.save(store)
   }
 }

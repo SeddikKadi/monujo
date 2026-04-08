@@ -26,40 +26,67 @@
         </div>
       </div>
     </div>
-    <div
+    <WarningMessage
       v-if="!hasCredentialsAvailable && useBiometry"
-      class="mb-3 mt-1 info-bubble ml-4 pb-1"
+      class="mb-3 mt-1 ml-4 pb-1"
     >
-      <span class="warning">
-        <i class="ml-2 fas icon fa-key">
-          <fa-icon icon="fa-triangle-exclamation"
-        /></i>
-      </span>
-      <span>
-        {{ $gettext("Your credentials will be saved after your next login") }}
-      </span>
-    </div>
+      {{ $gettext("Your credentials will be saved after your next login") }}
+    </WarningMessage>
+    <WarningMessage
+      v-if="configuredBiometryLogin && configuredBiometryLogin !== getLogin()"
+      class="mb-3 mt-1 ml-4 pb-1"
+    >
+      {{ $gettext("Biometry is currently enabled for ") }}
+      <strong>{{ configuredBiometryLogin }}</strong>
+      {{
+        $gettext(
+          ". Enabling it here will replace it after your next login."
+        )
+      }}
+    </WarningMessage>
   </div>
 </template>
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
+  import WarningMessage from "@/components/WarningMessage.vue"
+
   @Options({
     name: "BiometryPrefs",
-    components: {},
+    components: { WarningMessage },
     props: {},
     data() {
       return {
         useBiometry: false,
         hasCredentialsAvailable: false,
+        configuredBiometryLogin: null,
       }
     },
     async mounted() {
-      this.useBiometry = (await this.$localSettings.load())?.biometryEnabled
+      this.configuredBiometryLogin = await this.$biometry.getSavedUsername("login")
+      this.useBiometry = await this.getUserBiometry()
       this.hasCredentialsAvailable =
-        await this.$biometry.hasCredentialsAvailable("login")
+        this.configuredBiometryLogin === this.getLogin() &&
+        (await this.$biometry.hasCredentialsAvailable("login"))
     },
     methods: {
-      setUseBiometry(value: any) {
+      getLogin() {
+        return (this.$persistentStore.get("loginEmail") || "").toLowerCase()
+      },
+      getBiometryOwner(settings: any) {
+        return (
+          settings?.biometryOwner ||
+          this.configuredBiometryLogin ||
+          this.getLogin()
+        ).toLowerCase()
+      },
+      async getUserBiometry() {
+        const settings = (await this.$localSettings.load()) || {}
+        return (
+          this.getBiometryOwner(settings) === this.getLogin() &&
+          !!settings?.biometryEnabled
+        )
+      },
+      setUseBiometry(value: boolean) {
         this.setUserBiometry(value)
         this.useBiometry = value
         // XXXvlab: nextTick didn't work.
@@ -71,11 +98,21 @@
         e.preventDefault()
         this.setUseBiometry(!this.useBiometry)
       },
-      async setUserBiometry(l: string) {
+      async setUserBiometry(l: boolean) {
+        const login = this.getLogin()
         let settings = (await this.$localSettings.load()) || {}
         settings.biometryEnabled = l
+        settings.biometryOwner = login
         await this.$localSettings.save(settings)
-        if (!settings.biometryEnabled) {
+        if (l && this.configuredBiometryLogin && this.configuredBiometryLogin !== login) {
+          this.$msg.success(
+            this.$gettext(
+              "Biometric login for the currently configured account will be replaced after your next login"
+            )
+          )
+          return
+        }
+        if (!l) {
           try {
             await this.$biometry.deleteCredentials("login")
           } catch (e) {
@@ -83,6 +120,7 @@
             throw e
           }
           this.hasCredentialsAvailable = false
+          this.configuredBiometryLogin = null
           this.$msg.success(
             this.$gettext("Biometric login successfully disabled")
           )
@@ -103,13 +141,6 @@
   .switch-centered {
     padding-right: 0.5em;
   }
-  .info-bubble {
-    background-color: var(--color-1, #e4f2f1);
-    border-radius: 1em;
-    padding: 0.2em;
-    margin-top: 0.2em;
-    font-size: smaller;
-  }
   .missing {
     color: hsl(0deg, 0%, 86%);
   }
@@ -120,8 +151,8 @@
   .switch-container {
     width: 100%;
   }
-  .warning {
-    position: relative;
-    top: 0.1em;
+  .info-bubble {
+    margin-top: 0.2em;
+    font-size: smaller;
   }
 </style>

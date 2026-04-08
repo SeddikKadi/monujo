@@ -14,7 +14,8 @@
         ></button>
       </header>
       <section class="modal-card-body">
-        <p>
+        <component v-if="hasCustomContent" :is="opts.content" />
+        <p v-else class="dialog-content">
           {{ opts.content }}
         </p>
       </section>
@@ -54,6 +55,11 @@
           })
       )
     },
+    computed: {
+      hasCustomContent() {
+        return !!this.opts.content && typeof this.opts.content !== "string"
+      },
+    },
     methods: {
       submitInput(label: string) {
         this.hide()
@@ -83,5 +89,8 @@
   .modal-card {
     position: relative;
     top: -5vh;
+  }
+  .dialog-content {
+    white-space: pre-line;
   }
 </style>

@@ -81,6 +81,7 @@
   import { RestExc } from "@lokavaluto/lokapi-browser"
   import { e as RequestExc } from "@0k/types-request"
 
+  import BiometrySetupDialogContent from "@/components/BiometrySetupDialogContent.vue"
   import PasswordField from "@/components/PasswordField.vue"
   import { showSpinnerMethod } from "@/utils/showSpinner"
   import applyDecorators from "@/utils/applyDecorators"
@@ -89,6 +90,7 @@
   @Options({
     name: "Login",
     components: {
+      BiometrySetupDialogContent,
       PasswordField,
     },
     data() {
@@ -102,6 +104,12 @@
         canResetPassword: false,
         canSignup: false,
       }
+    },
+    watch: {
+      async email() {
+        await this.getHasBiometricCredentialsEnabled()
+        await this.getHasBiometricCredentialsAvailable()
+      },
     },
     async mounted() {
       ;(this.$el as HTMLElement).focus()
@@ -127,15 +135,40 @@
       async getCanSignup() {
         this.canSignup = await this.$lokapi.canSignup()
       },
+      normalizeLogin(login: string) {
+        return login?.trim().toLowerCase()
+      },
+      getBiometryOwner(settings: any) {
+        return this.normalizeLogin(
+          settings?.biometryOwner || this.$persistentStore.get("loginEmail")
+        )
+      },
+      getCurrentBiometryPreference(settings: any, login: string) {
+        if (this.getBiometryOwner(settings) !== this.normalizeLogin(login)) {
+          return undefined
+        }
+        return settings?.biometryEnabled
+      },
+      async setBiometryPreference(login: string, value: boolean) {
+        const settings = (await this.$localSettings.load()) || {}
+        settings.biometryEnabled = value
+        settings.biometryOwner = this.normalizeLogin(login)
+        await this.$localSettings.save(settings)
+      },
+      async getConfiguredBiometryLogin() {
+        return this.$biometry.getSavedUsername("login")
+      },
       async getHasBiometricCredentialsEnabled() {
+        const settings = (await this.$localSettings.load()) || {}
         this.biometryEnabled =
-          (await this.$localSettings.load())?.biometryEnabled || false
+          this.getCurrentBiometryPreference(settings, this.email) === true
         return this.biometryEnabled
       },
       async getHasBiometricCredentialsAvailable() {
-        this.biometryAvailable = await this.$biometry.hasCredentialsAvailable(
-          "login"
-        )
+        const configuredLogin = await this.getConfiguredBiometryLogin()
+        this.biometryAvailable =
+          configuredLogin === this.normalizeLogin(this.email) &&
+          (await this.$biometry.hasCredentialsAvailable("login"))
         return this.biometryAvailable
       },
       async requestBiometricAuthentication(): Promise<void> {
@@ -155,14 +188,15 @@
       submit: applyDecorators(
         [debounceMethod, showSpinnerMethod(".login-container")],
         async function (this: any): Promise<void> {
+          const normalizedEmail = this.normalizeLogin(this.email)
           try {
             await this.$store.dispatch("login", {
-              login: this.email.toLowerCase(),
+              login: normalizedEmail,
               password: this.password,
             })
             this.success = this.$gettext("Connection successful")
             this.$router.push({ name: "dashboard" })
-            this.$persistentStore.set("loginEmail", this.email)
+            this.$persistentStore.set("loginEmail", normalizedEmail)
           } catch (e) {
             // { APIRequestFailed, InvalidCredentials }
             if (e instanceof RestExc.APIRequestFailed) {
@@ -189,7 +223,13 @@
           if (!biometryAvailable) return
 
           const prefs = (await this.$localSettings.load()) || {}
-          const biometryEnabled = prefs?.biometryEnabled
+          const configuredBiometryLogin = await this.getConfiguredBiometryLogin()
+          const isReplacingBiometryLogin =
+            configuredBiometryLogin && configuredBiometryLogin !== normalizedEmail
+          const biometryEnabled = this.getCurrentBiometryPreference(
+            prefs,
+            normalizedEmail
+          )
           if (biometryEnabled === false) return
           if (
             biometryEnabled === null ||
@@ -197,29 +237,44 @@
           ) {
             const answer = await this.$dialog.show({
               title: this.$gettext("Enable biometric login"),
-              content: this.$gettext(
-                "Would you like to use your device's biometric (fingerprint, face recognition, ...) capability to login ?"
-              ),
+              content: {
+                extends: BiometrySetupDialogContent,
+                props: {
+                  configuredBiometryLogin: {
+                    type: String,
+                    default: isReplacingBiometryLogin
+                      ? configuredBiometryLogin
+                      : "",
+                  },
+                },
+              },
               buttons: [
                 { label: this.$gettext("Yes"), id: "yes" },
                 { label: this.$gettext("No"), id: "no" },
                 { label: this.$gettext("Ask me later"), id: "later" },
               ],
             })
-            console.log(answer)
             if (answer === "later") return
             if (answer === "no") {
-              prefs.biometryEnabled = false
-              await this.$localSettings.save(prefs)
+              await this.setBiometryPreference(this.email, false)
               return
             }
-            prefs.biometryEnabled = true
-            await this.$localSettings.save(prefs)
+            await this.setBiometryPreference(this.email, true)
+            this.$msg.success(
+              isReplacingBiometryLogin
+                ? this.$gettext(
+                    "Biometric login will be replaced for the other account after your next login"
+                  )
+                : this.$gettext(
+                    "Biometric login will be set up after your next login"
+                  )
+            )
+            return
           }
           // biometryEnabled is true
           const hasCredentialsAvailable =
-            await this.$biometry.hasCredentialsAvailable("login")
-          console.log("has", hasCredentialsAvailable)
+            configuredBiometryLogin === normalizedEmail &&
+            (await this.$biometry.hasCredentialsAvailable("login"))
           if (hasCredentialsAvailable) return
           try {
             await this.$biometry.saveCredentials("login", {

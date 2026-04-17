@@ -82,7 +82,7 @@ msgstr "Comptes en attente de validation"
 msgid "Account Statements in %{currency}"
 msgstr "Relevés de compte en %{currency}"
 
-#: src/components/RecipientInfo.vue:527
+#: src/components/RecipientInfo.vue:576
 msgid "Account status"
 msgstr "Statut du compte"
 
@@ -100,7 +100,7 @@ msgstr "Compte archivé avec succès"
 msgid "Account successfully updated"
 msgstr "Compte mis à jour avec succès"
 
-#: src/components/RecipientInfo.vue:516
+#: src/components/RecipientInfo.vue:565
 msgid "Account type"
 msgstr "Type de compte"
 
@@ -134,8 +134,8 @@ msgstr "Ajouter une référence du paiement pour le destinataire"
 msgid "Add as favorite"
 msgstr "Ajouter aux favoris"
 
-#: src/components/RecipientInfo.vue:322 src/components/RecipientInfo.vue:345
-#: src/components/RecipientInfo.vue:503 src/views/AdminDashboard.vue:3
+#: src/components/RecipientInfo.vue:326 src/components/RecipientInfo.vue:350
+#: src/components/RecipientInfo.vue:552 src/views/AdminDashboard.vue:3
 #: src/views/AdminDashboard.vue:4
 msgid "Admin"
 msgstr "Admin"
@@ -168,7 +168,7 @@ msgstr "Tableau de bord Administrateur"
 msgid "Administrative backend id:"
 msgstr "Idendentifiant du backend administratif:"
 
-#: src/components/RecipientInfo.vue:428
+#: src/components/RecipientInfo.vue:477
 msgid "Administrative backend successfully synchronized"
 msgstr "Serveur administratif synchronisé avec succès"
 
@@ -227,7 +227,7 @@ msgstr "Une erreur est survenue lors de la creation du ficher CSV"
 msgid "An error occured while creating the PDF file"
 msgstr "Une erreur est survenue lors de la création du fichier PDF"
 
-#: src/components/RecipientInfo.vue:581
+#: src/components/RecipientInfo.vue:637
 msgid "An error occured while retrieving account information"
 msgstr ""
 "Une erreur est survenue lors de récuperation des informations du compte."
@@ -266,7 +266,7 @@ msgstr ""
 msgid "An error occurred while removing from favorites."
 msgstr "Une erreur est survenue lors de la suppression du favori."
 
-#: src/components/RecipientInfo.vue:432
+#: src/components/RecipientInfo.vue:481
 msgid "An error occurred while synchronizing"
 msgstr "Une erreur est survenue lors de la synchronisation"
 
@@ -396,7 +396,7 @@ msgstr ""
 "Il y a eu un problème lors de la tentative de téléchargement de la liste des "
 "demandes de rechargement"
 
-#: src/components/RecipientInfo.vue:475
+#: src/components/RecipientInfo.vue:518
 msgid "An unexpected server error occurred while fetching mutual credit limits"
 msgstr ""
 "Une erreur serveur inattendue est survenue lors de la récupération des "
@@ -617,7 +617,7 @@ msgstr[1] "chiffres"
 #: src/components/RecipientInfo.vue:121 src/components/RecipientInfo.vue:122
 #: src/components/RecipientInfo.vue:138 src/components/RecipientInfo.vue:144
 #: src/components/RecipientInfo.vue:147 src/components/RecipientInfo.vue:172
-#: src/components/RecipientInfo.vue:176 src/components/RecipientInfo.vue:508
+#: src/components/RecipientInfo.vue:176 src/components/RecipientInfo.vue:557
 msgid "Disabled"
 msgstr "Désactivé"
 
@@ -705,7 +705,7 @@ msgstr "Activer le login biométrique"
 #: src/components/RecipientInfo.vue:120 src/components/RecipientInfo.vue:121
 #: src/components/RecipientInfo.vue:137 src/components/RecipientInfo.vue:143
 #: src/components/RecipientInfo.vue:146 src/components/RecipientInfo.vue:171
-#: src/components/RecipientInfo.vue:175 src/components/RecipientInfo.vue:508
+#: src/components/RecipientInfo.vue:175 src/components/RecipientInfo.vue:557
 msgid "Enabled"
 msgstr "Actif"
 
@@ -875,6 +875,7 @@ msgstr "Carte"
 #: src/components/RecipientInfo.vue:133 src/components/RecipientInfo.vue:134
 #: src/components/RecipientInfo.vue:150 src/components/RecipientInfo.vue:156
 #: src/components/RecipientInfo.vue:159 src/components/RecipientInfo.vue:188
+#: src/components/RecipientInfo.vue:191
 msgid "Maximum allowed"
 msgstr "Maximum autorisé"
 
@@ -884,18 +885,18 @@ msgstr "Maximum autorisé"
 msgid "Maximum credit amount: "
 msgstr "Montant maximum à créditer : "
 
-#: src/components/RecipientInfo.vue:536
+#: src/components/RecipientInfo.vue:588
 msgid "Maximum limit"
 msgstr "Maximum autorisé"
 
-#: src/components/RecipientInfo.vue:357
+#: src/components/RecipientInfo.vue:368
 msgid "Maximum limit must be zero or greater."
 msgstr "La limite maximale doit être zéro ou supérieure."
 
 #: src/components/RecipientInfo.vue:147 src/components/RecipientInfo.vue:148
 #: src/components/RecipientInfo.vue:164 src/components/RecipientInfo.vue:170
 #: src/components/RecipientInfo.vue:173 src/components/RecipientInfo.vue:202
-#: src/components/RecipientInfo.vue:210
+#: src/components/RecipientInfo.vue:205 src/components/RecipientInfo.vue:213
 msgid "Minimum allowed"
 msgstr "Minimum autorisé"
 
@@ -905,11 +906,11 @@ msgstr "Minimum autorisé"
 msgid "Minimum credit amount: "
 msgstr "Montant minimum à créditer : "
 
-#: src/components/RecipientInfo.vue:545
+#: src/components/RecipientInfo.vue:597
 msgid "Minimum limit"
 msgstr "Minimum autorisé"
 
-#: src/components/RecipientInfo.vue:370
+#: src/components/RecipientInfo.vue:384
 msgid "Minimum limit must be zero or less."
 msgstr "La limite minimale doit être zéro ou inférieure."
 
@@ -935,6 +936,7 @@ msgstr "Mutuel"
 #: src/components/RecipientInfo.vue:128 src/components/RecipientInfo.vue:129
 #: src/components/RecipientInfo.vue:145 src/components/RecipientInfo.vue:151
 #: src/components/RecipientInfo.vue:154 src/components/RecipientInfo.vue:183
+#: src/components/RecipientInfo.vue:186
 msgid "Mutual credit balance limits:"
 msgstr "Limites de crédit mutuel :"
 
@@ -1094,8 +1096,8 @@ msgstr "Demandes de crédit en cours"
 msgid "Permission denied to the camera"
 msgstr "Permission d'accès à la caméra refusé"
 
-#: src/components/RecipientInfo.vue:321 src/components/RecipientInfo.vue:344
-#: src/components/RecipientInfo.vue:502
+#: src/components/RecipientInfo.vue:325 src/components/RecipientInfo.vue:349
+#: src/components/RecipientInfo.vue:551
 msgid "Personal"
 msgstr "Particulier"
 
@@ -1160,8 +1162,8 @@ msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
 
-#: src/components/RecipientInfo.vue:323 src/components/RecipientInfo.vue:346
-#: src/components/RecipientInfo.vue:504
+#: src/components/RecipientInfo.vue:327 src/components/RecipientInfo.vue:351
+#: src/components/RecipientInfo.vue:553
 msgid "Pledge admin"
 msgstr "Gestionnaire de nantissement"
 
@@ -1175,8 +1177,8 @@ msgstr "Préférences"
 msgid "processed"
 msgstr "traitée"
 
-#: src/components/RecipientInfo.vue:320 src/components/RecipientInfo.vue:343
-#: src/components/RecipientInfo.vue:501
+#: src/components/RecipientInfo.vue:324 src/components/RecipientInfo.vue:348
+#: src/components/RecipientInfo.vue:550
 msgid "Professional"
 msgstr "Professionnel"
 
@@ -1186,8 +1188,8 @@ msgstr "Professionnel"
 msgid "Profile"
 msgstr "Profil"
 
-#: src/components/RecipientInfo.vue:324 src/components/RecipientInfo.vue:347
-#: src/components/RecipientInfo.vue:505
+#: src/components/RecipientInfo.vue:328 src/components/RecipientInfo.vue:352
+#: src/components/RecipientInfo.vue:554
 msgid "Property admin"
 msgstr "Gestionnaire des attributs"
 
@@ -1970,11 +1972,11 @@ msgstr "vos comptes"
 msgid "User or email already exist."
 msgstr "Utilisateur ou e-mail existe déjà."
 
-#: src/components/RecipientInfo.vue:360 src/components/RecipientInfo.vue:373
+#: src/components/RecipientInfo.vue:371 src/components/RecipientInfo.vue:387
 msgid "Value is too large."
 msgstr "Valeur trop grande."
 
-#: src/components/RecipientInfo.vue:363 src/components/RecipientInfo.vue:376
+#: src/components/RecipientInfo.vue:374 src/components/RecipientInfo.vue:390
 msgid "Value must not have more than 2 decimals."
 msgstr "La valeur ne doit pas avoir plus de 2 décimales."
 

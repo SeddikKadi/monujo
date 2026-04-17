@@ -178,7 +178,10 @@
               </span>
             </div>
           </div>
-          <div class="field account-action-row account-action-column">
+          <div
+            v-if="hasMutualCreditLimits"
+            class="field account-action-row account-action-column"
+          >
             <label class="account-action-label barter-label">{{
               $gettext("Mutual credit balance limits:")
             }}</label>
@@ -253,6 +256,7 @@
     data() {
       return {
         userAccount: {},
+        lookupUserAccount: null as any,
         option: null,
         accountTypes: [],
         accountForm: {},
@@ -332,10 +336,11 @@
           this.accountForm.status !== this.initialAccountForm.status ||
           this.accountForm.accountType !==
             this.initialAccountForm.accountType ||
-          this.parseLimitValue(this.accountForm.highLimit) !==
-            this.parseLimitValue(this.initialAccountForm.highLimit) ||
-          this.parseLimitValue(this.accountForm.lowLimit) !==
-            this.parseLimitValue(this.initialAccountForm.lowLimit)
+          (this.hasMutualCreditLimits &&
+            (this.parseLimitValue(this.accountForm.highLimit) !==
+              this.parseLimitValue(this.initialAccountForm.highLimit) ||
+              this.parseLimitValue(this.accountForm.lowLimit) !==
+                this.parseLimitValue(this.initialAccountForm.lowLimit)))
         )
       },
       accountTypeDropdownOptions() {
@@ -351,7 +356,13 @@
           label: labels[type] || type,
         }))
       },
+      hasMutualCreditLimits() {
+        return !!this.getMutualCreditLimitsAccount()
+      },
       negativeLimitError() {
+        if (!this.hasMutualCreditLimits) {
+          return false
+        }
         const value = this.parseLimitValue(this.accountForm.highLimit)
         if (value === null || value < 0) {
           return this.$gettext("Maximum limit must be zero or greater.")
@@ -365,6 +376,9 @@
         return false
       },
       positiveLimitError() {
+        if (!this.hasMutualCreditLimits) {
+          return false
+        }
         const value = this.parseLimitValue(this.accountForm.lowLimit)
         if (value === null || value > 0) {
           return this.$gettext("Minimum limit must be zero or less.")
@@ -389,11 +403,43 @@
       },
     },
     methods: {
+      isLookupUserAccount(obj: any) {
+        return (
+          !!obj &&
+          (typeof obj.getTypeLabel === "function" ||
+            typeof obj.getEditableAccountTypeLabels === "function")
+        )
+      },
+      resolveLookupUserAccount(obj: any) {
+        if (this.isLookupUserAccount(obj)) {
+          return obj
+        }
+        if (this.isLookupUserAccount(obj?.parent)) {
+          return obj.parent
+        }
+        throw new Error("Failed to resolve lookup user account")
+      },
+      getMutualCreditLimitsAccount() {
+        const subAccounts = this.userAccount.subAccounts || []
+        const cmSubAccount = subAccounts.find(
+          (acc: any) => acc._obj?.type === "Cm"
+        )
+        if (cmSubAccount) {
+          return cmSubAccount
+        }
+        if (
+          subAccounts.length === 0 &&
+          (this.userAccount.isBarter || this.userAccount._obj?.type === "Cm")
+        ) {
+          return this.userAccount
+        }
+        return null
+      },
       async refreshAll() {
-        if (this.userAccount?._obj?.refresh) {
-          await this.userAccount._obj.refresh(this.currency)
-        } else if (this.userAccount?._obj?.clearCaches) {
-          this.userAccount._obj.clearCaches()
+        if (this.lookupUserAccount?.refresh) {
+          await this.lookupUserAccount.refresh(this.currency)
+        } else if (this.lookupUserAccount?.clearCaches) {
+          this.lookupUserAccount.clearCaches()
         }
         await Promise.all([
           this.refreshAccounts(),
@@ -411,18 +457,21 @@
           this.isSyncing = true
           try {
             const comchain = this.initialAccountForm
-            const odoo = this.userAccount._obj.comchainMirroredState
+            const odoo = this.lookupUserAccount.comchainMirroredState
             const fixableKeys = new Set(
               this.fixableDesyncFields.map((d: any) => d.key)
             )
             const pick = (key: string) =>
               fixableKeys.has(key) ? comchain[key] : odoo[key]
-            await this.recipient.updateAccountForAdministrativeBackend({
+            const payload: Record<string, any> = {
               accountType: pick("accountType"),
               status: pick("status"),
-              highLimit: pick("highLimit"),
-              lowLimit: pick("lowLimit"),
-            })
+            }
+            if (this.hasMutualCreditLimits) {
+              payload.highLimit = pick("highLimit")
+              payload.lowLimit = pick("lowLimit")
+            }
+            await this.recipient.updateAccountForAdministrativeBackend(payload)
             await this.refreshAll()
             this.$msg.success(
               this.$gettext("Administrative backend successfully synchronized")
@@ -453,14 +502,8 @@
         }
       },
       async fetchMutualCreditLimits() {
-        let cmAccount = this.userAccount.subAccounts?.find(
-          (acc: any) => acc._obj.type === "Cm"
-        )
-        // Single money account replaces the parent — no subAccounts
-        if (!cmAccount && this.userAccount._obj?.type === "Cm") {
-          cmAccount = this.userAccount
-        }
-        let highLimit, lowLimit
+        const cmAccount = this.getMutualCreditLimitsAccount()
+        let highLimit: any, lowLimit: any
 
         if (cmAccount) {
           try {
@@ -481,22 +524,28 @@
         return { highLimit, lowLimit }
       },
       async initializeAccountForm() {
-        const accountType = await this.userAccount._obj.getTypeLabel()
+        const accountType = await this.lookupUserAccount.getTypeLabel()
         const status = !!this.userAccount.isActiveAccount
 
-        let { highLimit, lowLimit } = await this.fetchMutualCreditLimits()
-        highLimit = this.formatLimitValue(highLimit)
-        lowLimit = this.formatLimitValue(lowLimit)
-        let form = {
+        let highLimit = null
+        let lowLimit = null
+        if (this.hasMutualCreditLimits) {
+          ;({ highLimit, lowLimit } = await this.fetchMutualCreditLimits())
+          highLimit = this.formatLimitValue(highLimit)
+          lowLimit = this.formatLimitValue(lowLimit)
+        }
+        const form: Record<string, any> = {
           status,
           accountType,
-          highLimit,
-          lowLimit,
+        }
+        if (this.hasMutualCreditLimits) {
+          form.highLimit = highLimit
+          form.lowLimit = lowLimit
         }
         this.initialAccountForm = { ...form }
         this.accountForm = form
 
-        const mirrorState = this.userAccount._obj.comchainMirroredState
+        const mirrorState = this.lookupUserAccount.comchainMirroredState
         const accountTypeLabels: Record<string, string> = {
           professional: this.$gettext("Professional"),
           personal: this.$gettext("Personal"),
@@ -531,25 +580,29 @@
             comchainValue: formatStatus(status),
             fixable: this.capabilities.status.editable,
           },
-          {
-            key: "highLimit",
-            field: this.$gettext("Maximum limit"),
-            odooRaw: mirrorState.highLimit,
-            comchainRaw: this.parseLimitValue(highLimit),
-            odooValue: formatLimit(mirrorState.highLimit),
-            comchainValue: formatLimit(highLimit),
-            fixable: true, // Administrative backend can be fixed
-          },
-          {
-            key: "lowLimit",
-            field: this.$gettext("Minimum limit"),
-            odooRaw: mirrorState.lowLimit,
-            comchainRaw: this.parseLimitValue(lowLimit),
-            odooValue: formatLimit(mirrorState.lowLimit),
-            comchainValue: formatLimit(lowLimit),
-            fixable: true, // Administrative backend can be fixed
-          },
         ]
+        if (this.hasMutualCreditLimits) {
+          checks.push(
+            {
+              key: "highLimit",
+              field: this.$gettext("Maximum limit"),
+              odooRaw: mirrorState.highLimit,
+              comchainRaw: this.parseLimitValue(highLimit),
+              odooValue: formatLimit(mirrorState.highLimit),
+              comchainValue: formatLimit(highLimit),
+              fixable: true, // Administrative backend can be fixed
+            },
+            {
+              key: "lowLimit",
+              field: this.$gettext("Minimum limit"),
+              odooRaw: mirrorState.lowLimit,
+              comchainRaw: this.parseLimitValue(lowLimit),
+              odooValue: formatLimit(mirrorState.lowLimit),
+              comchainValue: formatLimit(lowLimit),
+              fixable: true, // Administrative backend can be fixed
+            }
+          )
+        }
         this.desyncedFields = checks
           .filter((c) => c.odooRaw !== c.comchainRaw)
           .map(({ key, field, odooValue, comchainValue, fixable }) => ({
@@ -575,6 +628,9 @@
           this.userAccount = await this.$lokapi.getAccountFromRecipient(
             this.recipient,
             this.currency
+          )
+          this.lookupUserAccount = this.resolveLookupUserAccount(
+            this.userAccount?._obj
           )
         } catch (err: any) {
           throw new UIError(

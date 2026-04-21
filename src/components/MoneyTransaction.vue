@@ -77,7 +77,7 @@
             'is-danger': errors.amount || parentErrors,
           }"
           @input="handleAmountInput()"
-          :disabled="config?.amount && directionTransfer !== 'receive'"
+          :disabled="isAmountLocked"
         />
         <div class="amount-currency-symbol pl-2">
           {{ account?.curr }}
@@ -185,6 +185,7 @@
       "update:senderMemo",
       "update:recipientMemo",
       "update:isValid",
+      "change",
     ],
     props: {
       account: Object,
@@ -225,6 +226,14 @@
     computed: {
       hasSplitMemoSupport() {
         return this.backend?.splitMemoSupport && !this.$config.disableSplitMemo
+      },
+      isAmountLocked() {
+        return (
+          !!this.config?.amount &&
+          this.directionTransfer !== "receive" &&
+          (this.transactionType !== "requestPay" ||
+            this.config?.partialPayments !== true)
+        )
       },
 
       isValid() {
@@ -283,6 +292,17 @@
         ) {
           this.errors.amount = this.$gettext(
             "Unexpected amount received. Try to reenter your amount, and if the problem persists please contact your administator."
+          )
+          return
+        }
+        if (
+          this.transactionType === "requestPay" &&
+          this.config?.partialPayments === true &&
+          parseFloat(this.amount) > parseFloat(this.config.amount)
+        ) {
+          this.errors.amount = this.$gettext(
+            "Amount to send must not exceed %{ maxAmount }",
+            { maxAmount: this.config.amount }
           )
           return
         }

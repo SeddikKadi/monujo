@@ -64,9 +64,7 @@
               (x) => ((recipientMemo = x), checkTransaction(x))
             "
             @update:isValid="checkTransaction"
-            @change="
-              (ev) => (ev ? null : ((isReady = false), (errors = false)))
-            "
+            @change="handleAmountChange"
           />
           <div v-if="plannedTransactions.length > 1 && !isRecurrenceEnabled">
             <hr class="transaction-list-separator" />
@@ -247,6 +245,7 @@
     },
     methods: {
       handleClickRecipient(config: any): void {
+        this.transactionType = config.amount != null ? "requestPay" : null
         return this.toPaymentStage(config)
       },
       async toPaymentStage(config: any): Promise<void> {
@@ -266,6 +265,10 @@
         this.sendermemo = config?.senderMemo
         this.recipientMemo = config?.recipientMemo
         this.config = config
+      },
+      handleAmountChange() {
+        this.errors = false
+        this.checkTransaction(false)
       },
       checkTransaction(isValid: boolean) {
         // No debounce, as here, the last check should superseed the formers, and

@@ -23,6 +23,23 @@
             @update:isValid="(x) => (isValid = x)"
           />
 
+          <div class="is-flex mt-3">
+            <div class="switch-centered">
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  v-model="form.partialPayments"
+                  :disabled="isRecurrenceEnabled"
+                  :aria-label="$gettext('Allow partial payments via QR code')"
+                />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="ml-2 switch-centered">
+              {{ $gettext("Allow partial payments via QR code") }}
+            </div>
+          </div>
+
           <!-- Recurrence options -->
           <RecurrenceOptions
             v-if="isPaymentRequestAllowed"
@@ -209,6 +226,7 @@
           amount: null,
           senderMemo: null,
           recipientMemo: null,
+          partialPayments: false,
         },
         backendAccount: null,
         selectedSender: null,
@@ -234,6 +252,13 @@
     },
     mounted() {
       ;(this.$el as HTMLElement).focus()
+    },
+    watch: {
+      isRecurrenceEnabled(enabled: boolean) {
+        if (enabled) {
+          this.form.partialPayments = false
+        }
+      },
     },
     computed: {
       ...mapModuleState("lokapi", ["userProfile"]),
@@ -310,6 +335,7 @@
             amount: this.form.amount,
             senderMemo: this.form.senderMemo,
             recipientMemo: this.form.recipientMemo,
+            partialPayments: this.form.partialPayments ? 1 : 0,
           },
         })
       },
@@ -376,6 +402,7 @@
 
 <style lang="scss" scoped>
   @import "@/assets/custom-variables";
+  @import "@/assets/switch-prefs";
 
   .button.action {
     white-space: normal;

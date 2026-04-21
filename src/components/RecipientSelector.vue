@@ -287,6 +287,9 @@
             amount: resultData.amount,
             senderMemo: resultData.senderMemo,
             recipientMemo: resultData.recipientMemo,
+            partialPayments:
+              resultData.partialPayments === true ||
+              resultData.partialPayments === 1,
           })
         }
       ),

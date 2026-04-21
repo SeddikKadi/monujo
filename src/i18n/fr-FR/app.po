@@ -72,6 +72,10 @@ msgstr "Action"
 msgid "Add"
 msgstr "Ajouter"
 
+#: src/components/MoneyTransaction.vue:86
+msgid "authorize partial payments"
+msgstr "autoriser les paiements partiels"
+
 #: src/components/MoneyTransaction.vue:50
 #: src/components/MoneyTransaction.vue:51
 #: src/components/MoneyTransaction.vue:76
@@ -141,6 +145,10 @@ msgstr "Le montant envoyé est trop grand (<= %{ maxValue})"
 #: src/components/MoneyTransaction.vue:225
 msgid "Amount to send must be a number greater than 0"
 msgstr "Le montant envoyé doit être un nombre positif"
+
+#: src/components/MoneyTransaction.vue:313
+msgid "Amount to send must not exceed %{ maxAmount }"
+msgstr "Le montant envoyé ne doit pas dépasser %{ maxAmount }"
 
 #: src/components/MoneyTransaction.vue:254
 msgid "Amount to send must be a number with not more than 2 decimals"

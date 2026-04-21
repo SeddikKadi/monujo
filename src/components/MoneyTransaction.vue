@@ -58,7 +58,7 @@
             'is-danger': errors.amount || parentErrors,
           }"
           @input="handleAmountInput()"
-          :disabled="config?.amount && directionTransfer !== 'receive'"
+          :disabled="isAmountLocked"
         />
         <div class="amount-currency-symbol pl-2">
           {{ account?.curr }}
@@ -69,6 +69,21 @@
       </div>
       <div class="notification is-danger is-light" v-if="parentErrors">
         {{ parentErrors }}
+      </div>
+      <div v-if="transactionType === 'createRequestPay'" class="is-flex mt-3">
+        <div class="switch-centered">
+          <label class="switch">
+                <input
+                  type="checkbox"
+                  v-model="partialPayments"
+                  @change="handleAuthorizePartialPayments"
+                />
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="ml-2 switch-centered">
+          {{ $gettext("authorize partial payments") }}
+        </div>
       </div>
       <div
         class="memo-container"
@@ -156,6 +171,7 @@
       "update:senderMemo",
       "update:recipientMemo",
       "update:isValid",
+      "update:partialPayments",
     ],
     props: {
       account: Object,
@@ -178,6 +194,7 @@
           senderMemo: false,
           recipientMemo: false,
         },
+        partialPayments: false,
       }
     },
     mounted() {
@@ -188,6 +205,7 @@
         this.recipientMemo = this.config?.recipientMemo
         this.errors.amountLength = this.amount?.length === 0
       }
+      this.partialPayments = !!this.config?.partialPayments
       if (this.transactionType === "requestPay") {
         this.isCopyMemo = false
       }
@@ -201,6 +219,14 @@
       hasSplitMemoSupport() {
         return this.backend?.splitMemoSupport && !this.$config.disableSplitMemo
       },
+      isAmountLocked() {
+        return (
+          !!this.config?.amount &&
+          this.directionTransfer !== "receive" &&
+          (this.transactionType !== "requestPay" ||
+            !this.config?.partialPayments)
+        )
+      },
 
       isValid() {
         return (
@@ -211,6 +237,11 @@
       ...mapModuleState("lokapi", ["userProfile"]),
     },
     watch: {
+      "config.partialPayments": {
+        handler(newVal) {
+          this.partialPayments = !!newVal
+        },
+      },
       isValid: {
         handler(newVal, oldVal) {
           this.$emit("update:isValid", newVal)
@@ -268,6 +299,17 @@
           )
           return
         }
+        if (
+          this.transactionType === "requestPay" &&
+          this.config?.partialPayments &&
+          parseFloat(this.amount) > parseFloat(this.config.amount)
+        ) {
+          this.errors.amount = this.$gettext(
+            "Amount to send must not exceed %{ maxAmount }",
+            { maxAmount: this.config.amount }
+          )
+          return
+        }
         this.errors.amountLength = this.amount.length === 0
         this.$emit("update:amount", parseFloat(this.amount).toFixed(2))
         this.errors.amount = false
@@ -316,6 +358,10 @@
         }
         this.$emit("update:recipientMemo", this.recipientMemo)
       },
+      handleAuthorizePartialPayments() {
+        this.$emit("update:partialPayments", this.partialPayments)
+      },
+
     },
   })
   export default class MoneyTransaction extends Vue {}

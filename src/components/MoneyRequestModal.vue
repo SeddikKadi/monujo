@@ -24,6 +24,7 @@
             @update:senderMemo="(x) => (senderMemo = x)"
             @update:recipientMemo="(x) => (recipientMemo = x)"
             @update:isValid="(x) => (isValid = x)"
+            @update:partialPayments="(x) => (partialPayments = x)"
           />
         </section>
         <footer
@@ -80,6 +81,7 @@
                   amount: amount,
                   senderMemo: senderMemo,
                   recipientMemo: recipientMemo,
+                  partialPayments: this.partialPayments ? 1 : 0,
                 })
               "
             />
@@ -126,6 +128,7 @@
         senderMemo: null,
         recipientMemo: null,
         isValid: false,
+        partialPayments: false,
         config: {},
       }
     },
@@ -149,6 +152,11 @@
       amount: {
         handler(newVal, oldVal) {
           this.config.amount = newVal
+        },
+      },
+      partialPayments: {
+        handler(newVal, oldVal) {
+          this.config.partialPayments = newVal
         },
       },
     },

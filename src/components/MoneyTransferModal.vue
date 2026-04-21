@@ -158,9 +158,7 @@
               (x) => ((recipientMemo = x), checkTransaction(x))
             "
             @update:isValid="checkTransaction"
-            @change="
-              (ev) => (ev ? null : ((isReady = false), (errors = false)))
-            "
+            @change="checkTransaction(false)"
           />
           <div v-if="plannedTransactions.length > 1">
             <hr class="transaction-list-separator" />
@@ -386,6 +384,7 @@
             amount: resultData.amount,
             senderMemo: resultData.senderMemo,
             recipientMemo: resultData.recipientMemo,
+            partialPayments: !!resultData.partialPayments,
           })
         }
       ),

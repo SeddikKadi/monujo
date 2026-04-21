@@ -349,7 +349,7 @@ fetchConfig("config.json").then(async (config: any) => {
             obj.fromUserAccount
           )
           modal.open("TransactionListModal", {
-            params: { account, showAll: true },
+            params: { account, caller: obj.fromUserAccount, showAll: true },
           })
         },
       })

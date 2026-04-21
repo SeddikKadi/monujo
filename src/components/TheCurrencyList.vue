@@ -165,7 +165,11 @@
       async toggleRefreshBalance() {
         this.currencyRefreshing = true
         this.refreshCurrency = !this.refreshCurrency
+        // Manual refresh also triggers sibling boxes on the admin dashboard:
+        // - refreshAccounts -> account creation requests (PendingAccounts)
+        // - refreshTransaction -> pending top-up requests (PendingCredits)
         this.$emit("refreshAccounts")
+        this.$emit("refreshTransaction")
       },
     },
   })

@@ -13,8 +13,9 @@
               <TheCurrencyList
                 @refreshTransaction="refreshTransaction"
                 @refreshAccounts="refreshAccounts"
+                @refreshCurrency="refreshCurrency"
                 @currencySelected="currencySelected"
-                :refreshToggle="refreshAccountsToggle"
+                :refreshToggle="refreshCurrencyToggle"
                 :currency="currency"
               />
             </div>
@@ -36,7 +37,7 @@
           >
             <div class="accounts card custom-card custom-card-padding">
               <PendingCredits
-                :refreshToggle="refreshAccountsToggle"
+                :refreshToggle="refreshTransactionsToggle"
                 @hasCredits="showPendingCredits = $event"
                 @refreshTransaction="refreshTransaction"
                 @refreshAccounts="refreshAccounts"
@@ -52,6 +53,7 @@
             :currency="currency"
             @refreshTransaction="refreshTransaction"
             @refreshAccounts="refreshAccounts"
+            @refreshCurrency="refreshCurrency"
           />
         </div>
       </div>
@@ -74,6 +76,7 @@
       return {
         refreshTransactionsToggle: false,
         refreshAccountsToggle: false,
+        refreshCurrencyToggle: false,
         currency: null,
         showPendingCredits: false,
         showPendingAccounts: false,
@@ -114,6 +117,10 @@
       refreshAccounts() {
         // This change is propagated through props to children components
         this.refreshAccountsToggle = !this.refreshAccountsToggle
+      },
+      refreshCurrency() {
+        // This change is propagated through props to children components
+        this.refreshCurrencyToggle = !this.refreshCurrencyToggle
       },
       currencySelected(currency: any) {
         this.currency = currency

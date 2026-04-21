@@ -286,7 +286,7 @@
       DropdownMenu,
       Loading,
     },
-    emits: ["accountFormChange"],
+    emits: ["accountFormChange", "refreshCurrency"],
     props: {
       recipient: Object,
       currency: Object,
@@ -359,6 +359,12 @@
       hasMutualCreditLimits() {
         return !!this.getMutualCreditLimitsAccount()
       },
+      canCreditAnyAccount() {
+        const accounts = this.userAccount.subAccounts?.length
+          ? this.userAccount.subAccounts
+          : [this.userAccount]
+        return accounts.some((acc: any) => acc.creditable)
+      },
       negativeLimitError() {
         if (!this.hasMutualCreditLimits) {
           return false
@@ -421,16 +427,11 @@
       },
       getMutualCreditLimitsAccount() {
         const subAccounts = this.userAccount.subAccounts || []
-        const cmSubAccount = subAccounts.find(
-          (acc: any) => acc._obj?.type === "Cm"
-        )
+        const cmSubAccount = subAccounts.find((acc: any) => acc.isBarter)
         if (cmSubAccount) {
           return cmSubAccount
         }
-        if (
-          subAccounts.length === 0 &&
-          (this.userAccount.isBarter || this.userAccount._obj?.type === "Cm")
-        ) {
+        if (subAccounts.length === 0 && this.userAccount.isBarter) {
           return this.userAccount
         }
         return null
@@ -620,6 +621,7 @@
           isChanged: this.isAccountFormChanged,
           isFormValid: !this.negativeLimitError && !this.positiveLimitError,
           canChangeStatus: this.canChangeStatus,
+          canCreditAnyAccount: this.canCreditAnyAccount,
         })
       },
 
@@ -628,6 +630,7 @@
           recipient: this.recipient,
           account: this.userAccount,
           transactionType: "adminCredit",
+          refreshCurrency: () => this.$emit("refreshCurrency"),
           refreshAccounts: () => this.refreshAccounts(),
         })
       },

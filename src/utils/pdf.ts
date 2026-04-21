@@ -64,7 +64,7 @@ let intCents2strAmount = (dataIntCents: bigint): string => {
 
 function makeAddressBlock(contact: any): string[] {
   return [
-    contact.name,
+    ...(contact.name ? [contact.name] : []),
     ...(contact.street ? [contact.street] : []),
     ...(contact.street2 ? [contact.street2] : []),
     ...(contact.zip || contact.city
@@ -541,7 +541,9 @@ class PdfDocument {
     const lineHeight = await this.getLineHeight(addressBlockStyle)
     verticalPos += lineHeight + 2
     const addressBlock = makeAddressBlock(info)
-
+    if (addressBlock.length == 0) {
+      return verticalPos
+    }
     verticalPos = await this.text(
       addressBlock,
       x,
@@ -1496,10 +1498,6 @@ class PdfDocument {
   }
 
   line(...args: any[]) {
-    // console.log(`ENV FOR LINE ${args}`, this._env)
-    // if (this._env.drawColor === "#aa0000") {
-    //   debugger
-    // }
     return this._jsPdfLine(...args)
   }
 
@@ -1715,7 +1713,6 @@ class PdfDocument {
     for (const [label, value] of Object.entries(env)) {
       if (label == "page") continue // already set
       if (typeof value === "undefined") {
-        debugger
         continue
       }
       const m = label[0].toUpperCase() + label.slice(1)

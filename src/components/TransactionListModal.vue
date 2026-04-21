@@ -19,6 +19,8 @@
       <TransactionList
         :recipient="selectedRecipient"
         :account="account"
+        :show-all="showAll"
+        :caller="caller"
         ref="txList"
       />
       <footer
@@ -140,12 +142,17 @@
         modalTitle: null,
         isDownloadDropdownOpen: false,
         selectedRecipient: null,
+        showAll: false,
+        caller: null,
       }
     },
 
     created() {
-      this.account = this.$modal.args.value[0].params.account
-      this.selectedRecipient = this.$modal.args.value[0].params.recipient
+      const params = this.$modal.args.value[0].params
+      this.account = params.account
+      this.selectedRecipient = params.recipient
+      this.showAll = params.showAll
+      this.caller = params.caller
     },
     async mounted() {
       document.addEventListener("click", this.handleOutsideClick)

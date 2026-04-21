@@ -406,7 +406,8 @@
             }
           } catch (err: any) {
             if (err instanceof LokapiExc.PaymentConfirmationMissing) {
-              this.$modal.args.value[0].refreshTransaction()
+              this.$modal.args.value[0]?.refreshTransaction?.()
+              this.$modal.args.value[0]?.refreshCurrency?.()
               this.close()
               this.$msg.warning(
                 this.$gettext(
@@ -467,8 +468,9 @@
           const payment = await this._executeTransaction()
           if (payment === false) return
 
-          this.$modal.args.value[0].refreshTransaction()
-          this.$modal.args.value[0].refreshAccounts(true)
+          this.$modal.args.value[0]?.refreshTransaction?.()
+          this.$modal.args.value[0]?.refreshAccounts?.(true)
+          this.$modal.args.value[0]?.refreshCurrency?.()
           this.close()
 
           await this.$modal.open("ConfirmPaymentModal", {

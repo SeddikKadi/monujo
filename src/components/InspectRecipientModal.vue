@@ -47,6 +47,7 @@
             :recipient="recipient"
             :currency="currency"
             @accountFormChange="handleAccountFormChange"
+            @refreshCurrency="handleRefreshCurrency"
           />
         </section>
         <footer
@@ -65,6 +66,7 @@
             {{ $gettext("Archive") }}
           </button>
           <button
+            v-if="canCreditAnyAccount"
             type="button"
             class="button is-pay is-rounded mr-2"
             @click="handleCreditMoney"
@@ -109,6 +111,7 @@
         isAccountFormChanged: false,
         isFormValid: false,
         canChangeStatus: true,
+        canCreditAnyAccount: false,
         isActiveAccount: false,
       }
     },
@@ -132,11 +135,13 @@
         isChanged: boolean
         isFormValid: boolean
         canChangeStatus: boolean
+        canCreditAnyAccount: boolean
       }) {
         this.accountForm = payload.form
         this.isAccountFormChanged = payload.isChanged
         this.isFormValid = payload.isFormValid
         this.canChangeStatus = payload.canChangeStatus
+        this.canCreditAnyAccount = payload.canCreditAnyAccount
       },
 
       async handleArchiveAccount(this: any): Promise<void> {
@@ -203,6 +208,9 @@
         if (recipientInfo) {
           recipientInfo.openCreditMoney()
         }
+      },
+      handleRefreshCurrency() {
+        this.$modal.args.value[0]?.refreshCurrency?.()
       },
     },
   })

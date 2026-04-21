@@ -222,6 +222,8 @@
     props: {
       recipient: Object,
       account: Object,
+      showAll: Boolean,
+      caller: Object,
     },
     expose: [
       "downloadCsvFile",
@@ -336,13 +338,13 @@
       async *getTransactions() {
         const account = this.account
         let gen
-
+        const genOpts = { showTxListForDisabledAccount: this.showAll }
         let selectedRecipientName = null
 
         if (account._obj?.getTransactions) {
-          gen = account._obj.getTransactions()
+          gen = account._obj.getTransactions(genOpts)
         } else {
-          gen = account._obj.parent.getTransactions()
+          gen = account._obj.parent.getTransactions(genOpts)
         }
         selectedRecipientName =
           this.recipientBatchLoader.elements[this.selectedRecipientIdx]?.name
@@ -510,8 +512,17 @@
           }
         }
 
-        const reportContactInfo =
-          await this.$lokapi.getReportContactInformation()
+        let reportContactInfo
+        if (this.caller) {
+          const targetUserAccount = this.account._obj?.getTransactions
+            ? this.account._obj
+            : this.account._obj.parent
+          reportContactInfo = await targetUserAccount.getContactInformation(
+            this.caller
+          )
+        } else {
+          reportContactInfo = await this.$lokapi.getReportContactInformation()
+        }
 
         const report = new PdfDocument(
           {

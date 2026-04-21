@@ -6,7 +6,7 @@
           <button
             :disabled="!currency"
             @click="
-              $modal.open('InspectRecipientModal', { currency: this.currency })
+              openModal('InspectRecipientModal', { currency: this.currency })
             "
             class="
               button
@@ -120,6 +120,7 @@
           {
             refreshTransaction: this.refreshTransaction,
             refreshAccounts: this.refreshAccounts,
+            refreshCurrency: this.refreshCurrency,
             ...args[0],
           },
           ...args.slice(1)
@@ -130,6 +131,9 @@
       },
       refreshAccounts() {
         this.$emit("refreshAccounts")
+      },
+      refreshCurrency() {
+        this.$emit("refreshCurrency")
       },
       async topUpModalOpen() {
         await this.$nextTick(async function (this: any) {

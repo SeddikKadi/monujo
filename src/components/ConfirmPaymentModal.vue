@@ -98,6 +98,17 @@
           <!-- Date -->
           <p class="frame3-sub-title mb-3">{{ dateFormat }}</p>
 
+          <!-- Unknown currency warning -->
+          <div v-if="isUnknownCurrency" class="unknown-currency-warning mb-3">
+            <p class="has-text-warning-dark has-text-weight-bold">
+              {{
+                $gettext(
+                  "This transaction has an unrecognized currency. Please contact your administrator."
+                )
+              }}
+            </p>
+          </div>
+
           <!-- Multiple transactions list -->
           <div v-if="hasMultipleTransactions">
             <hr />
@@ -239,6 +250,9 @@
       },
       isTransactionDetail() {
         return this.type === "transactionDetail"
+      },
+      isUnknownCurrency() {
+        return this.transactionsTags.includes("unknown-currency")
       },
       isPaymentConfirmation() {
         return this.type === "paymentConfirmation"
@@ -629,5 +643,13 @@
     margin: auto;
     padding-left: 2.5em;
     margin-top: 0.8em;
+  }
+
+  .unknown-currency-warning {
+    background-color: #fef3e2;
+    border: 1px solid #e67e22;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    text-align: center;
   }
 </style>

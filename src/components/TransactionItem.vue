@@ -5,6 +5,8 @@
       topup: transaction.isTopUp,
       reconversion: transaction.isReconversion,
       cm: transaction.tags && transaction.tags.includes('barter'),
+      'unknown-currency':
+        transaction.tags && transaction.tags.includes('unknown-currency'),
       'mode-small': mode === 'small',
       'cursor-pointer': mode !== 'small',
     }"
@@ -291,6 +293,22 @@
 
   .tx-item.cm .left div.amount {
     background-color: $barter-bg-color;
+  }
+
+  .tx-item.unknown-currency {
+    background-image: linear-gradient(
+      45deg,
+      #ffe0e000 25%,
+      #ff000010 25% 50%,
+      #ffe0e000 50% 75%,
+      #ff000010 75%
+    );
+    background-size: 24px 24px;
+  }
+
+  .tx-item.unknown-currency .currency {
+    color: #e67e22;
+    font-weight: bold;
   }
 
   div.related.small {

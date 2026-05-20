@@ -27,6 +27,8 @@ module Fastlane
         ## Download resources
         ##
 
+        UI.message "Downloading resource from: #{url}"
+
         uri = URI.parse(url)
         response = nil
         limit = 5
@@ -50,47 +52,63 @@ module Fastlane
           UI.user_error!("Exceeded maximum number of redirects.")
         end
 
+        content_type = response['content-type'] || 'unknown'
+        unless content_type.match?(/zip|octet-stream/)
+          UI.important "Warning: Expected a ZIP archive but received Content-Type: '#{content_type}' from #{url}"
+        end
+
         FileUtils.mkdir_p(dest)
 
         ##
         ## Unzip resources
         ##
 
-        Zip::File.open_buffer(response.body) do |zip_file|
-          dir = false
-          zip_file.each do |f|
-            ## Lots of useless mac junk files that should not be sent
-            ## in final package
-            path = Pathname(f.name).each_filename.to_a
-            if dir === false
-              dir = path.shift
-              UI.message "Extracting subdirectory '#{dir}' to package root:"
-            else
-              if dir != path.shift
-                UI.user_error! "Incorrect zip file having more than one subdir."
+        begin
+          Zip::File.open_buffer(response.body) do |zip_file|
+            dir = false
+            zip_file.each do |f|
+              ## Lots of useless mac junk files that should not be sent
+              ## in final package
+              path = Pathname(f.name).each_filename.to_a
+              if dir === false
+                dir = path.shift
+                UI.message "Extracting subdirectory '#{dir}' to package root:"
+              else
+                if dir != path.shift
+                  UI.user_error! "Incorrect zip file having more than one subdir."
+                end
               end
-            end
 
-            shortened_path = File.join(*path)
-            if shortened_path === ''
-              next
+              shortened_path = File.join(*path)
+              if shortened_path === ''
+                next
+              end
+              if ! ["public", "resources"].include? path[0]
+                UI.message "  Ignored:         #{shortened_path} ('#{path[0]}' subdir is not whitelisted)."
+                next
+              end
+              if File.basename(shortened_path).start_with? ".DS_"
+                UI.message "  Ignored:         #{shortened_path} (Junk file)"
+                next
+              end
+              fpath = File.join(dest, shortened_path)
+              if File.exist? fpath
+                UI.success "  Extract: REPLACE #{shortened_path}"
+              else
+                UI.success "  Extract: NEW     #{shortened_path}"
+              end
+              zip_file.extract(f, fpath) { true }
             end
-            if ! ["public", "resources"].include? path[0]
-              UI.message "  Ignored:         #{shortened_path} ('#{path[0]}' subdir is not whitelisted)."
-              next
-            end
-            if File.basename(shortened_path).start_with? ".DS_"
-              UI.message "  Ignored:         #{shortened_path} (Junk file)"
-              next
-            end
-            fpath = File.join(dest, shortened_path)
-            if File.exist? fpath
-              UI.success "  Extract: REPLACE #{shortened_path}"
-            else
-              UI.success "  Extract: NEW     #{shortened_path}"
-            end
-            zip_file.extract(f, fpath) { true }
           end
+        rescue Zip::Error => e
+          body_preview = response.body[0..500].force_encoding('UTF-8').scrub('?')
+          UI.user_error!(
+            "Failed to open ZIP archive from #{url}\n" \
+            "  Content-Type: #{content_type}\n" \
+            "  Body size: #{response.body.bytesize} bytes\n" \
+            "  Body preview: #{body_preview}\n" \
+            "  Original error: #{e.message}"
+          )
         end
 
         ##

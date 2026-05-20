@@ -308,6 +308,16 @@ npx cypress run \
     --browser chrome
 ```
 
+**Note:** Screenshot generation requires Google Chrome to be installed
+on the system. Chrome is the only browser that supports the
+`--force-device-scale-factor` flag needed for proper resolution
+control. Other browsers (Electron, Firefox) will produce an error when
+a scale factor other than 1 is requested.
+
+Be aware that some Chrome versions produce screenshots with incorrect
+resolution or visual artifacts (e.g. mirroring). Google Chrome 127 is
+a known version that produces correct results.
+
 ### Translation
 
 By default, the current files are set up to maintain a french

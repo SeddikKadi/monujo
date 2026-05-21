@@ -49,6 +49,9 @@
     components: {
       TransactionItem,
     },
+    props: {
+      refreshToggle: Boolean,
+    },
     emits: ["hasCredits"],
     data() {
       return {
@@ -58,6 +61,11 @@
     },
     async mounted() {
       await this.updatePendingCreditRequests()
+    },
+    watch: {
+      refreshToggle() {
+        this.updatePendingCreditRequests()
+      },
     },
     methods: {
       updatePendingCreditRequests: applyDecorators(

@@ -50,7 +50,7 @@ msgid "Account"
 msgstr "Compte"
 
 #: src/components/RecipientInfo.vue:30 src/components/RecipientInfo.vue:31
-#: src/components/RecipientInfo.vue:43
+#: src/components/RecipientInfo.vue:47
 msgid "Account actions"
 msgstr "Actions du compte"
 
@@ -58,19 +58,33 @@ msgstr "Actions du compte"
 msgid "Account creations waiting for approval"
 msgstr "Comptes en attente de validation"
 
-#: src/components/RecipientInfo.vue:46 src/components/RecipientInfo.vue:47
-#: src/components/RecipientInfo.vue:59 src/components/RecipientInfo.vue:65
-#: src/components/RecipientInfo.vue:68 src/components/RecipientInfo.vue:72
+#: src/components/RecipientInfo.vue:526
+#, fuzzy
+msgid "Account status"
+msgstr "Statut du compte : "
+
+#: src/components/RecipientInfo.vue:110 src/components/RecipientInfo.vue:111
+#: src/components/RecipientInfo.vue:127 src/components/RecipientInfo.vue:133
+#: src/components/RecipientInfo.vue:136 src/components/RecipientInfo.vue:161
 msgid "Account status: "
 msgstr "Statut du compte : "
 
-#: src/components/InspectRecipientModal.vue:133
+#: src/components/InspectRecipientModal.vue:161
+msgid "Account successfully archived"
+msgstr "Compte archivé avec succès"
+
+#: src/components/InspectRecipientModal.vue:183
 msgid "Account successfully updated"
 msgstr "Compte mis à jour avec succès"
 
-#: src/components/RecipientInfo.vue:38 src/components/RecipientInfo.vue:39
-#: src/components/RecipientInfo.vue:51 src/components/RecipientInfo.vue:57
-#: src/components/RecipientInfo.vue:60
+#: src/components/RecipientInfo.vue:515
+#, fuzzy
+msgid "Account type"
+msgstr "Type de compte :"
+
+#: src/components/RecipientInfo.vue:105 src/components/RecipientInfo.vue:73
+#: src/components/RecipientInfo.vue:74 src/components/RecipientInfo.vue:90
+#: src/components/RecipientInfo.vue:96 src/components/RecipientInfo.vue:99
 msgid "Account type:"
 msgstr "Type de compte :"
 
@@ -98,10 +112,20 @@ msgstr "Ajouter une référence du paiement pour le destinataire"
 msgid "Add as favorite"
 msgstr "Ajouter aux favoris"
 
-#: src/components/RecipientInfo.vue:195 src/views/AdminDashboard.vue:3
+#: src/components/RecipientInfo.vue:323 src/components/RecipientInfo.vue:346
+#: src/components/RecipientInfo.vue:502 src/views/AdminDashboard.vue:3
 #: src/views/AdminDashboard.vue:4
 msgid "Admin"
 msgstr "Admin"
+
+#: src/components/RecipientInfo.vue:101 src/components/RecipientInfo.vue:102
+#: src/components/RecipientInfo.vue:118 src/components/RecipientInfo.vue:124
+#: src/components/RecipientInfo.vue:127 src/components/RecipientInfo.vue:141
+#: src/components/RecipientInfo.vue:142 src/components/RecipientInfo.vue:150
+msgid "Admin accounts cannot have their credit limits modified."
+msgstr ""
+"Les limites de crédit des comptes Administrateur ne peuvent pas être "
+"modifiées."
 
 #: src/components/TheNavBar.vue:104 src/components/TheNavBar.vue:107
 #: src/components/TheNavBar.vue:65 src/components/TheNavBar.vue:66
@@ -121,6 +145,10 @@ msgstr "Tableau de bord Administrateur"
 #: src/components/RecipientTechnicalDetails.vue:9
 msgid "Administrative backend id:"
 msgstr "Idendentifiant du backend administratif:"
+
+#: src/components/RecipientInfo.vue:426
+msgid "Administrative backend successfully synchronized"
+msgstr "Serveur administratif synchronisé avec succès"
 
 #: src/components/TransactionList.vue:106
 #: src/components/TransactionList.vue:111 src/components/TransactionList.vue:70
@@ -163,8 +191,8 @@ msgstr "Le montant envoyé doit être un nombre positif"
 msgid "Amount to send must be a number with not more than 2 decimals"
 msgstr "Le montant envoyé doit être un nombre n'ayant pas plus de 2 décimales"
 
-#: src/components/RecipientSelector.vue:186
-#: src/components/RecipientSelector.vue:196
+#: src/components/RecipientSelector.vue:190
+#: src/components/RecipientSelector.vue:200
 msgid "An error occured during the scan process"
 msgstr "Une erreur est survenue lors du processus de scan"
 
@@ -172,22 +200,26 @@ msgstr "Une erreur est survenue lors du processus de scan"
 msgid "An error occured while creating the CSV file"
 msgstr "Une erreur est survenue lors de la creation du ficher CSV"
 
-#: src/components/RecipientInfo.vue:306
+#: src/components/RecipientInfo.vue:581
 msgid "An error occured while retrieving account information"
 msgstr ""
 "Une erreur est survenue lors de récuperation des informations du compte."
 
-#: src/components/RecipientSelector.vue:245
+#: src/components/RecipientSelector.vue:249
 msgid "An error occured while searching recipient"
 msgstr "Il y a eu un problème lors de la recherche du destinataire"
 
-#: src/components/InspectRecipientModal.vue:129
+#: src/components/InspectRecipientModal.vue:179
 msgid "An error occured while updating account"
 msgstr "Une erreur est survenue lors de la mise à jour du compte"
 
-#: src/services/lokapiService.ts:455
+#: src/services/lokapiService.ts:460
 msgid "An error occurred while adding to favorites."
 msgstr "Une erreur est survenue lors de la mise en favoris."
+
+#: src/components/InspectRecipientModal.vue:157
+msgid "An error occurred while archiving the account"
+msgstr "Une erreur est survenue lors de l'archivage du compte"
 
 #: src/components/ConfirmPaymentModal.vue:557
 msgid ""
@@ -197,15 +229,19 @@ msgstr ""
 "Une erreur s'est produite lors de la suppression de la demande de "
 "rechargement, veuillez ré-éssayer ou contacter votre administrateur"
 
-#: src/components/CurrencyItem.vue:134
+#: src/components/CurrencyItem.vue:135
 msgid "An error occurred while loading currency information"
 msgstr ""
 "Une erreur est survenue lors de la récupération des informations de la "
 "devise."
 
-#: src/services/lokapiService.ts:459
+#: src/services/lokapiService.ts:464
 msgid "An error occurred while removing from favorites."
 msgstr "Une erreur est survenue lors de la suppression du favori."
+
+#: src/components/RecipientInfo.vue:430
+msgid "An error occurred while synchronizing"
+msgstr "Une erreur est survenue lors de la synchronisation"
 
 #: src/components/ConfirmPaymentModal.vue:585
 msgid "An issue occurred upon the approval of the credit request of %{ name }"
@@ -213,7 +249,7 @@ msgstr ""
 "Il y a eu un problème lors de la tentative de validation de la demande de "
 "crédit de %{ name }"
 
-#: src/components/RecipientSelector.vue:257
+#: src/components/RecipientSelector.vue:261
 msgid "An unexpected error occured while verifying transaction authorizations."
 msgstr ""
 "Une erreur inattendue est survenue lors de la vérification des autorisations "
@@ -242,7 +278,7 @@ msgstr ""
 "Une erreur inattendue est survenue pendant le transfert d'argent. Veuillez "
 "nous excuser pour la gêne occasionnée."
 
-#: src/components/PendingAccounts.vue:147
+#: src/components/PendingAccounts.vue:155
 msgid ""
 "An unexpected issue occurred while approving the wallet account creation of "
 "user %{ name }"
@@ -265,7 +301,7 @@ msgstr ""
 "disponibles. votre transaction n'a pas été envoyée. Veuillez nous excuser "
 "pour le désagrément."
 
-#: src/components/PendingAccounts.vue:192
+#: src/components/PendingAccounts.vue:200
 msgid ""
 "An unexpected issue occurred while discarding the wallet account creation of "
 "user %{ name }"
@@ -313,14 +349,14 @@ msgstr ""
 "Une erreur inattendue est survenue pendant le chargement des portefeuilles. "
 "Veuillez nous excuser pour le désagrément."
 
-#: src/components/RecipientItem.vue:63
+#: src/components/RecipientItem.vue:68
 msgid ""
 "An unexpected issue occurred while switching this recipient favorite status"
 msgstr ""
 "Il y a eu un problème lors de la bascule du status de favoris sur ce "
 "destinataire"
 
-#: src/components/PendingAccounts.vue:217 src/components/PendingCredits.vue:74
+#: src/components/PendingAccounts.vue:225 src/components/PendingCredits.vue:82
 msgid "An unexpected issue occurred while updating the pending accounts list"
 msgstr ""
 "Il y a eu un problème lors du rafraichissement de la liste des demandes de "
@@ -333,7 +369,7 @@ msgstr ""
 "Il y a eu un problème lors de la tentative de téléchargement de la liste des "
 "demandes de rechargement"
 
-#: src/components/RecipientInfo.vue:268
+#: src/components/RecipientInfo.vue:474
 msgid "An unexpected server error occurred while fetching mutual credit limits"
 msgstr ""
 "Une erreur serveur inattendue est survenue lors de la récupération des "
@@ -362,6 +398,21 @@ msgstr ""
 msgid "Approve"
 msgstr "Valider"
 
+#: src/components/InspectRecipientModal.vue:132
+#: src/components/InspectRecipientModal.vue:139
+#: src/components/InspectRecipientModal.vue:39
+#: src/components/InspectRecipientModal.vue:40
+#: src/components/InspectRecipientModal.vue:49
+#: src/components/InspectRecipientModal.vue:54
+#: src/components/InspectRecipientModal.vue:60
+msgid "Archive"
+msgstr "Archiver"
+
+#: src/components/CurrencyItem.vue:10 src/components/CurrencyItem.vue:14
+#: src/components/CurrencyItem.vue:17 src/components/CurrencyItem.vue:9
+msgid "as %{ id }"
+msgstr "soit %{ id }"
+
 #: src/views/Login.vue:206
 msgid "Ask me later"
 msgstr "Plus tard"
@@ -389,6 +440,17 @@ msgstr "Identification biométrique mise en place"
 #: src/components/ConfirmPaymentModal.vue:50
 msgid "by"
 msgstr "par"
+
+#: src/components/RecipientInfo.vue:47 src/components/RecipientInfo.vue:48
+#: src/components/RecipientInfo.vue:64 src/components/RecipientInfo.vue:69
+#: src/components/RecipientInfo.vue:70 src/components/RecipientInfo.vue:73
+#: src/components/RecipientInfo.vue:76
+msgid "Can be updated:"
+msgstr "Peut être mis à jour :"
+
+#: src/components/InspectRecipientModal.vue:140
+msgid "Cancel"
+msgstr "Annuler"
 
 #: src/components/CreateAccount.vue:42 src/components/CreateAccount.vue:44
 #: src/components/CreateAccount.vue:45 src/components/CreateAccount.vue:57
@@ -471,7 +533,7 @@ msgstr "Créer ou importer mon portefeuille"
 #: src/components/CreateAccount.vue:31 src/components/CreateAccount.vue:43
 #: src/components/CreateAccount.vue:46 src/components/CreateAccount.vue:49
 msgid "Currency:"
-msgstr ""
+msgstr "Monnaie :"
 
 #: src/components/TheNavBar.vue:32 src/components/TheNavBar.vue:33
 #: src/components/TheNavBar.vue:50 src/components/TheNavBar.vue:55
@@ -509,16 +571,17 @@ msgid_plural "digits"
 msgstr[0] "chiffre"
 msgstr[1] "chiffres"
 
-#: src/components/RecipientInfo.vue:57 src/components/RecipientInfo.vue:58
-#: src/components/RecipientInfo.vue:70 src/components/RecipientInfo.vue:76
-#: src/components/RecipientInfo.vue:79 src/components/RecipientInfo.vue:83
+#: src/components/RecipientInfo.vue:121 src/components/RecipientInfo.vue:122
+#: src/components/RecipientInfo.vue:138 src/components/RecipientInfo.vue:144
+#: src/components/RecipientInfo.vue:147 src/components/RecipientInfo.vue:172
+#: src/components/RecipientInfo.vue:176 src/components/RecipientInfo.vue:507
 msgid "Disabled"
-msgstr "Désactiver"
+msgstr "Désactivé"
 
-#: src/components/TheBankAccountList.vue:101
-#: src/components/TheBankAccountList.vue:102
-#: src/components/TheBankAccountList.vue:146
-#: src/components/TheBankAccountList.vue:149
+#: src/components/TheBankAccountList.vue:113
+#: src/components/TheBankAccountList.vue:114
+#: src/components/TheBankAccountList.vue:162
+#: src/components/TheBankAccountList.vue:165
 msgid "Disabled accounts"
 msgstr "Comptes désactivés"
 
@@ -574,9 +637,10 @@ msgstr "Courriel envoyé"
 msgid "Enable biometric login"
 msgstr "Activer le login biométrique"
 
-#: src/components/RecipientInfo.vue:56 src/components/RecipientInfo.vue:57
-#: src/components/RecipientInfo.vue:69 src/components/RecipientInfo.vue:75
-#: src/components/RecipientInfo.vue:78 src/components/RecipientInfo.vue:82
+#: src/components/RecipientInfo.vue:120 src/components/RecipientInfo.vue:121
+#: src/components/RecipientInfo.vue:137 src/components/RecipientInfo.vue:143
+#: src/components/RecipientInfo.vue:146 src/components/RecipientInfo.vue:171
+#: src/components/RecipientInfo.vue:175 src/components/RecipientInfo.vue:507
 msgid "Enabled"
 msgstr "Actif"
 
@@ -585,7 +649,7 @@ msgstr "Actif"
 msgid "Enter your password"
 msgstr "Entrez votre mot de passe"
 
-#: src/main.ts:412
+#: src/main.ts:415
 msgid "Export wallet"
 msgstr "Exporter le portefeuille"
 
@@ -598,11 +662,11 @@ msgstr "Échec de l'authentification. Veuillez ré-essayer."
 msgid "Failed to load language \"%{ lang }\""
 msgstr "Le langage \"%{ lang }\" n'a pas pu être chargé"
 
-#: src/components/CreateAccount.vue:382
+#: src/components/CreateAccount.vue:393
 msgid "Failed to read the file contents"
 msgstr "Le contenu du fichier n'a pas pu être lu"
 
-#: src/components/TheBankAccountList.vue:260
+#: src/components/TheBankAccountList.vue:277
 msgid "Failed to refresh account informations"
 msgstr "Échec de la mise à jour des informations du compte"
 
@@ -664,6 +728,13 @@ msgstr "Aide"
 msgid "Import an existing wallet"
 msgstr "Importer un portefeuille existant"
 
+#: src/components/TheBankAccountList.vue:101
+#: src/components/TheBankAccountList.vue:102
+#: src/components/TheBankAccountList.vue:143
+#: src/components/TheBankAccountList.vue:146
+msgid "Inactive accounts"
+msgstr "Comptes désactivés"
+
 #: src/components/TheDashboardFooter.vue:11
 #: src/components/TheDashboardFooter.vue:19
 #: src/components/TheDashboardFooter.vue:20
@@ -687,7 +758,7 @@ msgstr "Identifiant ou mot de passe incorrect"
 msgid "Invalid email."
 msgstr "E-mail invalide."
 
-#: src/components/RecipientSelector.vue:210
+#: src/components/RecipientSelector.vue:214
 msgid "Invalid QR code content format"
 msgstr "Format du code QR invalide"
 
@@ -732,9 +803,9 @@ msgstr "Principal"
 msgid "Map"
 msgstr "Carte"
 
-#: src/components/RecipientInfo.vue:69 src/components/RecipientInfo.vue:70
-#: src/components/RecipientInfo.vue:82 src/components/RecipientInfo.vue:88
-#: src/components/RecipientInfo.vue:91 src/components/RecipientInfo.vue:95
+#: src/components/RecipientInfo.vue:133 src/components/RecipientInfo.vue:134
+#: src/components/RecipientInfo.vue:150 src/components/RecipientInfo.vue:156
+#: src/components/RecipientInfo.vue:159 src/components/RecipientInfo.vue:188
 msgid "Maximum allowed"
 msgstr "Maximum autorisé"
 
@@ -744,14 +815,19 @@ msgstr "Maximum autorisé"
 msgid "Maximum credit amount: "
 msgstr "Montant maximum à créditer : "
 
-#: src/components/RecipientInfo.vue:207
+#: src/components/RecipientInfo.vue:535
+#, fuzzy
+msgid "Maximum limit"
+msgstr "Maximum autorisé"
+
+#: src/components/RecipientInfo.vue:358
 msgid "Maximum limit must be zero or greater."
 msgstr "La limite maximale doit être zéro ou supérieure."
 
-#: src/components/RecipientInfo.vue:101 src/components/RecipientInfo.vue:104
-#: src/components/RecipientInfo.vue:108 src/components/RecipientInfo.vue:113
-#: src/components/RecipientInfo.vue:82 src/components/RecipientInfo.vue:83
-#: src/components/RecipientInfo.vue:95
+#: src/components/RecipientInfo.vue:147 src/components/RecipientInfo.vue:148
+#: src/components/RecipientInfo.vue:164 src/components/RecipientInfo.vue:170
+#: src/components/RecipientInfo.vue:173 src/components/RecipientInfo.vue:202
+#: src/components/RecipientInfo.vue:210
 msgid "Minimum allowed"
 msgstr "Minimum autorisé"
 
@@ -761,7 +837,12 @@ msgstr "Minimum autorisé"
 msgid "Minimum credit amount: "
 msgstr "Montant minimum à créditer : "
 
-#: src/components/RecipientInfo.vue:220
+#: src/components/RecipientInfo.vue:544
+#, fuzzy
+msgid "Minimum limit"
+msgstr "Minimum autorisé"
+
+#: src/components/RecipientInfo.vue:371
 msgid "Minimum limit must be zero or less."
 msgstr "La limite minimale doit être zéro ou inférieure."
 
@@ -784,9 +865,9 @@ msgstr "mutuel"
 msgid "Mutual"
 msgstr "Mutuel"
 
-#: src/components/RecipientInfo.vue:64 src/components/RecipientInfo.vue:65
-#: src/components/RecipientInfo.vue:77 src/components/RecipientInfo.vue:83
-#: src/components/RecipientInfo.vue:86 src/components/RecipientInfo.vue:90
+#: src/components/RecipientInfo.vue:128 src/components/RecipientInfo.vue:129
+#: src/components/RecipientInfo.vue:145 src/components/RecipientInfo.vue:151
+#: src/components/RecipientInfo.vue:154 src/components/RecipientInfo.vue:183
 msgid "Mutual credit balance limits:"
 msgstr "Limites de crédit mutuel :"
 
@@ -888,7 +969,7 @@ msgstr "Le mot de passe doit contenir au moins un caractère spécial"
 msgid "Password should use at least one uppercase character"
 msgstr "Le mot de passe doit contenir au moins une lettre majuscule"
 
-#: src/components/CreateAccount.vue:441
+#: src/components/CreateAccount.vue:462
 msgid "Passwords do not match"
 msgstr "Le mot de passe entré n'est pas identique"
 
@@ -942,7 +1023,8 @@ msgstr "Demandes de crédit en cours"
 msgid "Permission denied to the camera"
 msgstr "Permission d'accès à la caméra refusé"
 
-#: src/components/RecipientInfo.vue:194
+#: src/components/RecipientInfo.vue:322 src/components/RecipientInfo.vue:345
+#: src/components/RecipientInfo.vue:501
 msgid "Personal"
 msgstr "Particulier"
 
@@ -998,16 +1080,17 @@ msgstr ""
 "Attention, ce mot de passe n'est pas récupérable, alors veillez à le garder "
 "dans un endroit sûr et accessible."
 
-#: src/components/MoneyRequestModal.vue:109 src/main.ts:373
+#: src/components/MoneyRequestModal.vue:109 src/main.ts:376
 msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
-#: src/components/CreateAccount.vue:422 src/components/CreateAccount.vue:470
-#: src/services/lokapiService.ts:465
+#: src/components/CreateAccount.vue:443 src/components/CreateAccount.vue:491
+#: src/services/lokapiService.ts:470
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
 
-#: src/components/RecipientInfo.vue:196
+#: src/components/RecipientInfo.vue:324 src/components/RecipientInfo.vue:347
+#: src/components/RecipientInfo.vue:503
 msgid "Pledge admin"
 msgstr "Gestionnaire de nantissement"
 
@@ -1021,7 +1104,8 @@ msgstr "Préférences"
 msgid "processed"
 msgstr "traitée"
 
-#: src/components/RecipientInfo.vue:193
+#: src/components/RecipientInfo.vue:321 src/components/RecipientInfo.vue:344
+#: src/components/RecipientInfo.vue:500
 msgid "Professional"
 msgstr "Professionnel"
 
@@ -1031,11 +1115,12 @@ msgstr "Professionnel"
 msgid "Profile"
 msgstr "Profil"
 
-#: src/components/RecipientInfo.vue:197
+#: src/components/RecipientInfo.vue:325 src/components/RecipientInfo.vue:348
+#: src/components/RecipientInfo.vue:504
 msgid "Property admin"
 msgstr "Gestionnaire des attributs"
 
-#: src/main.ts:368 src/main.ts:372
+#: src/main.ts:371 src/main.ts:375
 msgid "QR code"
 msgstr "Code QR"
 
@@ -1043,7 +1128,7 @@ msgstr "Code QR"
 msgid "QR code - Payment request to %{ name } of %{ amount } %{ currency }"
 msgstr "Code QR - demande de paiement à %{ name } de %{ amount } %{ currency }"
 
-#: src/main.ts:374
+#: src/main.ts:377
 msgid "QR code wallet - %{name}"
 msgstr "Code QR portefeuille - %{ name }"
 
@@ -1154,6 +1239,13 @@ msgstr "Refus du serveur distant, contactez votre administrateur"
 msgid "Requested %{amount}"
 msgstr "%{amount} demandé"
 
+#: src/components/RecipientInfo.vue:61 src/components/RecipientInfo.vue:62
+#: src/components/RecipientInfo.vue:78 src/components/RecipientInfo.vue:83
+#: src/components/RecipientInfo.vue:84 src/components/RecipientInfo.vue:87
+#: src/components/RecipientInfo.vue:93
+msgid "Requires higher permissions:"
+msgstr "Nécessite des permissions supérieures :"
+
 #: src/router/index.ts:44
 msgid "Reset my password"
 msgstr "Ré-initialiser mon mot de passe"
@@ -1168,11 +1260,11 @@ msgstr "Ré-initialiser le mot de passe"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/components/InspectRecipientModal.vue:39
-#: src/components/InspectRecipientModal.vue:40
-#: src/components/InspectRecipientModal.vue:49
+#: src/components/InspectRecipientModal.vue:42
+#: src/components/InspectRecipientModal.vue:43
 #: src/components/InspectRecipientModal.vue:52
-#: src/components/InspectRecipientModal.vue:58
+#: src/components/InspectRecipientModal.vue:57
+#: src/components/InspectRecipientModal.vue:68
 msgid "Save changes"
 msgstr "Enregistrer"
 
@@ -1229,13 +1321,21 @@ msgstr "envoyée"
 msgid "Sent %{amount}"
 msgstr "%{amount} envoyé"
 
+#: src/components/RecipientInfo.vue:111 src/components/RecipientInfo.vue:117
+#: src/components/RecipientInfo.vue:120 src/components/RecipientInfo.vue:134
+#: src/components/RecipientInfo.vue:135 src/components/RecipientInfo.vue:141
+#: src/components/RecipientInfo.vue:94 src/components/RecipientInfo.vue:95
+msgid "Setting an account to Admin is irreversible on this currency."
+msgstr ""
+"Le passage d'un compte en Administrateur est irréversible sur cette monnaie."
+
 #: src/components/TheNavBar.vue:44 src/components/TheNavBar.vue:45
 #: src/components/TheNavBar.vue:62 src/components/TheNavBar.vue:67
 #: src/components/TheNavBar.vue:72 src/components/TheNavBar.vue:77
 msgid "Settings"
 msgstr "Préférences"
 
-#: src/components/CreateAccount.vue:491
+#: src/components/CreateAccount.vue:512
 msgid ""
 "Settings for simplified authentication were not saved correctly... Please "
 "try again in the \"Settings\" page or contact your administrator"
@@ -1259,7 +1359,7 @@ msgstr "Partager"
 msgid "Share transactions"
 msgstr "Partager les opérations"
 
-#: src/main.ts:355
+#: src/main.ts:358
 msgid "Show more info"
 msgstr "Voir plus"
 
@@ -1312,9 +1412,9 @@ msgid "Technical infos"
 msgstr "Informations techniques"
 
 #: src/components/BankAccountItem.vue:10 src/components/BankAccountItem.vue:15
-#: src/components/BankAccountItem.vue:8 src/components/CurrencyItem.vue:11
-#: src/components/CurrencyItem.vue:14 src/components/CurrencyItem.vue:6
-#: src/components/CurrencyItem.vue:7
+#: src/components/BankAccountItem.vue:19 src/components/BankAccountItem.vue:8
+#: src/components/CurrencyItem.vue:11 src/components/CurrencyItem.vue:14
+#: src/components/CurrencyItem.vue:6 src/components/CurrencyItem.vue:7
 msgid "Temporarily unavailable - please refresh"
 msgstr "Momentanément indisponible - veuillez rafraîchir"
 
@@ -1327,10 +1427,10 @@ msgstr "Momentanément indisponible - veuillez rafraîchir"
 msgid "Terms of Service"
 msgstr "CGU"
 
-#: src/components/TheBankAccountList.vue:105
-#: src/components/TheBankAccountList.vue:106
-#: src/components/TheBankAccountList.vue:150
-#: src/components/TheBankAccountList.vue:153
+#: src/components/TheBankAccountList.vue:117
+#: src/components/TheBankAccountList.vue:118
+#: src/components/TheBankAccountList.vue:166
+#: src/components/TheBankAccountList.vue:169
 msgid ""
 "The accounts listed below are disabled, if this is not expected please "
 "contact an administrator"
@@ -1339,7 +1439,6 @@ msgstr ""
 "vous vous attendiez, veuillez contacter un administrateur"
 
 #: src/components/TheBankAccountList.vue:125
-#: src/components/TheBankAccountList.vue:128
 #: src/components/TheBankAccountList.vue:87
 #: src/components/TheBankAccountList.vue:88
 msgid ""
@@ -1349,6 +1448,13 @@ msgstr ""
 "Les comptes listés ci-dessous ont fait l'objet d'une demande de création. "
 "Une fois la demande de création approuvée, ces comptes deviendront "
 "utilisables."
+
+#: src/components/RecipientInfo.vue:44 src/components/RecipientInfo.vue:45
+#: src/components/RecipientInfo.vue:61 src/components/RecipientInfo.vue:66
+#: src/components/RecipientInfo.vue:67 src/components/RecipientInfo.vue:70
+#: src/components/RecipientInfo.vue:73
+msgid "The administrative backend is not up to date."
+msgstr "Le serveur administratif n'est pas à jour."
 
 #: src/components/PendingTopUp.vue:33 src/components/PendingTopUp.vue:34
 #: src/components/PendingTopUp.vue:56
@@ -1440,11 +1546,29 @@ msgstr "Votre demande de rechargement a été traitée avec succès"
 msgid "The transaction was sent but no confirmation was received. "
 msgstr "La transaction a été envoyée mais aucune confirmation n'a été reçue."
 
+#: src/components/TheBankAccountList.vue:104
+#: src/components/TheBankAccountList.vue:105
+#: src/components/TheBankAccountList.vue:146
+#: src/components/TheBankAccountList.vue:149
+msgid "These accounts were disabled"
+msgstr "Ces comptes ont été désactivés"
+
+#: src/components/InspectRecipientModal.vue:133
+msgid ""
+"This account will no longer be visible in lists and will no longer be "
+"accessible via Monujo. However, this will allow the user to create a new "
+"account."
+msgstr ""
+"Ce compte ne sera plus visible dans les listes et ne sera plus accessible "
+"via Monujo. Cependant, cela permettra à l'utilisateur de se créer un nouveau "
+"compte.\n"
+"Voulez-vous continuer ?"
+
 #: src/views/Signup.vue:240 src/views/Signup.vue:251 src/views/Signup.vue:258
 msgid "This fiels can not be empty."
 msgstr "Ce champs est obligatoire."
 
-#: src/components/RecipientSelector.vue:225
+#: src/components/RecipientSelector.vue:229
 msgid "This QR code is for a payment request, not a wallet identifier"
 msgstr "Ce QR code représente une demande de transfert, pas un portefeuille"
 
@@ -1471,10 +1595,10 @@ msgid ""
 "This transaction has an unrecognized currency. Please contact your "
 "administrator."
 msgstr ""
-"Cette transaction est dans une monnaie non reconnue. Veuillez contacter "
-"votre administrateur."
+"Cette transaction a une devise non reconnue. Veuillez contacter votre "
+"administrateur."
 
-#: src/components/CreateAccount.vue:403
+#: src/components/CreateAccount.vue:424
 msgid ""
 "This wallet belongs to the currency \"%{ currency }\" and does not match the "
 "selected currency."
@@ -1482,7 +1606,7 @@ msgstr ""
 "Ce portefeuille appartient à la monnaie « %{ currency } » et ne correspond "
 "pas à la monnaie sélectionnée."
 
-#: src/components/CreateAccount.vue:412
+#: src/components/CreateAccount.vue:433
 msgid ""
 "This wallet belongs to the currency \"%{ currency }\" which is not available "
 "on this server."
@@ -1605,7 +1729,7 @@ msgstr "Transaction refusée en raison de fonds insuffisants"
 msgid "Transactions"
 msgstr "Opérations"
 
-#: src/components/RecipientSelector.vue:202
+#: src/components/RecipientSelector.vue:206
 msgid "Unable to read QR code"
 msgstr "Impossible de lire le code QR."
 
@@ -1615,7 +1739,8 @@ msgid "unavailable"
 msgstr "Indisponible"
 
 #: src/components/RecipientInfo.vue:23 src/components/RecipientInfo.vue:24
-#: src/components/RecipientInfo.vue:30 src/components/RecipientInfo.vue:36
+#: src/components/RecipientInfo.vue:27 src/components/RecipientInfo.vue:33
+#: src/components/RecipientInfo.vue:40
 #: src/components/TheBankAccountList.vue:103
 #: src/components/TheBankAccountList.vue:113
 #: src/components/TheBankAccountList.vue:75
@@ -1646,7 +1771,7 @@ msgstr ""
 "Veuillez contacter votre administrateur."
 
 # Erreur inattendue
-#: src/components/CreateAccount.vue:393
+#: src/components/CreateAccount.vue:404
 msgid "Unexpected format of file"
 msgstr "Erreure Inattendue"
 
@@ -1664,7 +1789,7 @@ msgstr ""
 "serveur distant."
 
 # Erreur inattendue
-#: src/components/CreateAccount.vue:388
+#: src/components/CreateAccount.vue:399
 msgid "Unexpected type of file"
 msgstr "Erreure Inattendue"
 
@@ -1674,6 +1799,13 @@ msgid ""
 msgstr ""
 "Utilisateur ou e-mail inconnu. Veuillez vous assurer de fournir un nom "
 "d'utilisateur ou une adresse e-mail valide."
+
+#: src/components/RecipientInfo.vue:55 src/components/RecipientInfo.vue:56
+#: src/components/RecipientInfo.vue:72 src/components/RecipientInfo.vue:77
+#: src/components/RecipientInfo.vue:78 src/components/RecipientInfo.vue:81
+#: src/components/RecipientInfo.vue:84
+msgid "Update"
+msgstr "Mettre à jour"
 
 #: src/components/CreateAccount.vue:221
 msgid "Upload <b>%{ backendName }</b> wallet file..."
@@ -1716,17 +1848,18 @@ msgstr "Utiliser le même mémo pour le destinataire"
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/components/PendingAccounts.vue:156
+#: src/components/PendingAccounts.vue:164
 msgid "User %{ name }'s account creation was approved"
 msgstr "Le compte de l'utilisateur %{ name } a été validé"
 
-#: src/components/PendingAccounts.vue:201
+#: src/components/PendingAccounts.vue:209
 msgid "User %{ name }'s account creation was discarded"
 msgstr ""
 "La demande d'activation de portefeuille de l'utilisateur %{ name } a été "
 "annulée"
 
 #: src/components/RecipientInfo.vue:17 src/components/RecipientInfo.vue:18
+#: src/components/RecipientInfo.vue:21
 msgid "User account"
 msgstr "vos comptes"
 
@@ -1734,24 +1867,23 @@ msgstr "vos comptes"
 msgid "User or email already exist."
 msgstr "Utilisateur ou e-mail existe déjà."
 
-#: src/components/RecipientInfo.vue:210 src/components/RecipientInfo.vue:223
+#: src/components/RecipientInfo.vue:361 src/components/RecipientInfo.vue:374
 msgid "Value is too large."
 msgstr "Valeur trop grande."
 
-#: src/components/RecipientInfo.vue:213 src/components/RecipientInfo.vue:226
+#: src/components/RecipientInfo.vue:364 src/components/RecipientInfo.vue:377
 msgid "Value must not have more than 2 decimals."
-msgstr ""
-"La valeur indiquée doit être un nombre n'ayant pas plus de 2 décimales."
+msgstr "La valeur ne doit pas avoir plus de 2 décimales."
 
-#: src/components/CreateAccount.vue:477
+#: src/components/CreateAccount.vue:498
 msgid "Wallet already created"
 msgstr "Compte déjà créé"
 
-#: src/components/CreateAccount.vue:468
+#: src/components/CreateAccount.vue:489
 msgid "Wallet creation unexpectedly failed."
 msgstr "Création de compte interrompue inopinément."
 
-#: src/main.ts:424
+#: src/main.ts:427
 msgid "Wallet export"
 msgstr "Export du portefeuille"
 
@@ -1761,7 +1893,7 @@ msgstr "Export du portefeuille"
 msgid "Wallet QR Code:"
 msgstr "Code QR du portefeuille :"
 
-#: src/components/CreateAccount.vue:420
+#: src/components/CreateAccount.vue:441
 msgid "Wallet registration unexpectedly failed"
 msgstr "Création de compte interrompue inopinément."
 
@@ -1770,6 +1902,17 @@ msgstr "Création de compte interrompue inopinément."
 #: src/components/RecipientTechnicalDetails.vue:13
 msgid "Wallet URI:"
 msgstr "URI du portefeuille"
+
+#: src/components/RecipientInfo.vue:108 src/components/RecipientInfo.vue:114
+#: src/components/RecipientInfo.vue:117 src/components/RecipientInfo.vue:131
+#: src/components/RecipientInfo.vue:132 src/components/RecipientInfo.vue:137
+#: src/components/RecipientInfo.vue:42 src/components/RecipientInfo.vue:43
+#: src/components/RecipientInfo.vue:59 src/components/RecipientInfo.vue:64
+#: src/components/RecipientInfo.vue:65 src/components/RecipientInfo.vue:68
+#: src/components/RecipientInfo.vue:70 src/components/RecipientInfo.vue:91
+#: src/components/RecipientInfo.vue:92
+msgid "Warning:"
+msgstr "Attention :"
 
 #: src/components/TransactionList.vue:232
 msgid "week"
@@ -1801,11 +1944,11 @@ msgstr ""
 "Vous avez déjà une demande de rechargement en attente. Veuillez la payer ou "
 "la supprimer avant de poursuivre"
 
-#: src/components/RecipientSelector.vue:269
+#: src/components/RecipientSelector.vue:273
 msgid "You are not allowed to send money to %{ recipientName }"
 msgstr "Vous n'êtes pas autorisé à envoyer de l'argent à %{recipientName}"
 
-#: src/components/RecipientSelector.vue:233
+#: src/components/RecipientSelector.vue:237
 msgid "You can not transfer money to your own account"
 msgstr "Vous ne pouvez pas envoyer de l'argent vers votre propre compte."
 
@@ -1874,7 +2017,6 @@ msgid "your currencies"
 msgstr "vos monnaies"
 
 #: src/components/TheBankAccountList.vue:121
-#: src/components/TheBankAccountList.vue:124
 #: src/components/TheBankAccountList.vue:83
 #: src/components/TheBankAccountList.vue:84
 msgid "your pending accounts"

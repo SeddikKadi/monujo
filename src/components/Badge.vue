@@ -9,6 +9,7 @@
     name: "Badge",
     props: {
       object: Object,
+      refreshToggle: Boolean,
     },
     data: () => {
       return {
@@ -21,18 +22,23 @@
     methods: {
       async getBusinessForFinanceBackend() {
         if (typeof this.object.isBusinessForFinanceBackend == "function") {
-          // This is using raw object from lokapi, providing an async function
           this.isBusinessForFinanceBackend =
             await this.object.isBusinessForFinanceBackend()
-        } else if (this.object.isBusinessForFinanceBackend) {
-          // This is for the virtual account tree that already resolved the previous promise
+        } else if (
+          typeof this.object._obj.isBusinessForFinanceBackend == "function"
+        ) {
           this.isBusinessForFinanceBackend =
-            this.object.isBusinessForFinanceBackend
+            await this.object._obj.isBusinessForFinanceBackend()
+        } else {
+          this.isBusinessForFinanceBackend = false
         }
       },
     },
     watch: {
       object: async function () {
+        await this.getBusinessForFinanceBackend()
+      },
+      refreshToggle: async function () {
         await this.getBusinessForFinanceBackend()
       },
     },

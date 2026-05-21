@@ -15,6 +15,7 @@
           'transaction-list-download',
         ]"
         :style="buttonStyle"
+        :disabled="disabled"
         aria-haspopup="true"
         :aria-controls="dropdownMenuId"
         :aria-expanded="isDropdownOpen"
@@ -23,7 +24,7 @@
         <span class="custom-card-related label-text">
           {{ displayLabel }}
         </span>
-        <span class="icon caret">
+        <span v-if="!disabled" class="icon caret">
           <fa-icon icon="fa-angle-down" class="fa-lg" />
         </span>
       </button>
@@ -60,6 +61,7 @@
       label: String,
       customWidth: String,
       modelValue: String,
+      disabled: Boolean,
     },
     emits: ["update:modelValue"],
     data() {
@@ -97,6 +99,7 @@
     },
     methods: {
       toggleDropdown() {
+        if (this.disabled) return
         this.isDropdownOpen = !this.isDropdownOpen
       },
       handleOutsideClick(event: MouseEvent) {
@@ -125,6 +128,7 @@
   .transaction-download-dropdown {
     display: inline-block;
     position: relative;
+    max-width: 100%;
 
     .transaction-list-download {
       display: inline-flex;

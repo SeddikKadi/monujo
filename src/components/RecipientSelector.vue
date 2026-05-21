@@ -159,6 +159,10 @@
         let currencyIds = this.$store.getters.activeVirtualAccounts.map(
           (a: any) => a.currencyId
         )
+        console.log(
+          "ownCurrenciesRecipients",
+          this.recipientBatchLoader.elements
+        )
         return this.recipientBatchLoader.elements.value.filter((p: any) => {
           return currencyIds.indexOf(p.backendId) > -1
         })

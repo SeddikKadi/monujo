@@ -95,6 +95,9 @@
 
   @Options({
     name: "PendingAccounts",
+    props: {
+      refreshToggle: Boolean,
+    },
     emits: ["hasAccounts"],
     data() {
       return {
@@ -103,6 +106,11 @@
     },
     mounted() {
       this.updatePendingAccount()
+    },
+    watch: {
+      refreshToggle() {
+        this.updatePendingAccount()
+      },
     },
     computed: {
       pendingUserAccounts(): Array<any> {

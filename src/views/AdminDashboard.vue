@@ -12,6 +12,7 @@
             <div class="accounts card custom-card custom-card-padding">
               <TheCurrencyList
                 @refreshTransaction="refreshTransaction"
+                @refreshAccounts="refreshAccounts"
                 @currencySelected="currencySelected"
                 :refreshToggle="refreshAccountsToggle"
                 :currency="currency"
@@ -22,7 +23,10 @@
               v-show="showPendingAccounts"
               class="mt-5 accounts card custom-card custom-card-padding"
             >
-              <PendingAccounts @hasAccounts="showPendingAccounts = $event" />
+              <PendingAccounts
+                :refreshToggle="refreshAccountsToggle"
+                @hasAccounts="showPendingAccounts = $event"
+              />
             </div>
           </div>
           <div
@@ -32,6 +36,7 @@
           >
             <div class="accounts card custom-card custom-card-padding">
               <PendingCredits
+                :refreshToggle="refreshAccountsToggle"
                 @hasCredits="showPendingCredits = $event"
                 @refreshTransaction="refreshTransaction"
                 @refreshAccounts="refreshAccounts"

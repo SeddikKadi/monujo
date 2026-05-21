@@ -37,7 +37,7 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
           commit("auth_error")
           throw err
         }
-        dispatch("setupAfterLogin")
+        await dispatch("setupAfterLogin")
       },
       async setupAfterLogin({ commit, dispatch }: any) {
         try {
@@ -62,7 +62,7 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
       async fetchAccounts({ commit, state }: any) {
         commit("setAccountsLoading", true)
         commit("setAccountsLoadingErrors", [])
-        lokApiService.clearBackendCache()
+        lokApiService.clearCaches()
         let virtualAccountTreeArtifacts
         try {
           virtualAccountTreeArtifacts =
@@ -115,9 +115,7 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
         // Might throw some exception, leave it to the component
         // to display error messages.
         const userAccount = await backend.createUserAccount({ password })
-        // XXXvlab: hopin' to provide a better way (and generalized)
-        // to handle all caches in lokapi in an upcoming version.
-        lokApiService.clearBackendCache()
+        lokApiService.clearCaches()
         dispatch("setBackends")
         dispatch("fetchAccounts")
         return userAccount
@@ -160,7 +158,14 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
         try {
           const backends = await lokApiService.getBackends()
           const results = await Promise.all(
-            Object.values(backends).map((b: any) => b.canSearchAllRecipients())
+            Object.values(backends).map(async (b: any) => {
+              const r = await b.canSearchAllRecipients()
+              console.log(
+                `[admin-rights] canSearchAllRecipients(${b.internalId}):`,
+                r
+              )
+              return r
+            })
           )
           hasRight = results.some((r: boolean) => r)
         } catch (err) {
@@ -326,7 +331,11 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
       },
       pathologicalVirtualAccounts: (state: any) => {
         return state.virtualAccountTree.filter(
-          (a: any) => a.isActiveAccount === false && a.active === true
+          (a: any) =>
+            a.isActiveAccountSupported &&
+            ((a.status === "active" && a.isActiveAccount === false) ||
+              ((a.status === "inactive" || a.status === "blocked") &&
+                a.isActiveAccount === true))
         )
       },
       activeVirtualAccounts: (state: any) => {
@@ -336,8 +345,17 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
             a instanceof Array
         )
       },
+      pendingVirtualAccounts: (state: any) => {
+        return state.virtualAccountTree.filter(
+          (a: any) => a.status === "to_confirm"
+        )
+      },
       inactiveVirtualAccounts: (state: any) => {
-        return state.virtualAccountTree.filter((a: any) => a.active === false)
+        return state.virtualAccountTree.filter(
+          (a: any) =>
+            (a.status === "inactive" || a.status === "blocked") &&
+            !(a.isActiveAccountSupported && a.isActiveAccount === true)
+        )
       },
       creditableMoneyAccounts: (state: any) => {
         return state.moneyAccounts.filter(

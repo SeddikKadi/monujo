@@ -1,11 +1,11 @@
 <template>
   <loading
-    v-if="!adminBackends.length"
+    v-if="!adminUserAccounts.length"
     v-model:active="currenciesLoading"
     :can-cancel="false"
     :is-full-page="false"
   />
-  <div class="active" v-if="!currenciesLoading || adminBackends.length">
+  <div class="active" v-if="!currenciesLoading || adminUserAccounts.length">
     <a
       @click="toggleRefreshBalance()"
       :title="$gettext('Refresh balance and transaction list')"
@@ -26,20 +26,22 @@
         />
       </span>
     </a>
-    <div class="section-card" v-if="adminBackends.length !== 0">
+    <div class="section-card" v-if="adminUserAccounts.length !== 0">
       <h2 class="custom-card-title title-card">
         {{ $gettext("your currencies") }}
       </h2>
-      <div v-for="b in adminBackends">
+      <div v-for="entry in adminUserAccounts">
         <CurrencyItem
-          v-for="a in b.userAccounts"
           class="mb-5"
           :class="{
-            selected: b?.internalId === currency?.internalId,
+            selected: entry.userAccount?.internalId === currency?.internalId,
           }"
-          @currencySelected="$emit('currencySelected', b)"
-          :isCurrencySelected="b?.internalId === currency?.internalId"
-          :currency="a"
+          @currencySelected="$emit('currencySelected', entry.userAccount)"
+          :isCurrencySelected="
+            entry.userAccount?.internalId === currency?.internalId
+          "
+          :currency="entry.userAccount"
+          :showAccountId="entry.showAccountId"
           :refreshCurrency="refreshCurrency"
           @update:currencyRefreshing="(x) => (currencyRefreshing = x)"
         >
@@ -67,7 +69,10 @@
       return {
         currenciesLoading: true,
         currencyRefreshing: false,
-        adminBackends: [],
+        adminUserAccounts: [] as {
+          userAccount: any
+          showAccountId: boolean
+        }[],
         refreshCurrency: false,
       }
     },
@@ -86,7 +91,7 @@
           this.toggleRefreshBalance()
         }, Math.max(10000, currenciesRefreshInterval * 1000))
       }
-      this.adminBackends = await this.getAdminBackends()
+      this.adminUserAccounts = await this.getAdminUserAccounts()
       this.currenciesLoading = false
     },
     unmounted() {
@@ -98,13 +103,13 @@
     computed: {},
     watch: {
       async refreshToggle(newval, oldVal): Promise<void> {
-        this.adminBackends = await this.getAdminBackends()
+        this.adminUserAccounts = await this.getAdminUserAccounts()
         this.currencyRefreshing = true
         this.refreshCurrency = { retryUntilChange: true }
       },
     },
     methods: {
-      async getAdminBackends() {
+      async getAdminUserAccounts() {
         const backends = await this.$lokapi.getBackends()
         if (!backends) {
           return []
@@ -130,14 +135,37 @@
         const filteredBackendList = backendList.filter(
           (backend, index) => backendChecks[index]
         )
-        if (!this.currency && filteredBackendList.length > 0) {
-          this.$emit("currencySelected", filteredBackendList[0])
+
+        // Flatten all user accounts from filtered backends
+        const allUserAccounts: any[] = []
+        for (const backend of filteredBackendList as any[]) {
+          for (const ua of Object.values(backend.userAccounts || {})) {
+            allUserAccounts.push(ua)
+          }
         }
-        return filteredBackendList
+
+        // Detect duplicates: user accounts sharing the same
+        // backend have the same currency and need disambiguation.
+        const backendCounts: Record<string, number> = {}
+        for (const ua of allUserAccounts) {
+          const bid = (ua as any).backend?.internalId
+          backendCounts[bid] = (backendCounts[bid] || 0) + 1
+        }
+
+        const entries = allUserAccounts.map((ua: any) => ({
+          userAccount: ua,
+          showAccountId: backendCounts[ua.backend?.internalId] > 1,
+        }))
+
+        if (!this.currency && entries.length > 0) {
+          this.$emit("currencySelected", entries[0].userAccount)
+        }
+        return entries
       },
       async toggleRefreshBalance() {
         this.currencyRefreshing = true
         this.refreshCurrency = !this.refreshCurrency
+        this.$emit("refreshAccounts")
       },
     },
   })

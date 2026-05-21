@@ -344,7 +344,10 @@ fetchConfig("config.json").then(async (config: any) => {
         label: $gettext("Show transactions"),
         icon: "list",
         action: async () => {
-          const account = await lokApiService.getAccountFromRecipient(obj)
+          const account = await lokApiService.getAccountFromRecipient(
+            obj,
+            obj.fromUserAccount
+          )
           modal.open("TransactionListModal", {
             params: { account, showAll: true },
           })

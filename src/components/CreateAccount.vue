@@ -355,9 +355,20 @@
       },
 
       triggerFileInput(event: any) {
-        event.target.parentElement.parentElement
-          .querySelector("input[type=file]")
-          .click()
+        const button = event.currentTarget
+        const container = button.parentElement
+        const fileInput = container.querySelector("input[type=file]")
+        console.log(
+          "triggerFileInput: event.target =",
+          event.target.tagName,
+          "| event.currentTarget =",
+          button.tagName,
+          "| container =",
+          container.tagName,
+          "| fileInput found =",
+          !!fileInput
+        )
+        fileInput.click()
       },
       registerWalletHandle: applyDecorators(
         [showSpinnerMethod(".main")],
@@ -392,6 +403,16 @@
           } catch (err) {
             throw new UIError(this.$gettext("Unexpected format of file"), err)
           }
+          const backendCurrency = backend.jsonData?.type?.split(":")[1]
+          const walletCurrency = fileData?.server?.name
+          console.log(
+            "registerWallet: backend expects currency =",
+            backendCurrency,
+            "| wallet currency =",
+            walletCurrency,
+            "| backend type =",
+            backend.jsonData?.type
+          )
           try {
             await backend.registerWallet(fileData)
           } catch (err: any) {
@@ -423,7 +444,7 @@
               err
             )
           }
-          this.$lokapi.clearBackendCache()
+          this.$lokapi.clearCaches()
           this.$store.dispatch("setBackends")
           this.$store.dispatch("fetchAccounts")
 

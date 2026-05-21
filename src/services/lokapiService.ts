@@ -143,7 +143,9 @@ export class LokAPI extends LokAPIBrowserAbstract {
           currencyId: userAccount.parent.internalId,
           isBusinessForFinanceBackend,
           active: userAccount.active, // FTM only the UserAccount is active or not
+          status: userAccount.status,
           isActiveAccount,
+          isActiveAccountSupported: !!userAccount.isActiveAccount,
           id: userAccount.internalId,
           isTopUpAllowed: userAccount.isTopUpAllowed,
           subAccounts: [],
@@ -188,7 +190,9 @@ export class LokAPI extends LokAPIBrowserAbstract {
               userAccountId: account.parent.internalId,
               currencyId: account.parent.parent.internalId,
               active: account.parent.active, // FTM only the UserAccount is active or not
+              status: account.parent.status,
               isActiveAccount: isActiveAccount,
+              isActiveAccountSupported: !!userAccount.isActiveAccount,
               id: account.internalId,
               isTopUpAllowed: userAccount.isTopUpAllowed,
               _obj: account,
@@ -239,13 +243,14 @@ export class LokAPI extends LokAPIBrowserAbstract {
     return { virtualAccountTree, allMoneyAccounts, errors }
   }
 
-  async getAccountFromRecipient(recipient: any) {
+  async getAccountFromRecipient(recipient: any, adminUserAccount?: any) {
     const virtualAccountTree: any[] = []
     const sortOrder = (a: any, b: any) =>
       `${a.backend}${a.name}` < `${b.backend}${b.name}` ? -1 : 1
 
     const userAccount = await this.getUserAccountsFromWalletUri(
-      recipient.internalId
+      recipient.internalId,
+      adminUserAccount
     )
 
     let vals: any[] = await Promise.allSettled([
@@ -297,7 +302,9 @@ export class LokAPI extends LokAPIBrowserAbstract {
       currencyId: userAccount.parent.internalId,
       isBusinessForFinanceBackend,
       isActiveAccount,
+      isActiveAccountSupported: !!userAccount.isActiveAccount,
       active: userAccount.active, // FTM only the UserAccount is active or not
+      status: userAccount.status,
       id: userAccount.internalId,
       isTopUpAllowed: userAccount.isTopUpAllowed,
       subAccounts: [],
@@ -336,7 +343,9 @@ export class LokAPI extends LokAPIBrowserAbstract {
           userAccountId: account.parent.internalId,
           currencyId: account.parent.parent.internalId,
           isActiveAccount,
+          isActiveAccountSupported: !!userAccount.isActiveAccount,
           active: account.parent.active, // FTM only the UserAccount is active or not
+          status: account.parent.status,
           id: account.internalId,
           isTopUpAllowed: userAccount.isTopUpAllowed,
           _obj: account,
@@ -402,13 +411,6 @@ export class LokAPI extends LokAPIBrowserAbstract {
       .filter((accountWithrequiresUnlock: any) => accountWithrequiresUnlock[1])
       .map((accountWithrequiresUnlock: any) => accountWithrequiresUnlock[0])
   }
-
-  // XXXvlab: this is less than ideal way to handle the cache
-  // clearance. Waiting for a generalized cache management
-  clearBackendCache() {
-    this._backends = null
-    this._backendCredentials = null
-  }
 }
 
 // utilities function
@@ -444,6 +446,9 @@ function makeUIProxyRecipient(recipient: t.IRecipient, $gettext: any) {
       }
       if (prop == "dropDownId") {
         return recipient
+      }
+      if (prop == "clearCaches") {
+        return (recipient as any).clearCaches?.bind(recipient)
       }
       if (prop == "toggleFavorite") {
         return async function toggleFavorite(this: any): Promise<void> {

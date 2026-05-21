@@ -10,7 +10,11 @@
     <div class="custom-inner-card card px-5 py-2 is-flex">
       <div class="is-flex-grow-1 account-title">
         <slot name="name">default name</slot>
-        <Badge v-if="$config.disableBadges !== true" :object="account" />
+        <Badge
+          v-if="$config.disableBadges !== true && isSub !== true"
+          :object="account"
+          :refreshToggle="refreshBadge"
+        />
         <div v-if="isTemporarilyUnavailable" class="account-backend error-msg">
           {{ $gettext("Temporarily unavailable - please refresh") }}
         </div>
@@ -78,6 +82,7 @@
         @accountSelected="$emit('accountSelected', account)"
         :account="account"
         :showInactiveAccountBalance="showInactiveAccountBalance"
+        :refreshToggle="refreshSub"
       >
         <template v-slot:name>{{ account.name() }}</template>
       </BankAccountItem>
@@ -108,10 +113,13 @@
       showSubAccounts: Boolean,
       disableDropDown: Boolean,
       showInactiveAccountBalance: Boolean,
+      refreshToggle: Boolean,
     },
     data() {
       return {
         barterLimits: {},
+        refreshBadge: false,
+        refreshSub: false,
       }
     },
     computed: {
@@ -129,22 +137,35 @@
       ...mapGetters(["numericFormat", "numericPlaceholder"]),
     },
     async mounted() {
-      if (this.account.isBarter) {
-        const o = this.account._obj
-        let min, max
-        try {
-          ;[min, max] = await Promise.all([o.getLowLimit(), o.getHighLimit()])
-        } catch (err) {
-          console.error(
-            "An unexpected server error occurred while fetching barter limits",
-            err
-          )
-          return
-        }
-        this.barterLimits = { min, max }
-      }
+      await this.fetchBarterLimits()
+    },
+    watch: {
+      refreshToggle: async function () {
+        this.refreshBadge = !this.refreshBadge
+        this.refreshSub = !this.refreshSub
+        await this.fetchBarterLimits()
+      },
+      account: async function () {
+        await this.fetchBarterLimits()
+      },
     },
     methods: {
+      async fetchBarterLimits() {
+        if (this.account.isBarter) {
+          const o = this.account._obj
+          let min, max
+          try {
+            ;[min, max] = await Promise.all([o.getLowLimit(), o.getHighLimit()])
+          } catch (err) {
+            console.error(
+              "An unexpected server error occurred while fetching barter limits",
+              err
+            )
+            return
+          }
+          this.barterLimits = { min, max }
+        }
+      },
       accountSelected(account: any) {
         this.$emit("accountSelected", account)
       },
@@ -163,6 +184,9 @@
   .account {
     font-size: 1.2rem;
     cursor: pointer;
+    &:not(.active) {
+      cursor: default;
+    }
   }
   .custom-inner-card {
     container-type: inline-size;
@@ -221,6 +245,7 @@
   }
   .account:not(.subaccount) {
     &:not(.active) {
+      opacity: 0.6;
       .custom-inner-card {
         border: 2px #eee solid;
         box-shadow: none;

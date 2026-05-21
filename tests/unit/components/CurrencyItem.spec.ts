@@ -12,14 +12,6 @@ vi.mock("vuex", () => ({
   }),
 }))
 
-let mockIsMultiCurrency = false
-
-vi.mock("@/utils/vuex", () => ({
-  mapModuleState: () => ({
-    isMultiCurrency: { get: () => mockIsMultiCurrency },
-  }),
-}))
-
 const { BackendUnavailableTransient } = vi.hoisted(() => ({
   BackendUnavailableTransient: class BackendUnavailableTransient {},
 }))
@@ -50,7 +42,10 @@ const createGlobalMocks = (msgErrorMock: ReturnType<typeof vi.fn>) => ({
     DropdownMenu: true,
   },
   mocks: {
-    $gettext: (msg: string) => msg,
+    $gettext: (msg: string, vars?: Record<string, unknown>) =>
+      vars
+        ? msg.replace(/%\{\s*(\w+)\s*\}/g, (_, k) => String(vars[k] ?? ""))
+        : msg,
     $msg: { error: msgErrorMock },
   },
 })
@@ -163,14 +158,18 @@ describe("CurrencyItem.vue", () => {
     })
   })
 
-  describe("isMultiCurrency", () => {
-    it("displays backend name when isMultiCurrency is true", async () => {
-      mockIsMultiCurrency = true
+  describe("showAccountId", () => {
+    it("displays account id when showAccountId is true", async () => {
       const msgErrorMock = vi.fn()
-      const currency = { ...createMockCurrency(), backend: { internalId: "test-backend" } }
+      const currency = { ...createMockCurrency(), internalId: "test-backend" }
 
       const wrapper = mount(CurrencyItem, {
-        props: { currency, isCurrencySelected: false, disableDropDown: true },
+        props: {
+          currency,
+          isCurrencySelected: false,
+          disableDropDown: true,
+          showAccountId: true,
+        },
         global: createGlobalMocks(msgErrorMock),
       })
 
@@ -178,18 +177,20 @@ describe("CurrencyItem.vue", () => {
 
       const backendEl = wrapper.find(".currency-backend:not(.error-msg)")
       expect(backendEl.exists()).toBe(true)
-      expect(backendEl.text()).toBe("test-backend")
-
-      mockIsMultiCurrency = false
+      expect(backendEl.text()).toBe("as test-backend")
     })
 
-    it("does not display backend name when isMultiCurrency is false", async () => {
-      mockIsMultiCurrency = false
+    it("does not display account id when showAccountId is false", async () => {
       const msgErrorMock = vi.fn()
-      const currency = { ...createMockCurrency(), backend: { internalId: "test-backend" } }
+      const currency = { ...createMockCurrency(), internalId: "test-backend" }
 
       const wrapper = mount(CurrencyItem, {
-        props: { currency, isCurrencySelected: false, disableDropDown: true },
+        props: {
+          currency,
+          isCurrencySelected: false,
+          disableDropDown: true,
+          showAccountId: false,
+        },
         global: createGlobalMocks(msgErrorMock),
       })
 

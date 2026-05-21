@@ -57,6 +57,7 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
     getters = {
       availableVirtualAccounts: [],
       activeVirtualAccounts: [],
+      pendingVirtualAccounts: [],
       inactiveVirtualAccounts: [],
       pathologicalVirtualAccounts: [],
       getBackends: () => [],
@@ -71,7 +72,9 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
 
   const makeAccount = (id: string, overrides: Record<string, any> = {}) => ({
     active: true,
+    status: "active",
     isActiveAccount: true,
+    isActiveAccountSupported: true,
     _obj: { internalId: id },
     name: () => id,
     ...overrides,
@@ -92,6 +95,7 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
   it("shows both 'your accounts' and 'Disabled accounts' sections when both active and pathological accounts exist", () => {
     const activeAccount = makeAccount("A")
     const pathologicalAccount = makeAccount("Broken", {
+      status: "active",
       isActiveAccount: false,
     })
     getters.availableVirtualAccounts = [activeAccount]
@@ -106,6 +110,7 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
 
   it("shows only 'Disabled accounts' section when only pathological accounts exist", () => {
     const pathologicalAccount = makeAccount("Broken", {
+      status: "active",
       isActiveAccount: false,
     })
     getters.availableVirtualAccounts = []
@@ -121,8 +126,8 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
   it("renders correct number of BankAccountItems for both active and pathological accounts", () => {
     const activeAccounts = [makeAccount("Active")]
     const pathologicalAccounts = [
-      makeAccount("Broken 1", { isActiveAccount: false }),
-      makeAccount("Broken 2", { isActiveAccount: false }),
+      makeAccount("Broken 1", { status: "active", isActiveAccount: false }),
+      makeAccount("Broken 2", { status: "active", isActiveAccount: false }),
     ]
     getters.availableVirtualAccounts = activeAccounts
     getters.activeVirtualAccounts = activeAccounts
@@ -132,5 +137,62 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
 
     const accountItems = wrapper.findAllComponents({ name: "BankAccountItem" })
     expect(accountItems.length).toBe(activeAccounts.length + pathologicalAccounts.length)
+  })
+
+  it("shows 'your pending accounts' section for to_confirm accounts", () => {
+    const pendingAccount = makeAccount("Pending", {
+      active: false,
+      status: "to_confirm",
+      isActiveAccount: false,
+    })
+    getters.pendingVirtualAccounts = [pendingAccount]
+
+    const wrapper = mountComponent()
+
+    expect(wrapper.text()).toContain("your pending accounts")
+  })
+
+  it("shows 'Inactive accounts' section for inactive/blocked accounts", () => {
+    const inactiveAccount = makeAccount("Inactive", {
+      active: false,
+      status: "inactive",
+      isActiveAccount: false,
+    })
+    getters.inactiveVirtualAccounts = [inactiveAccount]
+
+    const wrapper = mountComponent()
+
+    expect(wrapper.text()).toContain("Inactive accounts")
+    expect(wrapper.text()).toContain("These accounts were disabled")
+  })
+
+  it("shows all three sections when accounts span pending, inactive, and pathological", () => {
+    const activeAccount = makeAccount("A")
+    const pendingAccount = makeAccount("Pending", {
+      active: false,
+      status: "to_confirm",
+    })
+    const inactiveAccount = makeAccount("Blocked", {
+      active: false,
+      status: "blocked",
+      isActiveAccount: false,
+    })
+    const pathologicalAccount = makeAccount("Desync", {
+      status: "active",
+      isActiveAccount: false,
+    })
+
+    getters.availableVirtualAccounts = [activeAccount]
+    getters.activeVirtualAccounts = [activeAccount]
+    getters.pendingVirtualAccounts = [pendingAccount]
+    getters.inactiveVirtualAccounts = [inactiveAccount]
+    getters.pathologicalVirtualAccounts = [pathologicalAccount]
+
+    const wrapper = mountComponent(activeAccount)
+
+    expect(wrapper.text()).toContain("your accounts")
+    expect(wrapper.text()).toContain("your pending accounts")
+    expect(wrapper.text()).toContain("Inactive accounts")
+    expect(wrapper.text()).toContain("Disabled accounts")
   })
 })

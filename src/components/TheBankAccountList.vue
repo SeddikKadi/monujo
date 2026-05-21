@@ -116,10 +116,7 @@
       </div>
     </div>
 
-    <div
-      class="inactive section-card"
-      v-if="inactiveVirtualAccounts.length > 0"
-    >
+    <div class="inactive section-card" v-if="pendingVirtualAccounts.length > 0">
       <h2 class="custom-card-title">
         {{ $gettext("your pending accounts") }}
       </h2>
@@ -131,6 +128,25 @@
               " approved, these accounts will become usable."
           )
         }}
+      </p>
+      <BankAccountItem
+        v-for="account in pendingVirtualAccounts"
+        class="mb-5"
+        :account="account"
+      >
+        <template v-slot:name>{{ account.name() }}</template>
+      </BankAccountItem>
+    </div>
+
+    <div
+      class="inactive section-card"
+      v-if="inactiveVirtualAccounts.length > 0"
+    >
+      <h2 class="custom-card-title">
+        {{ $gettext("Inactive accounts") }}
+      </h2>
+      <p>
+        {{ $gettext("These accounts were disabled") }}
       </p>
       <BankAccountItem
         v-for="account in inactiveVirtualAccounts"
@@ -226,6 +242,7 @@
       ...mapGetters([
         "availableVirtualAccounts",
         "activeVirtualAccounts",
+        "pendingVirtualAccounts",
         "inactiveVirtualAccounts",
         "getBackends",
         "getUnconfiguredBackends",
@@ -324,9 +341,6 @@
     margin: auto;
     justify-content: center;
     display: flex;
-  }
-  .account:not(.active) {
-    opacity: 0.6;
   }
   .account:not(.selected) :deep(.custom-inner-card) {
     opacity: 0.8;

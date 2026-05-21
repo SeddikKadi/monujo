@@ -13,8 +13,8 @@
         <div v-if="isTemporarilyUnavailable" class="currency-backend error-msg">
           {{ $gettext("Temporarily unavailable - please refresh") }}
         </div>
-        <div v-if="isMultiCurrency" class="currency-backend">
-          {{ currency?.backend?.internalId }}
+        <div v-if="showAccountId" class="currency-backend">
+          {{ $gettext("as %{ id }", { id: currency?.internalId }) }}
         </div>
       </div>
       <div class="is-align-items-center is-flex bal">
@@ -47,7 +47,7 @@
 <script lang="ts">
   import { mapGetters } from "vuex"
   import { Options, Vue } from "vue-class-component"
-  import { mapModuleState } from "@/utils/vuex"
+
   import { e as LokapiExc } from "@lokavaluto/lokapi-browser"
   import { showLoadingClassMethod } from "@/utils/showSpinner"
   import applyDecorators from "@/utils/applyDecorators"
@@ -64,6 +64,7 @@
       isCurrencySelected: Boolean,
       currency: Object,
       disableDropDown: Boolean,
+      showAccountId: Boolean,
       refreshCurrency: [Boolean, Object],
       currencyRefreshing: Boolean,
     },
@@ -82,7 +83,7 @@
           this.currency[0] instanceof LokapiExc.BackendUnavailableTransient
         )
       },
-      ...mapModuleState("lokapi", ["isMultiCurrency"]),
+
       ...mapGetters(["numericFormat", "numericPlaceholder"]),
     },
     async mounted() {

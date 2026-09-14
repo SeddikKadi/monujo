@@ -6,7 +6,7 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title is-title-shrink">
-            {{ $gettext("Request money") }} - 1/3
+            {{ $gettext("Request money") }}
           </p>
           <button class="delete" aria-label="close" @click="close()"></button>
         </header>
@@ -92,7 +92,7 @@
             </a>
           </span>
           <p class="modal-card-title is-title-shrink">
-            {{ $gettext("Request money") }} - 2/3
+            {{ $gettext("Request money") }}
           </p>
           <button class="delete" aria-label="close" @click="close()"></button>
         </header>
@@ -116,7 +116,7 @@
             </a>
           </span>
           <p class="modal-card-title is-title-shrink">
-            {{ $gettext("Request money") }} - 3/3
+            {{ $gettext("Request money") }}
           </p>
           <button class="delete" aria-label="close" @click="close()"></button>
         </header>

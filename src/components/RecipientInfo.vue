@@ -768,6 +768,20 @@
     align-items: center;
     justify-content: flex-start;
     gap: 0.5rem;
+
+    .recipient-item {
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+
+    .recipient-dropdown {
+      flex-shrink: 0;
+    }
+
+    :deep(.recipient-name) {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
 
   .barter-label {

@@ -1,6 +1,6 @@
 <template>
   <div v-if="menuItems.length > 1" class="dropdown">
-    <div class="dropdown-trigger">
+    <div ref="trigger" class="dropdown-trigger">
       <span
         class="
           button
@@ -19,9 +19,12 @@
       </span>
     </div>
     <div
-      class="dropdown-menu"
+      v-if="isDropdownOpen"
+      ref="menu"
+      class="dropdown-menu contextual-dropdown-menu"
       :id="`dropdown-${object.dropDownId}-menu`"
       role="menu"
+      @click.stop="closeDropdown"
     >
       <div class="dropdown-content">
         <a
@@ -34,7 +37,7 @@
           <div class="mr-1 icon-container">
             <fa-icon :icon="item.icon" />
           </div>
-          <div class="is-small ml-1">{{ item.label }}</div>
+          <div class="is-small ml-1 item-label">{{ item.label }}</div>
         </a>
       </div>
     </div>
@@ -78,26 +81,57 @@
     props: {
       object: Object,
     },
+    data() {
+      return {
+        isDropdownOpen: false,
+      }
+    },
     computed: {
       menuItems(): any[] {
         return this.$dropdownMenu.listItems(this.object)
       },
     },
-    unmounted() {
-      if (this.handleCloseContextualMenu) {
-        document.removeEventListener("click", this.handleCloseContextualMenu)
-        this.handleCloseContextualMenu = null
-      }
+    watch: {
+      menuItems() {
+        if (this.menuItems.length < 2) this.closeDropdown()
+      },
     },
     mounted() {
-      this.handleCloseContextualMenu = () => {
-        this.$el.classList.remove("is-active")
-      }
-      document.addEventListener("click", this.handleCloseContextualMenu)
+      document.addEventListener("click", this.closeDropdown)
+      document.addEventListener("scroll", this.closeDropdown, true)
+      window.addEventListener("resize", this.positionDropdown)
+    },
+    beforeUnmount() {
+      document.removeEventListener("click", this.closeDropdown)
+      document.removeEventListener("scroll", this.closeDropdown, true)
+      window.removeEventListener("resize", this.positionDropdown)
     },
     methods: {
-      toggleDropdown() {
-        this.$el.classList.toggle("is-active")
+      closeDropdown() {
+        this.isDropdownOpen = false
+      },
+      async toggleDropdown() {
+        this.isDropdownOpen = !this.isDropdownOpen
+        await this.$nextTick()
+        this.positionDropdown()
+      },
+      positionDropdown() {
+        const menu = this.$refs.menu as HTMLElement | undefined
+        if (!menu) return
+
+        const { left, bottom } = (
+          this.$refs.trigger as HTMLElement
+        ).getBoundingClientRect()
+        menu.style.top = `${bottom + 4}px`
+        menu.style.left = `${Math.max(
+          8,
+          Math.min(
+            left,
+            document.documentElement.clientWidth -
+              menu.getBoundingClientRect().width -
+              8
+          )
+        )}px`
       },
     },
   })
@@ -105,20 +139,43 @@
 </script>
 <style lang="scss" scoped>
   .dropdown-item {
-    font-size: inherit;
+    font-size: 1em;
     -webkit-user-select: none; /* Chrome, Safari, Opera */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Standard syntax */
   }
-  .dropdown-menu {
-    @media screen and (max-width: 768px) {
-      position: absolute;
-      right: 0em;
-      left: unset;
+  .contextual-dropdown-menu {
+    font-size: 1rem;
+    display: block;
+    position: fixed;
+    width: max-content;
+    min-width: 0;
+    max-width: max(23em, calc(100% - 16px));
+    padding: 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.16);
+    z-index: 100; // Above modal cards, including nested modals.
+
+    .dropdown-item {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      white-space: normal;
+      text-align: left;
+      transition: background-color 150ms ease;
+
+      &:hover,
+      &:focus-visible {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
     }
+  }
+  .item-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .icon-container {
     width: 1em;
+    flex-shrink: 0;
   }
 </style>

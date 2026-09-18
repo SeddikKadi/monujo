@@ -1,3 +1,7 @@
+require 'spaceship'
+require_relative 'patches/spaceship_service_key_fallback'
+SpaceshipServiceKeyFallback.install!
+
 
 
 to_publish = Hash.new

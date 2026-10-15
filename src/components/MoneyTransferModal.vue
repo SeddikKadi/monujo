@@ -198,6 +198,7 @@
       const account = getUserAccount(opts.account)
 
       this.account = account
+      this.ownSelectedAccount = opts.account
       // No need to declare in data, no live mechanism required here
       this.selectedBackend = makeUIProxyBackend(account.parent, this.$gettext)
       this.prepareTransactionSignalHandler = null
@@ -253,13 +254,30 @@
         return this.toPaymentStage(config)
       },
       async toPaymentStage(config: any): Promise<void> {
+        if (this.ownSelectedAccount.currencyId !== config.recipient.backendId) {
+          this.$msg.error(
+            this.$gettext(
+              "The selected account and recipient must use the same currency."
+            )
+          )
+          return
+        }
+        if (
+          this.transactionType === "paymentRequest" &&
+          this.$modal.args.value[0].paymentRequest?.senderWalletUri !==
+            this.account.internalId
+        ) {
+          this.$msg.error(
+            this.$gettext(
+              "This payment request must be paid from its designated sender account."
+            )
+          )
+          return
+        }
+
         this.selectedRecipient = config.recipient
         this.selectedRecipient.currencySymbol =
           await config.recipient.getSymbol()
-        this.ownSelectedAccount =
-          this.$store.getters.activeVirtualAccounts.find(
-            (va: any) => va.currencyId === config.recipient.backendId
-          )
         this.$modal.next()
         this.plannedTransactions = []
         this.errors = false

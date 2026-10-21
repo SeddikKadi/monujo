@@ -215,7 +215,7 @@
 
   import TransactionItem from "./TransactionItem.vue"
   import UseBatchLoading from "@/services/UseBatchLoading"
-  import { getUserAccount } from "@/utils/account"
+  import { getRecipientSearch, getUserAccount } from "@/utils/account"
 
   import "vue-datepicker-next/index.css"
   import "vue-search-select/dist/VueSearchSelect.css"
@@ -258,9 +258,8 @@
       this.refreshAccounts = opts.refreshAccounts
 
       const account = getUserAccount(this.account)
-      const backend = account.parent
       this.recipientBatchLoader = UseBatchLoading({
-        genFactory: backend.searchRecipients.bind(backend),
+        genFactory: getRecipientSearch(account),
         needMorePredicate: () => {
           const div = this.$recipients
           if (!div) return false

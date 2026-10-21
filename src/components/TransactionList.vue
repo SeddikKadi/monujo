@@ -203,7 +203,7 @@
   import "@/assets/datepicker.scss"
 
   import { mapModuleState } from "@/utils/vuex"
-  import { getUserAccount } from "@/utils/account"
+  import { getRecipientSearch, getUserAccount } from "@/utils/account"
   import UseBatchLoading from "@/services/UseBatchLoading"
 
   import { showSpinnerMethod } from "@/utils/showSpinner"
@@ -254,10 +254,8 @@
 
     created() {
       const account = getUserAccount(this.account)
-      const backend = account.parent
-      const searchRecipients = backend.searchRecipients
       this.recipientBatchLoader = UseBatchLoading({
-        genFactory: searchRecipients.bind(backend),
+        genFactory: getRecipientSearch(account, this.caller),
         needMorePredicate: () => {
           const div = this.$recipients
           if (!div) return false

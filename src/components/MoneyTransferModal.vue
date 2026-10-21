@@ -200,7 +200,11 @@
       this.account = account
       this.ownSelectedAccount = opts.account
       // No need to declare in data, no live mechanism required here
-      this.selectedBackend = makeUIProxyBackend(account.parent, this.$gettext)
+      this.selectedBackend = makeUIProxyBackend(
+        account.parent,
+        this.$gettext,
+        account
+      )
       this.prepareTransactionSignalHandler = null
     },
     mounted() {
@@ -270,6 +274,20 @@
           this.$msg.error(
             this.$gettext(
               "This payment request must be paid from its designated sender account."
+            )
+          )
+          return
+        }
+        // An admin credit is signed by the issuing admin account, not by
+        // the beneficiary account given to this modal.
+        if (
+          this.transactionType !== "adminCredit" &&
+          config.recipient.fromUserAccount?.internalId !==
+            this.account.internalId
+        ) {
+          this.$msg.error(
+            this.$gettext(
+              "This recipient can not be paid from the selected account."
             )
           )
           return

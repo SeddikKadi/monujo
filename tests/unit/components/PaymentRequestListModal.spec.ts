@@ -9,7 +9,8 @@ vi.mock("@/services/UseBatchLoading", () => ({
   default: vi.fn(),
 }))
 
-vi.mock("@/utils/account", () => ({
+vi.mock("@/utils/account", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/account")>()),
   getUserAccount: vi.fn(),
 }))
 
@@ -28,7 +29,7 @@ function mountModal(paymentRequestList: any[] = []) {
   vi.mocked(UseBatchLoading).mockReturnValue(batchLoader as any)
   vi.mocked(getUserAccount).mockReturnValue({
     getPaymentRequests,
-    parent: { searchRecipients },
+    searchRecipients,
   } as any)
 
   const modal = {

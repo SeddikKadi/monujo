@@ -484,12 +484,21 @@ function makeUIProxyRecipient(recipient: t.IRecipient, $gettext: any) {
   return proxy
 }
 
-export function makeUIProxyBackend(backend: t.IBackend, $gettext: any) {
+/**
+ * Wrap ``backend`` so that its recipient search reports errors to the
+ * user and, when ``fromUserAccount`` is given, searches the recipients
+ * this user account of the backend pays.
+ */
+export function makeUIProxyBackend(
+  backend: t.IBackend,
+  $gettext: any,
+  fromUserAccount?: any
+) {
   return new Proxy(backend, {
     get: (target, prop, receiver) => {
       if (prop === "searchRecipients") {
         return async function* (value: string): AsyncGenerator<t.IRecipient> {
-          const recipients = backend.searchRecipients(value)
+          const recipients = backend.searchRecipients(value, fromUserAccount)
           for await (const recipient of recipients) {
             yield makeUIProxyRecipient(recipient, $gettext)
           }

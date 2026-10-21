@@ -229,7 +229,8 @@
       this.backendAccount = backendAccount
       this.selectedBackend = makeUIProxyBackend(
         backendAccount.parent,
-        this.$gettext
+        this.$gettext,
+        backendAccount
       )
     },
     mounted() {

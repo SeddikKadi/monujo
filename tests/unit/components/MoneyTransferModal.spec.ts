@@ -25,9 +25,10 @@ const RecurrenceOptionsStub = defineComponent({
   template: "<div class='recurrence-options-stub' />",
 })
 
-function makeRecipient() {
+function makeRecipient(sourceWalletId = "selected-wallet") {
   return {
     backendId: "comchain:test",
+    fromUserAccount: { internalId: `comchain:${sourceWalletId}` },
     is_favorite: true,
     getSymbol: vi.fn(async () => "LKC"),
     prepareTransfer: vi.fn<unknown[], Promise<unknown[]>>(async () => []),
@@ -48,7 +49,7 @@ function makeAccount(walletId = "selected-wallet", isSubAccount = false) {
     curr: "LKC",
     isPaymentRequestAllowed: true,
     _obj: isSubAccount ? { parent: userAccount } : userAccount,
-    safeWalletRecipient: makeRecipient(),
+    safeWalletRecipient: makeRecipient(walletId),
   }
 }
 
@@ -283,6 +284,41 @@ describe("MoneyTransferModal", () => {
         "This payment request must be paid from its designated sender account."
       )
       expect(recipient.prepareTransfer).not.toHaveBeenCalled()
+    })
+
+    it.each(["payment", "reconversion", "paymentRequest"])(
+      "rejects for %s a recipient bound to another source wallet",
+      async (transactionType) => {
+        const recipient = makeRecipient("first-wallet")
+        const selectedAccount = makeAccount("selected-wallet")
+        selectedAccount.safeWalletRecipient = recipient
+        const { wrapper, modal, msg } = await mountModal(
+          transactionType === "payment" ? undefined : transactionType,
+          {
+            recipient,
+            ownAccount: selectedAccount,
+            activeAccounts: [makeAccount("first-wallet"), selectedAccount],
+          }
+        )
+
+        expect(modal.next).not.toHaveBeenCalled()
+        expect(wrapper.findComponent(MoneyTransactionStub).exists()).toBe(false)
+        expect(msg.error).toHaveBeenCalledWith(
+          "This recipient can not be paid from the selected account."
+        )
+        expect(recipient.prepareTransfer).not.toHaveBeenCalled()
+      }
+    )
+
+    it("lets an admin credit be signed by the issuing admin wallet", async () => {
+      const recipient = makeRecipient("admin-wallet")
+      const { wrapper, modal, msg } = await mountModal("adminCredit", {
+        recipient,
+      })
+
+      expect(modal.next).toHaveBeenCalledOnce()
+      expect(wrapper.findComponent(MoneyTransactionStub).exists()).toBe(true)
+      expect(msg.error).not.toHaveBeenCalled()
     })
 
     it("matches a payment request's sender to the wallet owning a selected subaccount", async () => {

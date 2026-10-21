@@ -228,7 +228,11 @@
       const account = getUserAccount(opts.account)
 
       this.account = account
-      this.selectedBackend = makeUIProxyBackend(account.parent, this.$gettext)
+      this.selectedBackend = makeUIProxyBackend(
+        account.parent,
+        this.$gettext,
+        account
+      )
     },
     mounted() {
       this.$refs.paymentRequest.focus()

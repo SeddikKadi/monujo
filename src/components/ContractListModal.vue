@@ -216,7 +216,7 @@
   import "vue-search-select/dist/VueSearchSelect.css"
   import "@/assets/datepicker.scss"
 
-  import { getUserAccount } from "@/utils/account"
+  import { getRecipientSearch, getUserAccount } from "@/utils/account"
   import UseBatchLoading from "@/services/UseBatchLoading"
 
   @Options({
@@ -253,10 +253,9 @@
       const account = getUserAccount(opts.account)
 
       this.accountObj = account
-      const backend = account.parent
 
       this.recipientBatchLoader = UseBatchLoading({
-        genFactory: backend.searchRecipients.bind(backend),
+        genFactory: getRecipientSearch(account),
         needMorePredicate: () =>
           this.$recipients.scrollHeight -
             (this.$recipients.scrollTop + this.$recipients.offsetHeight) <=

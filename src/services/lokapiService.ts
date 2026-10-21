@@ -486,8 +486,8 @@ function makeUIProxyRecipient(recipient: t.IRecipient, $gettext: any) {
 
 /**
  * Wrap ``backend`` so that its recipient search reports errors to the
- * user and, when ``fromUserAccount`` is given, searches the recipients
- * this user account of the backend pays.
+ * user and, when ``fromUserAccount`` is given, searches and looks up the
+ * recipients this user account of the backend pays.
  */
 export function makeUIProxyBackend(
   backend: t.IBackend,
@@ -503,6 +503,10 @@ export function makeUIProxyBackend(
             yield makeUIProxyRecipient(recipient, $gettext)
           }
         }
+      }
+      if (prop === "searchRecipientByUri") {
+        return (data: any) =>
+          backend.searchRecipientByUri(data, fromUserAccount)
       }
       return Reflect.get(target, prop, receiver)
     },

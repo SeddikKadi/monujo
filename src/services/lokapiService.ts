@@ -3,6 +3,7 @@ import comchain from "@lokavaluto/lokapi-backend-comchain"
 import cyclos from "@lokavaluto/lokapi-backend-cyclos"
 
 import { UIError } from "../exception"
+import { getSafeWalletRecipient as getAccountSafeWalletRecipient } from "../utils/account"
 
 const isFulfilled = <T>(
   p: PromiseSettledResult<T>
@@ -110,7 +111,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
         const getSafeWalletRecipient = (account: any) => {
           let safeWalletRecipient
           try {
-            safeWalletRecipient = account.safeWalletRecipient
+            safeWalletRecipient = getAccountSafeWalletRecipient(account)
           } catch (e: any) {
             if (!_errorLogged.includes(account.internalId)) {
               console.error(`Couldn't get safeWalletRecipient`, e)
@@ -138,7 +139,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
           minCreditAmount: userAccount.parent.minCreditAmount,
           maxCreditAmount: userAccount.parent.maxCreditAmount,
           walletData: getWalletData(userAccount),
-          safeWalletRecipient: getSafeWalletRecipient(userAccount.parent),
+          safeWalletRecipient: getSafeWalletRecipient(userAccount),
           userAccountId: userAccount.internalId,
           currencyId: userAccount.parent.internalId,
           isBusinessForFinanceBackend,
@@ -185,9 +186,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
               minCreditAmount: account.parent.parent.minCreditAmount,
               maxCreditAmount: account.parent.parent.maxCreditAmount,
               walletData: getWalletData(account.parent),
-              safeWalletRecipient: getSafeWalletRecipient(
-                account.parent.parent
-              ),
+              safeWalletRecipient: getSafeWalletRecipient(account.parent),
               userAccountId: account.parent.internalId,
               currencyId: account.parent.parent.internalId,
               active: account.parent.active, // FTM only the UserAccount is active or not

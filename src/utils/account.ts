@@ -30,3 +30,14 @@ export function getRecipientSearch(userAccount: any, caller?: any) {
   }
   return source.parent.searchRecipients.bind(source.parent)
 }
+
+/**
+ * Return the safe wallet recipient, used for reconversions, paid from
+ * ``userAccount`` or, with a LokAPI not providing it per account yet, the
+ * one of its currency.
+ */
+export function getSafeWalletRecipient(userAccount: any) {
+  return "safeWalletRecipient" in userAccount
+    ? userAccount.safeWalletRecipient
+    : userAccount.parent.safeWalletRecipient
+}

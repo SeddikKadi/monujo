@@ -303,7 +303,7 @@ msgstr "Il y a eu un problème lors de la recherche du destinataire"
 msgid "An error occured while updating account"
 msgstr "Une erreur est survenue lors de la mise à jour du compte"
 
-#: src/services/lokapiService.ts:464
+#: src/services/lokapiService.ts:463
 msgid "An error occurred while adding to favorites."
 msgstr "Une erreur est survenue lors de la mise en favoris."
 
@@ -325,7 +325,7 @@ msgstr ""
 "Une erreur est survenue lors de la récupération des informations de la "
 "devise."
 
-#: src/services/lokapiService.ts:468
+#: src/services/lokapiService.ts:467
 msgid "An error occurred while removing from favorites."
 msgstr "Une erreur est survenue lors de la suppression du favori."
 
@@ -1765,7 +1765,7 @@ msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
 #: src/components/CreateAccount.vue:443 src/components/CreateAccount.vue:491
-#: src/services/lokapiService.ts:474
+#: src/services/lokapiService.ts:473
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
 

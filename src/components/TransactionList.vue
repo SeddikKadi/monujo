@@ -98,13 +98,7 @@
           <div class="recipient-filter is-flex is-flex-direction-row">
             <div class="recipient-filter-input">
               <model-list-select
-                :list="
-                  recipientBatchLoader.elements.reduce((acc, r, idx) => {
-                    if (recipient?.internalId !== r.internalId)
-                      acc.push({ name: r.name, idx })
-                    return acc
-                  }, [])
-                "
+                :list="recipientFilterOptions"
                 option-value="idx"
                 option-text="name"
                 v-model="selectedRecipientIdx"
@@ -204,6 +198,10 @@
 
   import { mapModuleState } from "@/utils/vuex"
   import { getRecipientSearch, getUserAccount } from "@/utils/account"
+  import {
+    getRecipientNames,
+    isTransactionWithRecipient,
+  } from "@/utils/recipient"
   import UseBatchLoading from "@/services/UseBatchLoading"
 
   import { showSpinnerMethod } from "@/utils/showSpinner"
@@ -324,6 +322,15 @@
 
         return [begin, now < end ? now : end]
       },
+      recipientFilterOptions(): any[] {
+        const recipients = this.recipientBatchLoader.elements
+        const names = getRecipientNames(recipients)
+        return recipients.reduce((acc: any[], r: any, idx: number) => {
+          if (this.recipient?.internalId !== r.internalId)
+            acc.push({ name: names[idx], idx })
+          return acc
+        }, [])
+      },
       ...mapModuleState("lokapi", ["userProfile"]),
       ...mapGetters(["numericFormat"]),
     },
@@ -332,16 +339,17 @@
       async *getTransactions() {
         const account = getUserAccount(this.account)
         const genOpts = { showTxListForDisabledAccount: this.showAll }
-        let selectedRecipientName = null
-
         const gen = account.getTransactions(genOpts)
-        selectedRecipientName =
-          this.recipientBatchLoader.elements[this.selectedRecipientIdx]?.name
+        const selectedRecipient =
+          this.recipientBatchLoader.elements[this.selectedRecipientIdx]
 
         const [dateBegin, dateEnd] = this.exportDate
         for await (const t of gen) {
           if (dateBegin && t.date < dateBegin) break
-          if (selectedRecipientName && selectedRecipientName !== t.related)
+          if (
+            selectedRecipient &&
+            !isTransactionWithRecipient(t, selectedRecipient)
+          )
             continue
           if (dateEnd && t.date > dateEnd) continue
           yield t

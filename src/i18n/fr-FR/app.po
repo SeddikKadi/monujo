@@ -98,7 +98,7 @@ msgstr "1"
 msgid "About %{ appName }"
 msgstr "À propos de %{ appName }"
 
-#: src/components/TransactionList.vue:417
+#: src/components/TransactionList.vue:425
 msgid "Account"
 msgstr "Compte"
 
@@ -217,9 +217,7 @@ msgstr "Serveur administratif synchronisé avec succès"
 #: src/components/PaymentRequestListModal.vue:85
 #: src/components/PaymentRequestListModal.vue:86
 #: src/components/PaymentRequestListModal.vue:90
-#: src/components/TransactionList.vue:106
-#: src/components/TransactionList.vue:111 src/components/TransactionList.vue:70
-#: src/components/TransactionList.vue:74 src/components/TransactionList.vue:75
+#: src/components/TransactionList.vue:105
 msgid "All recipient"
 msgstr "Tous les destinataires"
 
@@ -256,7 +254,7 @@ msgstr "Avez-vous déjà créé un compte ?"
 #: src/components/MoneyTransaction.vue:39
 #: src/components/MoneyTransaction.vue:40
 #: src/components/MoneyTransaction.vue:49
-#: src/components/TransactionList.vue:413
+#: src/components/TransactionList.vue:421
 msgid "Amount"
 msgstr "Montant"
 
@@ -281,12 +279,12 @@ msgstr "Le montant envoyé doit être un nombre n'ayant pas plus de 2 décimales
 msgid "An error occured during the scan process"
 msgstr "Une erreur est survenue lors du processus de scan"
 
-#: src/components/TransactionList.vue:599
+#: src/components/TransactionList.vue:607
 msgid "An error occured while creating the CSV file"
 msgstr "Une erreur est survenue lors de la creation du ficher CSV"
 
-#: src/components/TransactionList.vue:546
-#: src/components/TransactionList.vue:565
+#: src/components/TransactionList.vue:554
+#: src/components/TransactionList.vue:573
 msgid "An error occured while creating the PDF file"
 msgstr "Une erreur est survenue lors de la création du fichier PDF"
 
@@ -352,14 +350,14 @@ msgstr ""
 #: src/components/ContractListModal.vue:265
 #: src/components/PaymentRequestListModal.vue:270
 #: src/components/RecipientSelector.vue:147
-#: src/components/TransactionList.vue:266
+#: src/components/TransactionList.vue:264
 msgid "An unexpected issue occured while downloading recipient list"
 msgstr ""
 "Il y a eu un problème lors de la tentative de téléchargement de la liste des "
 "destinataires"
 
-#: src/components/TransactionList.vue:282
-#: src/components/TransactionList.vue:384
+#: src/components/TransactionList.vue:280
+#: src/components/TransactionList.vue:392
 #: src/components/TransactionListRecent.vue:111
 msgid "An unexpected issue occured while downloading transaction list"
 msgstr ""
@@ -847,14 +845,14 @@ msgstr "Tableau de bord"
 msgid "Dashboard admin"
 msgstr "Tableau de bord Administrateur"
 
-#: src/components/TransactionList.vue:414 src/utils/pdf.ts:130
+#: src/components/TransactionList.vue:422 src/utils/pdf.ts:130
 msgid "Date"
 msgstr "Date"
 
 #: src/components/ContractListModal.vue:236
 #: src/components/PaymentRequestListModal.vue:236
 #: src/components/RecurrentContractModal.vue:308
-#: src/components/TransactionList.vue:241
+#: src/components/TransactionList.vue:239
 msgid "day"
 msgid_plural "days"
 msgstr[0] "jour"
@@ -903,7 +901,7 @@ msgstr "Supprimer le paiement récurrent"
 #: src/components/PaymentRequestModal.vue:57
 #: src/components/PaymentRequestModal.vue:61
 #: src/components/PaymentRequestModal.vue:69
-#: src/components/TransactionList.vue:415 src/utils/pdf.ts:182
+#: src/components/TransactionList.vue:423 src/utils/pdf.ts:182
 msgid "Description"
 msgstr "Description"
 
@@ -1378,7 +1376,7 @@ msgstr "Reconversion"
 #: src/components/ContractListModal.vue:238
 #: src/components/PaymentRequestListModal.vue:238
 #: src/components/RecurrentContractModal.vue:310
-#: src/components/TransactionList.vue:243
+#: src/components/TransactionList.vue:241
 msgid "month"
 msgid_plural "months"
 msgstr[0] "mois"
@@ -1395,7 +1393,7 @@ msgstr "Mois"
 msgid "Monthly"
 msgstr "Mensuel"
 
-#: src/components/TransactionList.vue:428
+#: src/components/TransactionList.vue:436
 msgid "mutual"
 msgstr "mutuel"
 
@@ -1505,14 +1503,13 @@ msgstr "Aucune demande de paiement refusée trouvée"
 #: src/components/PaymentRequestListModal.vue:121
 #: src/components/PaymentRequestListModal.vue:180
 #: src/components/PaymentRequestListModal.vue:185
-#: src/components/TransactionList.vue:105
-#: src/components/TransactionList.vue:106
+#: src/components/TransactionList.vue:100
+#: src/components/TransactionList.vue:148
+#: src/components/TransactionList.vue:150
 #: src/components/TransactionList.vue:154
 #: src/components/TransactionList.vue:156
-#: src/components/TransactionList.vue:160
-#: src/components/TransactionList.vue:162
-#: src/components/TransactionList.vue:167
-#: src/components/TransactionList.vue:172
+#: src/components/TransactionList.vue:161
+#: src/components/TransactionList.vue:166 src/components/TransactionList.vue:99
 msgid "No transaction found"
 msgstr "Aucune transaction à afficher"
 
@@ -1887,7 +1884,7 @@ msgstr "Reconversion %{ reconversionStatus }"
 msgid "Reconversion details"
 msgstr "Détails de la reconversion"
 
-#: src/components/TransactionList.vue:429
+#: src/components/TransactionList.vue:437
 msgid "reconvertible"
 msgstr "reconvertible"
 
@@ -2239,7 +2236,7 @@ msgstr "Créer un compte"
 msgid "Simplified authentication for this device"
 msgstr "Authentification simplifiée sur ce périphérique"
 
-#: src/components/TransactionList.vue:411
+#: src/components/TransactionList.vue:419
 msgid "Source"
 msgstr "Source"
 
@@ -2250,7 +2247,7 @@ msgstr "Source"
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/components/TransactionList.vue:412
+#: src/components/TransactionList.vue:420
 msgid "Target"
 msgstr "Destination"
 
@@ -2685,30 +2682,30 @@ msgstr "Totaux"
 msgid "Transaction details"
 msgstr "Détails de l'opération"
 
-#: src/components/TransactionList.vue:477
+#: src/components/TransactionList.vue:485
 msgid "Transaction list"
 msgstr "Liste des opérations"
 
-#: src/components/TransactionList.vue:609
+#: src/components/TransactionList.vue:617
 msgid "Transaction list could not be downloaded"
 msgstr "La liste des transactions n'a pas pu être téléchargée"
 
-#: src/components/TransactionList.vue:584
-#: src/components/TransactionList.vue:624
+#: src/components/TransactionList.vue:592
+#: src/components/TransactionList.vue:632
 msgid "Transaction list could not be shared"
 msgstr "La liste des transactions n'a pas pu être partagée"
 
-#: src/components/TransactionList.vue:554
-#: src/components/TransactionList.vue:614
+#: src/components/TransactionList.vue:562
+#: src/components/TransactionList.vue:622
 msgid "Transaction list downloaded"
 msgstr "Liste des transactions téléchargée"
 
-#: src/components/TransactionList.vue:470
+#: src/components/TransactionList.vue:478
 msgid "Transaction list from %{ dateBeginStr } to %{ dateEndStr }"
 msgstr "Liste des transactions du %{ dateBeginStr } au %{ dateEndStr }"
 
-#: src/components/TransactionList.vue:588
-#: src/components/TransactionList.vue:628
+#: src/components/TransactionList.vue:596
+#: src/components/TransactionList.vue:636
 msgid "Transaction list shared"
 msgstr "Liste des transactions partagée"
 
@@ -2948,7 +2945,7 @@ msgstr "Attention :"
 #: src/components/ContractListModal.vue:237
 #: src/components/PaymentRequestListModal.vue:237
 #: src/components/RecurrentContractModal.vue:309
-#: src/components/TransactionList.vue:242
+#: src/components/TransactionList.vue:240
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "semaine"
@@ -2976,7 +2973,7 @@ msgstr ""
 #: src/components/ContractListModal.vue:239
 #: src/components/PaymentRequestListModal.vue:239
 #: src/components/RecurrentContractModal.vue:311
-#: src/components/TransactionList.vue:244
+#: src/components/TransactionList.vue:242
 msgid "year"
 msgid_plural "years"
 msgstr[0] "année"

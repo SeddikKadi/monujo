@@ -38,6 +38,7 @@
 
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
+  import { mapGetters } from "vuex"
 
   import TheBankAccountList from "@/components//TheBankAccountList.vue"
   import TheTransactionList from "@/components/TheTransactionList.vue"
@@ -53,8 +54,36 @@
         refreshTransactionsToggle: false,
         refreshAccountsToggle: false,
         refreshContractsToggle: false,
-        account: null,
+        // The selection is kept by wallet id, as refreshes rebuild the
+        // accounts as new objects
+        selectedAccountId: null,
+        // Whether the user chose, or was given, a wallet in this session:
+        // it is then never replaced by another one
+        isSelectionConfirmed: false,
+        isSelectionRestored: false,
       }
+    },
+    async created() {
+      // Wallet selected in the previous session, if still available
+      const settings = (await this.$localSettings.load()) || {}
+      this.selectedAccountId = settings.selectedWalletId || null
+      this.isSelectionRestored = true
+      this.selectDefaultAccount()
+    },
+    computed: {
+      account(): any {
+        return (
+          this.availableVirtualAccounts.find(
+            (a: any) => a?.id === this.selectedAccountId
+          ) || null
+        )
+      },
+      ...mapGetters(["availableVirtualAccounts"]),
+    },
+    watch: {
+      availableVirtualAccounts() {
+        this.selectDefaultAccount()
+      },
     },
     components: {
       TheTransactionList,
@@ -71,8 +100,27 @@
         // This change is propagated through props to children components
         this.refreshAccountsToggle = !this.refreshAccountsToggle
       },
-      accountSelected(account: any) {
-        this.account = account
+      async accountSelected(account: any) {
+        this.selectedAccountId = account.id
+        this.isSelectionConfirmed = true
+        const settings = (await this.$localSettings.load()) || {}
+        settings.selectedWalletId = account.id
+        await this.$localSettings.save(settings)
+      },
+      /**
+       * Select the first available wallet only when no wallet was chosen in
+       * this session yet and the remembered one is not available: a wallet
+       * that becomes unavailable is never silently replaced.
+       */
+      selectDefaultAccount() {
+        if (!this.isSelectionRestored || this.isSelectionConfirmed) return
+        if (this.account) {
+          this.isSelectionConfirmed = true
+          return
+        }
+        if (this.availableVirtualAccounts.length > 0) {
+          this.accountSelected(this.availableVirtualAccounts[0])
+        }
       },
     },
   })

@@ -94,7 +94,8 @@
           {{ $gettext("your accounts") }}
         </h2>
         <BankAccountItem
-          v-for="a in activeVirtualAccountsMiddleware"
+          v-for="(a, index) in activeVirtualAccounts"
+          :key="a?.id ?? index"
           class="mb-5"
           :class="{
             selected:
@@ -131,6 +132,7 @@
       </p>
       <BankAccountItem
         v-for="account in pendingVirtualAccounts"
+        :key="account.id"
         class="mb-5"
         :account="account"
       >
@@ -150,6 +152,7 @@
       </p>
       <BankAccountItem
         v-for="account in inactiveVirtualAccounts"
+        :key="account.id"
         class="mb-5"
         :account="account"
       >
@@ -173,6 +176,7 @@
       </p>
       <BankAccountItem
         v-for="account in pathologicalVirtualAccounts"
+        :key="account.id"
         class="mb-5"
         :account="account"
       >
@@ -232,15 +236,7 @@
       totalAccountsLoaded(): number {
         return this.$store.state.lokapi.virtualAccountTree.length
       },
-      activeVirtualAccountsMiddleware(this: any) {
-        const accounts = this.availableVirtualAccounts
-        if (!this.account && accounts.length > 0) {
-          this.$emit("accountSelected", accounts[0])
-        }
-        return this.activeVirtualAccounts
-      },
       ...mapGetters([
-        "availableVirtualAccounts",
         "activeVirtualAccounts",
         "pendingVirtualAccounts",
         "inactiveVirtualAccounts",
@@ -278,10 +274,10 @@
             )
             return
           }
-          // fetch account in new account list
-          const account = this.activeVirtualAccountsMiddleware.find(
-            (a: any) =>
-              a?.active && a?._obj.internalId === this.account?._obj.internalId
+          // The selection follows the wallet id: only wait here for the
+          // expected balance change
+          const account = this.activeVirtualAccounts.find(
+            (a: any) => a?.active && a?.id === this.account?.id
           )
           const balance = account?.bal
           if (balanceOrig === balance) {
@@ -298,9 +294,6 @@
               }
             }
           }
-          // XXXvlab: enforce the selection of the account as sometimes
-          // it seems it doesn't register the new account
-          this.$emit("accountSelected", account)
           this.isAccountsLoadingRetrying = false
         }
         await checkBalance()

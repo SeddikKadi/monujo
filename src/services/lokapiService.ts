@@ -5,6 +5,22 @@ import cyclos from "@lokavaluto/lokapi-backend-cyclos"
 import { UIError } from "../exception"
 import { getSafeWalletRecipient as getAccountSafeWalletRecipient } from "../utils/account"
 
+/**
+ * Order subaccounts by backend, displayed name and id for stable ties.
+ */
+export function accountOrder(a: any, b: any): number {
+  const sortKey = (account: any) => [
+    `${account?.backend ?? ""}`,
+    typeof account?.name === "function" ? account.name() : "",
+    `${account?.id ?? ""}`,
+  ]
+  const [keyA, keyB] = [sortKey(a), sortKey(b)]
+  for (let i = 0; i < keyA.length; i++) {
+    if (keyA[i] !== keyB[i]) return keyA[i] < keyB[i] ? -1 : 1
+  }
+  return 0
+}
+
 const isFulfilled = <T>(
   p: PromiseSettledResult<T>
 ): p is PromiseFulfilledResult<T> => p.status === "fulfilled"
@@ -50,15 +66,11 @@ export class LokAPI extends LokAPIBrowserAbstract {
     return this._buildVirtualAccountTreePromise
   }
   async _buildVirtualAccountTree() {
-    const virtualAccountTree: any[] = []
-    const sortOrder = (a: any, b: any) =>
-      `${a.backend}${a.name}` < `${b.backend}${b.name}` ? -1 : 1
-
     const allMoneyAccounts: any[] = []
     const userAccounts = await this.getUserAccounts()
     const errors: any[] = []
 
-    await Promise.allSettled(
+    const accountResults = await Promise.allSettled(
       userAccounts.map(async (userAccount: any) => {
         let vals: any[] = await Promise.allSettled([
           this.getBankAccountName(userAccount),
@@ -91,13 +103,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
               errors.push(exception)
             }
           }
-          replaceOrInsertElt(
-            virtualAccountTree,
-            accountErrors,
-            (a: any) => false,
-            sortOrder
-          )
-          return
+          return accountErrors
         }
         const [
           name,
@@ -156,6 +162,8 @@ export class LokAPI extends LokAPIBrowserAbstract {
           isVirtualRoot: false,
         }
 
+        let virtualAccount: any
+
         // Query moneyAccounts in this userAccount
         const r = Promise.allSettled(
           (moneyAccounts || []).map(async (account: any) => {
@@ -210,19 +218,14 @@ export class LokAPI extends LokAPIBrowserAbstract {
               // replace the userAccount
               accountData.id = userAccountData.id
               accountData.isVirtualRoot = true
-              replaceOrInsertElt(
-                virtualAccountTree,
-                accountData,
-                (a: any) => userAccountData.id === a.id,
-                sortOrder
-              )
+              virtualAccount = accountData
             } else {
               // Add as subAccounts
               replaceOrInsertElt(
                 userAccountData.subAccounts,
                 accountData,
                 (a: any) => account.internalId === a.id,
-                sortOrder
+                accountOrder
               )
             }
           })
@@ -230,24 +233,24 @@ export class LokAPI extends LokAPIBrowserAbstract {
 
         if (moneyAccounts && moneyAccounts.length !== 1) {
           userAccountData.isVirtualRoot = true
-          replaceOrInsertElt(
-            virtualAccountTree,
-            userAccountData,
-            (a: any) => userAccount.internalId === a.id,
-            sortOrder
-          )
+          virtualAccount = userAccountData
         }
 
-        return r // Resolving for all info related to this userAccount
+        await r
+        return virtualAccount
       })
     )
+    // Promise.allSettled keeps the incoming wallet order, even when requests
+    // finish out of order. No dashboard sorting is needed.
+    const virtualAccountTree = accountResults
+      .filter(isFulfilled)
+      .map((result) => result.value)
+      .filter((account) => account !== undefined)
     return { virtualAccountTree, allMoneyAccounts, errors }
   }
 
   async getAccountFromRecipient(recipient: any, adminUserAccount?: any) {
     const virtualAccountTree: any[] = []
-    const sortOrder = (a: any, b: any) =>
-      `${a.backend}${a.name}` < `${b.backend}${b.name}` ? -1 : 1
 
     const userAccount = await this.getUserAccountsFromWalletUri(
       recipient.internalId,
@@ -370,7 +373,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
             virtualAccountTree,
             accountData,
             (a: any) => userAccountData.id === a.id,
-            sortOrder
+            accountOrder
           )
         } else {
           // Add as subAccounts
@@ -378,7 +381,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
             userAccountData.subAccounts,
             accountData,
             (a: any) => account.internalId === a.id,
-            sortOrder
+            accountOrder
           )
         }
       })
@@ -390,7 +393,7 @@ export class LokAPI extends LokAPIBrowserAbstract {
         virtualAccountTree,
         userAccountData,
         (a: any) => userAccount.internalId === a.id,
-        sortOrder
+        accountOrder
       )
     }
 

@@ -303,7 +303,7 @@ msgstr "Il y a eu un problème lors de la recherche du destinataire"
 msgid "An error occured while updating account"
 msgstr "Une erreur est survenue lors de la mise à jour du compte"
 
-#: src/services/lokapiService.ts:463
+#: src/services/lokapiService.ts:466
 msgid "An error occurred while adding to favorites."
 msgstr "Une erreur est survenue lors de la mise en favoris."
 
@@ -325,7 +325,7 @@ msgstr ""
 "Une erreur est survenue lors de la récupération des informations de la "
 "devise."
 
-#: src/services/lokapiService.ts:467
+#: src/services/lokapiService.ts:470
 msgid "An error occurred while removing from favorites."
 msgstr "Une erreur est survenue lors de la suppression du favori."
 
@@ -922,8 +922,8 @@ msgstr "Désactivé"
 
 #: src/components/TheBankAccountList.vue:113
 #: src/components/TheBankAccountList.vue:114
-#: src/components/TheBankAccountList.vue:162
 #: src/components/TheBankAccountList.vue:165
+#: src/components/TheBankAccountList.vue:168
 msgid "Disabled accounts"
 msgstr "Comptes désactivés"
 
@@ -1119,7 +1119,7 @@ msgstr "Impossible de lire le fichier"
 msgid "Failed to read the file contents"
 msgstr "Le contenu du fichier n'a pas pu être lu"
 
-#: src/components/TheBankAccountList.vue:277
+#: src/components/TheBankAccountList.vue:273
 msgid "Failed to refresh account informations"
 msgstr "Échec de la mise à jour des informations du compte"
 
@@ -1242,8 +1242,8 @@ msgstr "Importer des demandes de paiement"
 
 #: src/components/TheBankAccountList.vue:101
 #: src/components/TheBankAccountList.vue:102
-#: src/components/TheBankAccountList.vue:143
-#: src/components/TheBankAccountList.vue:146
+#: src/components/TheBankAccountList.vue:145
+#: src/components/TheBankAccountList.vue:148
 msgid "Inactive accounts"
 msgstr "Comptes désactivés"
 
@@ -1765,7 +1765,7 @@ msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
 #: src/components/CreateAccount.vue:443 src/components/CreateAccount.vue:491
-#: src/services/lokapiService.ts:473
+#: src/services/lokapiService.ts:476
 msgid "Please try again or contact your administrator"
 msgstr "Veuillez ré-éssayer ou contacter votre administrateur"
 
@@ -2289,8 +2289,8 @@ msgstr "Le préfixe 0x dans les adresses de portefeuille est facultatif."
 
 #: src/components/TheBankAccountList.vue:117
 #: src/components/TheBankAccountList.vue:118
-#: src/components/TheBankAccountList.vue:166
 #: src/components/TheBankAccountList.vue:169
+#: src/components/TheBankAccountList.vue:172
 msgid ""
 "The accounts listed below are disabled, if this is not expected please "
 "contact an administrator"
@@ -2298,7 +2298,7 @@ msgstr ""
 "Les comptes listés ci-dessous sont désactivés. Si cela n'est pas prévu, "
 "veuillez contacter un administrateur."
 
-#: src/components/TheBankAccountList.vue:125
+#: src/components/TheBankAccountList.vue:126
 #: src/components/TheBankAccountList.vue:87
 #: src/components/TheBankAccountList.vue:88
 msgid ""
@@ -2459,8 +2459,8 @@ msgstr "La transaction a été envoyée mais aucune confirmation n'a été reçu
 
 #: src/components/TheBankAccountList.vue:104
 #: src/components/TheBankAccountList.vue:105
-#: src/components/TheBankAccountList.vue:146
-#: src/components/TheBankAccountList.vue:149
+#: src/components/TheBankAccountList.vue:148
+#: src/components/TheBankAccountList.vue:151
 msgid "These accounts were disabled"
 msgstr "Ces comptes ont été désactivés"
 
@@ -2754,7 +2754,7 @@ msgstr "Indisponible"
 #: src/components/RecipientInfo.vue:27 src/components/RecipientInfo.vue:33
 #: src/components/RecipientInfo.vue:40
 #: src/components/TheBankAccountList.vue:103
-#: src/components/TheBankAccountList.vue:113
+#: src/components/TheBankAccountList.vue:114
 #: src/components/TheBankAccountList.vue:75
 #: src/components/TheBankAccountList.vue:76
 #: src/components/TheBankAccountList.vue:81
@@ -3084,7 +3084,7 @@ msgid ""
 msgstr ""
 "Votre demande de paiement attend la réponse du payeur. Vous pouvez l'annuler."
 
-#: src/components/TheBankAccountList.vue:121
+#: src/components/TheBankAccountList.vue:122
 #: src/components/TheBankAccountList.vue:83
 #: src/components/TheBankAccountList.vue:84
 msgid "your pending accounts"

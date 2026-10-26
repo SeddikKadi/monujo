@@ -103,6 +103,7 @@ import AuthPrefPin from "@/components/AuthPrefPin.vue"
 import AuthChallengeRetention from "@/components/AuthChallengeRetention.vue"
 import AuthChallengeDirect from "@/components/AuthChallengeDirect.vue"
 import AuthChallengePin from "@/components/AuthChallengePin.vue"
+import { getWalletAuthName } from "@/utils/account"
 
 // Plugins
 
@@ -306,7 +307,11 @@ fetchConfig("config.json").then(async (config: any) => {
     userAccount: any
   ) {
     const accountAuthService = await authService.getAccountAuth(
-      userAccount.internalId
+      userAccount.internalId,
+      getWalletAuthName(
+        userAccount,
+        await lokApiService.getUserAccountsRequiringUnlock()
+      )
     )
     return await accountAuthService.requestCredentials(state)
   }

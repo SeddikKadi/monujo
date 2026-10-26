@@ -14,6 +14,9 @@
         ></button>
       </header>
       <section class="modal-card-body">
+        <p v-if="accountName" class="account-name" id="auth-account-name">
+          {{ $gettext("Wallet: %{ name }", { name: accountName }) }}
+        </p>
         <p class="failed-unlock" v-if="state === 'failedUnlock'">
           {{ $gettext("Failed authentication. Please try again.") }}
         </p>
@@ -43,6 +46,7 @@
       return {
         visible: false,
         state: null,
+        accountName: null,
         handler: {},
         callbacks: {},
       }
@@ -50,10 +54,10 @@
 
     created() {
       this.$auth.registerRequestCredentials(
-        (state: string, handler: any) =>
+        (state: string, handler: any, accountName?: string | false) =>
           new Promise((resolve, reject) => {
             this.callbacks = { resolve, reject }
-            this.show(handler, state)
+            this.show(handler, state, accountName)
           })
       )
     },
@@ -77,10 +81,11 @@
         this.handler = false
       },
 
-      show(handler: any, state: string) {
+      show(handler: any, state: string, accountName?: string | false) {
         this.visible = true
         this.handler = handler
         this.state = state
+        this.accountName = accountName || null
       },
     },
   })

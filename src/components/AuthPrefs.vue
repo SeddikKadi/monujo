@@ -12,6 +12,7 @@
   import { markRaw } from "vue"
   import { Options, Vue } from "vue-class-component"
   import AuthPref from "@/components/AuthPref.vue"
+  import { getWalletAuthName } from "@/utils/account"
 
   @Options({
     name: "AuthPrefs",
@@ -36,15 +37,13 @@
       async getUserAccounts() {
         let userAccounts = this.prefsData.userAccountsRequiringAuth
         const $auth = this.$auth
-        const moreThanOneUserAccount = userAccounts.length !== 1
 
         // XXXvlab: typeforcing to 'any' as typescript doesn't seem to
         // understand that a 'allSettled' is actually a Promise of an
         // array.
         const preparedTemplateDataPromises = (await Promise.allSettled(
           userAccounts.map(async (userAccount: any) => ({
-            name:
-              moreThanOneUserAccount && userAccount.internalId.substring(0, 15),
+            name: getWalletAuthName(userAccount, userAccounts),
             handler: markRaw(
               (
                 await this.$auth.getAccountAuth(userAccount.internalId)

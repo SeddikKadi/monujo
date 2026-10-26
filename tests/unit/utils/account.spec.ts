@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest"
 import {
   getRecipientSearch,
   getSafeWalletRecipient,
+  getWalletAuthName,
 } from "../../../src/utils/account"
 
 describe("getRecipientSearch", () => {
@@ -75,5 +76,20 @@ describe("getSafeWalletRecipient", () => {
     const userAccount = { parent: { safeWalletRecipient: "currency recipient" } }
 
     expect(getSafeWalletRecipient(userAccount)).toBe("currency recipient")
+  })
+})
+
+describe("getWalletAuthName", () => {
+  const walletA = { internalId: "comchain:1f337cc2e0d3c08f711a" }
+  const walletB = { internalId: "comchain:435f02b25083fdf0acea" }
+
+  it("identifies the wallet when the user has several", () => {
+    expect(getWalletAuthName(walletA, [walletA, walletB])).toBe(
+      "comchain:1f337c"
+    )
+  })
+
+  it("gives no name when the user has a single wallet", () => {
+    expect(getWalletAuthName(walletA, [walletA])).toBe(false)
   })
 })

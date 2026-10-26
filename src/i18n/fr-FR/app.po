@@ -708,7 +708,7 @@ msgstr "Contactez votre administrateur si elle ne s'affiche pas"
 msgid "continued"
 msgstr "suite"
 
-#: src/main.ts:197
+#: src/main.ts:198
 msgid "Converted"
 msgstr "Converti"
 
@@ -989,7 +989,7 @@ msgstr "ex: 50"
 msgid "Edit"
 msgstr "Modifier"
 
-#: src/components/AuthPrefs.vue:33
+#: src/components/AuthPrefs.vue:34
 msgid "Edits were successfully saved"
 msgstr "Modifications enregistrées"
 
@@ -1056,12 +1056,12 @@ msgstr "Explication"
 msgid "Explanation (optional)"
 msgstr "Explication (facultative)"
 
-#: src/main.ts:415
+#: src/main.ts:420
 msgid "Export wallet"
 msgstr "Exporter le portefeuille"
 
-#: src/components/AuthChallenge.vue:13 src/components/AuthChallenge.vue:14
-#: src/components/AuthChallenge.vue:18
+#: src/components/AuthChallenge.vue:16 src/components/AuthChallenge.vue:17
+#: src/components/AuthChallenge.vue:21
 msgid "Failed authentication. Please try again."
 msgstr "Échec de l'authentification. Veuillez ré-essayer."
 
@@ -1236,7 +1236,7 @@ msgstr "Importer un fichier"
 
 #: src/components/ImportPaymentRequestsModal.vue:11
 #: src/components/ImportPaymentRequestsModal.vue:6
-#: src/components/ImportPaymentRequestsModal.vue:7 src/main.ts:448
+#: src/components/ImportPaymentRequestsModal.vue:7 src/main.ts:453
 msgid "Import payment requests"
 msgstr "Importer des demandes de paiement"
 
@@ -1290,7 +1290,7 @@ msgstr "Format du code QR invalide"
 msgid "invoiced"
 msgstr "facturée"
 
-#: src/main.ts:291
+#: src/main.ts:292
 msgid "Language settings"
 msgstr "Préférences de langue"
 
@@ -1303,7 +1303,7 @@ msgstr "Nom"
 msgid "Later"
 msgstr "Plus tard"
 
-#: src/main.ts:167
+#: src/main.ts:168
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -1311,11 +1311,11 @@ msgstr "Se connecter"
 msgid "Login"
 msgstr "Connection"
 
-#: src/main.ts:166
+#: src/main.ts:167
 msgid "Login into Monujo"
 msgstr "S'authentifier pour accéder à Monujo"
 
-#: src/main.ts:194 src/main.ts:201
+#: src/main.ts:195 src/main.ts:202
 msgid "Main"
 msgstr "Principal"
 
@@ -1399,7 +1399,7 @@ msgstr "Mensuel"
 msgid "mutual"
 msgstr "mutuel"
 
-#: src/main.ts:198
+#: src/main.ts:199
 msgid "Mutual"
 msgstr "Mutuel"
 
@@ -1538,7 +1538,7 @@ msgstr "Ok"
 msgid "Opening balance"
 msgstr "Solde d'ouverture"
 
-#: src/components/AuthChallenge.vue:68
+#: src/components/AuthChallenge.vue:72
 msgid "Operation canceled"
 msgstr "Opération annulée"
 
@@ -1760,7 +1760,7 @@ msgstr ""
 "Attention, ce mot de passe n'est pas récupérable, alors veillez à le garder "
 "dans un endroit sûr et accessible."
 
-#: src/components/MoneyRequestModal.vue:306 src/main.ts:376
+#: src/components/MoneyRequestModal.vue:306 src/main.ts:381
 msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
@@ -1816,7 +1816,7 @@ msgstr "Gestionnaire des attributs"
 #: src/components/MoneyRequestModal.vue:30
 #: src/components/MoneyRequestModal.vue:44
 #: src/components/MoneyRequestModal.vue:50
-#: src/components/MoneyRequestModal.vue:54 src/main.ts:371 src/main.ts:375
+#: src/components/MoneyRequestModal.vue:54 src/main.ts:376 src/main.ts:380
 msgid "QR code"
 msgstr "Code QR"
 
@@ -1824,7 +1824,7 @@ msgstr "Code QR"
 msgid "QR code - Payment request to %{ name } of %{ amount } %{ currency }"
 msgstr "Code QR - demande de paiement à %{ name } de %{ amount } %{ currency }"
 
-#: src/main.ts:377
+#: src/main.ts:382
 msgid "QR code wallet - %{name}"
 msgstr "Code QR portefeuille - %{ name }"
 
@@ -2041,7 +2041,7 @@ msgstr "Enregistrer"
 msgid "Save changes"
 msgstr "Enregistrer"
 
-#: src/main.ts:262
+#: src/main.ts:263
 msgid "Security settings"
 msgstr "Préférences de sécurité"
 
@@ -2204,11 +2204,11 @@ msgstr "Partager le fichier CSV"
 msgid "Share PDF file"
 msgstr "Partager le fichier PDF"
 
-#: src/main.ts:358
+#: src/main.ts:363
 msgid "Show more info"
 msgstr "Voir plus"
 
-#: src/main.ts:344
+#: src/main.ts:349
 msgid "Show transactions"
 msgstr "Voir les opérations"
 
@@ -2909,7 +2909,7 @@ msgstr "Compte déjà créé"
 msgid "Wallet creation unexpectedly failed."
 msgstr "Création de compte interrompue inopinément."
 
-#: src/main.ts:427
+#: src/main.ts:432
 msgid "Wallet export"
 msgstr "Export du portefeuille"
 
@@ -2928,6 +2928,11 @@ msgstr "Création de compte interrompue inopinément."
 #: src/components/RecipientTechnicalDetails.vue:14
 msgid "Wallet URI:"
 msgstr "URI du porte feuille"
+
+#: src/components/AuthChallenge.vue:13 src/components/AuthChallenge.vue:14
+#: src/components/AuthChallenge.vue:18
+msgid "Wallet: %{ name }"
+msgstr "Portefeuille : %{ name }"
 
 #: src/components/RecipientInfo.vue:108 src/components/RecipientInfo.vue:114
 #: src/components/RecipientInfo.vue:117 src/components/RecipientInfo.vue:131

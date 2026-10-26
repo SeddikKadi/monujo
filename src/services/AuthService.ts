@@ -216,7 +216,7 @@ export class AuthService {
     this.store.save(config)
   }
 
-  async _requestCredentials(state: any, configs: any) {
+  async _requestCredentials(state: any, configs: any, accountName?: any) {
     console.error(
       `No callback was registered with '$auth.registerRequestCredentials(..)'. Ignoring.`
     )
@@ -233,7 +233,7 @@ export class AuthService {
    * identified account. Not providing it will force a default bland
    * direct password request.
    */
-  async getAccountAuth(configId?: string) {
+  async getAccountAuth(configId?: string, accountName?: string | false) {
     let configs: any
     if (configId) {
       const [configDef, userConfig] = await this.getConfigs()
@@ -241,7 +241,12 @@ export class AuthService {
     } else {
       configs = [this.configDef || [null, null], null]
     }
-    return new AccountAuthService(this, configId, configs as [any, any])
+    return new AccountAuthService(
+      this,
+      configId,
+      configs as [any, any],
+      accountName
+    )
   }
 
   flush(): void {
@@ -255,16 +260,20 @@ export class AccountAuthService {
   authService: AuthService
   configId: string | undefined
   configs: [any, any]
+  // Name of the wallet shown to the user when asking credentials
+  accountName: string | false | undefined
   private _secret: false | string = false
 
   constructor(
     authService: AuthService,
     configId: string | undefined,
-    configs: [any, any]
+    configs: [any, any],
+    accountName?: string | false
   ) {
     this.authService = authService
     this.configId = configId
     this.configs = configs
+    this.accountName = accountName
   }
 
   get secret() {
@@ -296,7 +305,8 @@ export class AccountAuthService {
   async requestCredentials(state: any): Promise<{}> {
     return await this.authService._requestCredentials(
       state,
-      this.authChallengeHandler
+      this.authChallengeHandler,
+      this.accountName
     )
   }
 

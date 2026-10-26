@@ -41,3 +41,12 @@ export function getSafeWalletRecipient(userAccount: any) {
     ? userAccount.safeWalletRecipient
     : userAccount.parent.safeWalletRecipient
 }
+
+/**
+ * Return the name identifying a wallet in the authentication settings and
+ * prompts, or ``false`` when the user has a single wallet requiring
+ * authentication.
+ */
+export function getWalletAuthName(userAccount: any, userAccounts: any[]) {
+  return userAccounts.length !== 1 && userAccount.internalId.substring(0, 15)
+}

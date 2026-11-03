@@ -1,34 +1,36 @@
 <template>
-  <div class="main mb-3">
-    <div class="is-flex">
-      <div class="is-flex switch-container">
-        <div class="switch-centered">
-          <label class="switch">
-            <input
-              type="checkbox"
-              :checked="useBiometry"
-              @click="switchUseBiometry"
-              ref="biometryCheckbox"
-            />
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="mr-1 switch-centered">
-          {{ $gettext("Use biometry for login") }}
-        </div>
-        <div
-          class="justify-right"
-          :class="{ missing: !hasCredentialsAvailable }"
-        >
-          <i class="ml-2 fas icon fa-triangle-exclamation">
-            <fa-icon icon="fa-key"
-          /></i>
+  <PrefsSection class="main mb-3">
+    <template #header>
+      <div class="is-flex">
+        <div class="is-flex switch-container">
+          <div class="switch-centered">
+            <label class="switch">
+              <input
+                type="checkbox"
+                :checked="useBiometry"
+                @click="switchUseBiometry"
+                ref="biometryCheckbox"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div class="mr-1 switch-centered">
+            {{ $gettext("Use biometry for login") }}
+          </div>
+          <div
+            class="justify-right"
+            :class="{ missing: !hasCredentialsAvailable }"
+          >
+            <i class="ml-2 fas icon fa-triangle-exclamation">
+              <fa-icon icon="fa-key"
+            /></i>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
     <div
       v-if="!hasCredentialsAvailable && useBiometry"
-      class="mb-3 mt-1 info-bubble ml-4 pb-1"
+      class="mb-3 mt-1 info-bubble pb-1"
     >
       <span class="warning">
         <i class="ml-2 fas icon fa-key">
@@ -39,13 +41,14 @@
         {{ $gettext("Your credentials will be saved after your next login") }}
       </span>
     </div>
-  </div>
+  </PrefsSection>
 </template>
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
+  import PrefsSection from "@/components/PrefsSection.vue"
   @Options({
     name: "BiometryPrefs",
-    components: {},
+    components: { PrefsSection },
     props: {},
     data() {
       return {
@@ -96,10 +99,6 @@
   @import "@/assets/custom-variables";
   @import "@/assets/switch-prefs";
 
-  .custom-card-prefs {
-    max-width: 550px;
-    margin: auto;
-  }
   .switch-centered {
     padding-right: 0.5em;
   }

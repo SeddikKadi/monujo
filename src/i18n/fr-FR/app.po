@@ -578,7 +578,7 @@ msgstr "Backend:"
 msgid "Before importing"
 msgstr "Avant l’importation"
 
-#: src/components/BiometryPrefs.vue:87
+#: src/components/BiometryPrefs.vue:90
 msgid "Biometric login successfully disabled"
 msgstr "Identification biométrique désactivée"
 
@@ -1288,7 +1288,7 @@ msgstr "Format du code QR invalide"
 msgid "invoiced"
 msgstr "facturée"
 
-#: src/main.ts:292
+#: src/components/LangPrefs.vue:23 src/main.ts:292
 msgid "Language settings"
 msgstr "Préférences de langue"
 
@@ -2841,12 +2841,12 @@ msgstr "Importer un fichier portefeuille…"
 msgid "Upload&nbsp;<b>%{ backendName }</b>&nbsp;wallet file..."
 msgstr "Importer un fichier portefeuille&nbsp;<b>%{ backendName }</b>"
 
-#: src/components/BiometryPrefs.vue:11 src/components/BiometryPrefs.vue:12
-#: src/components/BiometryPrefs.vue:17
+#: src/components/BiometryPrefs.vue:12 src/components/BiometryPrefs.vue:13
+#: src/components/BiometryPrefs.vue:18
 msgid "Use biometry for login"
 msgstr "Activer le login biométrique"
 
-#: src/components/LangPrefs.vue:11 src/components/LangPrefs.vue:12
+#: src/components/LangPrefs.vue:10 src/components/LangPrefs.vue:11
 #: src/components/LangPrefs.vue:17
 msgid "Use custom language"
 msgstr "Spécifier la langue"
@@ -3070,8 +3070,8 @@ msgstr "Votre compte a été créé avec succès."
 msgid "your accounts"
 msgstr "vos comptes"
 
-#: src/components/BiometryPrefs.vue:25 src/components/BiometryPrefs.vue:26
-#: src/components/BiometryPrefs.vue:35 src/components/BiometryPrefs.vue:39
+#: src/components/BiometryPrefs.vue:27 src/components/BiometryPrefs.vue:28
+#: src/components/BiometryPrefs.vue:37 src/components/BiometryPrefs.vue:41
 msgid "Your credentials will be saved after your next login"
 msgstr "Vos identifiants seront enregistrés après votre prochaine connexion"
 

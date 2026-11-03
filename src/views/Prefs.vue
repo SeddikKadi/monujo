@@ -2,21 +2,20 @@
   <main class="main">
     <div class="container mt-5">
       <div class="card custom-card custom-card-padding custom-card-prefs">
-        <div
+        <PrefsSection
           v-for="group in componentDefs"
           :key="group.name"
           class="prefs-group"
+          :title="group.label()"
+          primary
         >
-          <div class="mb-5">
-            <label class="custom-card-title">{{ group.label() }}</label>
-          </div>
           <div v-for="componentDef in group.componentDefs" :key="componentDef">
             <component
               :is="componentDef.component.name"
               :prefs-data="componentDef.data"
             />
           </div>
-        </div>
+        </PrefsSection>
       </div>
     </div>
   </main>
@@ -24,13 +23,14 @@
 <script lang="ts">
   import { mapState } from "vuex"
   import { Options, Vue } from "vue-class-component"
+  import PrefsSection from "@/components/PrefsSection.vue"
   import AuthPrefs from "@/components/AuthPrefs.vue"
   import LangPrefs from "@/components/LangPrefs.vue"
   import BiometryPrefs from "@/components/BiometryPrefs.vue"
 
   @Options({
     name: "Prefs",
-    components: { AuthPrefs, LangPrefs, BiometryPrefs },
+    components: { PrefsSection, AuthPrefs, LangPrefs, BiometryPrefs },
     computed: {
       ...mapState({
         componentDefs: (state: any) => state.prefs.componentDefs,

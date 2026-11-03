@@ -1,44 +1,44 @@
 <template>
-  <div class="main">
-    <div class="mb-5 is-flex">
-      <div class="is-flex mb-5">
+  <PrefsSection class="main">
+    <template #header>
+      <div class="is-flex is-align-items-center">
         <div class="switch-centered">
           <label class="switch">
             <input
               type="checkbox"
               :checked="useCustomLanguage"
+              :aria-label="$gettext('Use custom language')"
               @click="switchCustomLanguage"
               ref="langCheckbox"
             />
             <span class="slider round"></span>
           </label>
         </div>
-        <div class="mr-1 switch-centered">
-          {{ $gettext("Use custom language") }}
-        </div>
+        <div>{{ $gettext("Use custom language") }}</div>
       </div>
-      <div v-if="useCustomLanguage" class="is-flax ml-5">
-        <span class="select center">
-          <select v-model="userLanguage">
-            <option
-              v-for="(name, key) in $language.available"
-              :key="key"
-              :value="key"
-            >
-              {{ name }}
-            </option>
-          </select>
-        </span>
-      </div>
+    </template>
+    <div v-if="useCustomLanguage" class="select">
+      <select
+        v-model="userLanguage"
+        :aria-label="$gettext('Language settings')"
+      >
+        <option
+          v-for="(name, key) in $language.available"
+          :key="key"
+          :value="key"
+        >
+          {{ name }}
+        </option>
+      </select>
     </div>
-  </div>
+  </PrefsSection>
 </template>
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
-  import { useGettext } from "vue3-gettext"
+  import PrefsSection from "@/components/PrefsSection.vue"
   @Options({
     name: "LangPrefs",
-    components: {},
+    components: { PrefsSection },
     props: {
       prefsData: Object,
     },
@@ -92,16 +92,7 @@
   @import "@/assets/custom-variables";
   @import "@/assets/switch-prefs";
 
-  .custom-card-prefs {
-    max-width: 550px;
-    margin: auto;
-  }
   .switch-centered {
     padding-right: 7px;
-  }
-  .center {
-    position: relative;
-    bottom: 5px;
-    left: 5px;
   }
 </style>

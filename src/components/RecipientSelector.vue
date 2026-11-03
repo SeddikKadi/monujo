@@ -23,7 +23,9 @@
               "
               class="input"
               type="text"
-              :placeholder="$gettext('Name, email address or phone number')"
+              :placeholder="
+                $gettext('Name, wallet name, email address or phone number')
+              "
               ref="searchRecipient"
             />
             <span class="icon is-small is-left">

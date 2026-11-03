@@ -37,6 +37,8 @@ function enableSimplifiedAuth() {
     .first()
     .type(Cypress.env("walletPassword"), { log: false })
   cy.get(".modal button.is-primary").first().click()
+  cy.get("#simplified-auth").first().find(".auth-pref-edit button")
+    .should("be.enabled").click()
 }
 
 function shouldAcceptWalletPassword() {

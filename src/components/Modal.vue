@@ -23,6 +23,7 @@
   import ImportPaymentRequestsModal from "./ImportPaymentRequestsModal.vue"
   import RecurrentContractModal from "./RecurrentContractModal.vue"
   import ContractListModal from "./ContractListModal.vue"
+  import WalletLabelModal from "./WalletLabelModal.vue"
 
   @Options({
     name: "Modal",
@@ -41,6 +42,7 @@
       ImportPaymentRequestsModal,
       RecurrentContractModal,
       ContractListModal,
+      WalletLabelModal,
     },
     data() {
       return {

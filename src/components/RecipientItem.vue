@@ -21,6 +21,9 @@
         :refreshToggle="refreshToggle"
       />
 
+      <div v-if="walletLabel" class="wallet-label is-size-6">
+        {{ walletLabel }}
+      </div>
       <div v-if="recipient.markBackend" class="is-size-6 has-text-grey-light">
         {{ `${recipient.backendId}` }}
       </div>
@@ -32,6 +35,7 @@
   import { Options, Vue } from "vue-class-component"
 
   import Badge from "@/components/Badge.vue"
+  import { getRecipientWalletName } from "@/utils/account"
 
   import { showSpinnerMethod, replaceWithLoader } from "@/utils/showSpinner"
   import { debounceMethod } from "@/utils/debounce"
@@ -46,6 +50,11 @@
     props: {
       recipient: Object,
       refreshToggle: Boolean,
+    },
+    computed: {
+      walletLabel(): string {
+        return getRecipientWalletName(this.recipient, this.$gettext)
+      },
     },
     methods: {
       toggleFavorite: applyDecorators(
@@ -80,6 +89,8 @@
 <style lang="scss" scoped>
   .recipient-name {
     width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   div.badges {
     font-size: 1.2em;

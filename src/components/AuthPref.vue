@@ -1,52 +1,71 @@
 <template>
   <div class="main" id="simplified-auth">
     <div class="mb-5">
-      <div class="mb-5 is-flex">
-        <div class="is-flex">
-          <div class="switch-centered">
-            <label class="switch">
-              <input
-                type="checkbox"
-                :checked="useSimplifiedAuth"
-                @click="switchSimplifiedAuth"
-                ref="checkbox"
-              />
-              <span class="slider round"></span>
-            </label>
-          </div>
-          <div class="mr-1 switch-centered">
-            {{ $gettext("Simplified authentication for this device") }}
+      <div class="mb-5 auth-pref-row">
+        <div class="auth-pref-toggle">
+          <label class="switch">
+            <input
+              type="checkbox"
+              :checked="useSimplifiedAuth"
+              :aria-label="
+                name
+                  ? $gettext('Simplified authentication for %{ name }', {
+                      name,
+                    })
+                  : $gettext('Simplified authentication for this device')
+              "
+              @click="switchSimplifiedAuth"
+              ref="checkbox"
+            />
+            <span class="slider round"></span>
+          </label>
+          <div class="auth-pref-text">
+            <div v-if="name" class="auth-pref-name">{{ name }}</div>
+            <div
+              v-if="identifier"
+              class="auth-pref-identifier"
+              :title="identifier"
+            >
+              {{ identifier }}
+            </div>
+            <div v-if="showDescription" class="auth-pref-description">
+              {{ $gettext("Simplified authentication for this device") }}
+            </div>
           </div>
         </div>
-        <div v-if="name">
-          {{ $gettext("for account %{ name }", { name }) }}
-        </div>
-        <div v-if="useSimplifiedAuth" class="switch-centered">
+        <div class="auth-pref-edit">
           <button
-            class="button is-pay has-text-weight-medium is-rounded action"
+            class="button has-text-weight-medium is-rounded action"
+            :class="{ 'is-pay': useSimplifiedAuth && !editing }"
+            :aria-label="
+              name
+                ? $gettext('Edit authentication for %{ name }', { name })
+                : $gettext('Edit')
+            "
             @click="unlock()"
-            :disabled="!locked"
+            :disabled="!useSimplifiedAuth || editing"
           >
             <span>{{ $gettext("Edit") }}</span>
-            <span class="icon mb-1">
+            <span class="icon">
               <fa-icon class="fa-md" :icon="locked ? 'lock' : 'lock-open'" />
             </span>
           </button>
         </div>
       </div>
-      <div v-if="!locked && useSimplifiedAuth" class="ml-5">
+      <PrefsSection v-if="editing && useSimplifiedAuth">
         <component
           :is="handler.Ui.Pref.name"
           :handler="handler"
           @submitConfig="submitConfig"
         />
-      </div>
+      </PrefsSection>
     </div>
   </div>
 </template>
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
 
+  import PrefsSection from "@/components/PrefsSection.vue"
   import AuthPrefDirect from "@/components/AuthPrefDirect.vue"
   import AuthPrefRetention from "@/components/AuthPrefRetention.vue"
 
@@ -70,18 +89,22 @@
   @Options({
     name: "AuthPref",
     components: {
+      PrefsSection,
       AuthPrefDirect,
       AuthPrefRetention,
     },
     props: {
       handler: Object,
       requestCredentials: Function,
-      name: Boolean,
+      name: [String, Boolean],
+      identifier: String,
+      showDescription: { type: Boolean, default: true },
       disabled: false,
     },
     data() {
       return {
         locked: true,
+        editing: false,
         useSimplifiedAuth: false,
       }
     },
@@ -120,10 +143,12 @@
         this.$forceUpdate()
       },
       async unlock() {
-        if (!(await this.triggerChallenge())) {
+        if (!this.useSimplifiedAuth || this.editing) return
+        if (this.locked && !(await this.triggerChallenge())) {
           return
         }
         this.locked = false
+        this.editing = true
       },
       setUseSimplifiedAuth(value: any) {
         this.useSimplifiedAuth = value
@@ -147,6 +172,7 @@
           }
           this.setUseSimplifiedAuth(false)
           this.locked = true
+          this.editing = false
           this.$emit("saveConfig", this.handler.accountAuthService, null)
           this.handler.userConfig = null
           this.$forceUpdate()
@@ -163,6 +189,7 @@
         }
         this.setUseSimplifiedAuth(true)
         this.locked = false
+        this.editing = false
       },
     },
   })
@@ -172,8 +199,43 @@
   // Bulma override variables
   @import "@/assets/custom-variables";
   @import "@/assets/switch-prefs";
-  .switch-centered {
-    margin: auto;
-    padding-right: 7px;
+  .auth-pref-row,
+  .auth-pref-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .auth-pref-toggle {
+    flex: 1;
+    min-width: 0;
+  }
+  .switch,
+  .auth-pref-edit {
+    flex-shrink: 0;
+  }
+  .auth-pref-edit .button {
+    // Keep a compact button with breathing room around its text and icon.
+    min-height: 28px;
+    height: auto;
+    padding: 0.25em 1em;
+    font-size: 0.85em;
+  }
+  .auth-pref-text {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .auth-pref-name {
+    margin-bottom: 0.15rem;
+  }
+  .auth-pref-identifier {
+    font-size: 0.85em;
+    opacity: 0.65;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .auth-pref-description {
+    font-size: 0.9em;
   }
 </style>

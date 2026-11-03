@@ -274,8 +274,8 @@ msgstr "Le montant envoyé doit être un nombre positif"
 msgid "Amount to send must be a number with not more than 2 decimals"
 msgstr "Le montant envoyé doit être un nombre n'ayant pas plus de 2 décimales"
 
-#: src/components/RecipientSelector.vue:194
-#: src/components/RecipientSelector.vue:204
+#: src/components/RecipientSelector.vue:196
+#: src/components/RecipientSelector.vue:206
 msgid "An error occured during the scan process"
 msgstr "Une erreur est survenue lors du processus de scan"
 
@@ -293,7 +293,7 @@ msgid "An error occured while retrieving account information"
 msgstr ""
 "Une erreur est survenue lors de récuperation des informations du compte."
 
-#: src/components/RecipientSelector.vue:253
+#: src/components/RecipientSelector.vue:255
 msgid "An error occured while searching recipient"
 msgstr "Il y a eu un problème lors de la recherche du destinataire"
 
@@ -341,7 +341,7 @@ msgstr ""
 "Il y a eu un problème lors de la tentative de validation de la demande de "
 "crédit de %{ name }"
 
-#: src/components/RecipientSelector.vue:265
+#: src/components/RecipientSelector.vue:267
 msgid "An unexpected error occured while verifying transaction authorizations."
 msgstr ""
 "Une erreur inattendue est survenue lors de la vérification des autorisations "
@@ -349,7 +349,7 @@ msgstr ""
 
 #: src/components/ContractListModal.vue:265
 #: src/components/PaymentRequestListModal.vue:270
-#: src/components/RecipientSelector.vue:147
+#: src/components/RecipientSelector.vue:149
 #: src/components/TransactionList.vue:264
 msgid "An unexpected issue occured while downloading recipient list"
 msgstr ""
@@ -469,7 +469,7 @@ msgstr ""
 "Une erreur inattendue est survenue pendant le chargement des portefeuilles. "
 "Veuillez nous excuser pour le désagrément."
 
-#: src/components/RecipientItem.vue:68
+#: src/components/RecipientItem.vue:77
 msgid ""
 "An unexpected issue occurred while switching this recipient favorite status"
 msgstr ""
@@ -606,6 +606,11 @@ msgstr "Peut être mis à jour :"
 #: src/components/PaymentRequestModal.vue:91
 #: src/components/PaymentRequestModal.vue:92
 #: src/components/PaymentRequestModal.vue:99
+#: src/components/WalletLabelModal.vue:35
+#: src/components/WalletLabelModal.vue:36
+#: src/components/WalletLabelModal.vue:56
+#: src/components/WalletLabelModal.vue:62
+#: src/components/WalletLabelModal.vue:65
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -706,7 +711,7 @@ msgstr "Contactez votre administrateur si elle ne s'affiche pas"
 msgid "continued"
 msgstr "suite"
 
-#: src/main.ts:198
+#: src/main.ts:202
 msgid "Converted"
 msgstr "Converti"
 
@@ -982,12 +987,20 @@ msgstr "Brouillon"
 msgid "e.g. 50"
 msgstr "ex: 50"
 
-#: src/components/AuthPref.vue:20 src/components/AuthPref.vue:21
-#: src/components/AuthPref.vue:26 src/components/AuthPref.vue:30
+#: src/components/AuthPref.vue:29 src/components/AuthPref.vue:30
+#: src/components/AuthPref.vue:31 src/components/AuthPref.vue:32
+#: src/components/AuthPref.vue:38 src/components/AuthPref.vue:40
+#: src/components/AuthPref.vue:42 src/components/AuthPref.vue:43
+#: src/components/AuthPref.vue:48
 msgid "Edit"
 msgstr "Modifier"
 
-#: src/components/AuthPrefs.vue:34
+#: src/components/AuthPref.vue:28 src/components/AuthPref.vue:29
+#: src/components/AuthPref.vue:39 src/components/AuthPref.vue:42
+msgid "Edit authentication for %{ name }"
+msgstr "Modifier l’authentification pour %{ name }"
+
+#: src/components/AuthPrefs.vue:43
 msgid "Edits were successfully saved"
 msgstr "Modifications enregistrées"
 
@@ -1054,7 +1067,7 @@ msgstr "Explication"
 msgid "Explanation (optional)"
 msgstr "Explication (facultative)"
 
-#: src/main.ts:420
+#: src/main.ts:436
 msgid "Export wallet"
 msgstr "Exporter le portefeuille"
 
@@ -1148,11 +1161,6 @@ msgstr "Prénom"
 msgid "for"
 msgstr "pour"
 
-#: src/components/AuthPref.vue:16 src/components/AuthPref.vue:17
-#: src/components/AuthPref.vue:22
-msgid "for account %{ name }"
-msgstr "pour le compte %{ name }"
-
 #: src/views/Login.vue:26 src/views/Login.vue:27 src/views/Login.vue:31
 #: src/views/Login.vue:43
 msgid "Forgot password ?"
@@ -1234,7 +1242,7 @@ msgstr "Importer un fichier"
 
 #: src/components/ImportPaymentRequestsModal.vue:11
 #: src/components/ImportPaymentRequestsModal.vue:6
-#: src/components/ImportPaymentRequestsModal.vue:7 src/main.ts:453
+#: src/components/ImportPaymentRequestsModal.vue:7 src/main.ts:469
 msgid "Import payment requests"
 msgstr "Importer des demandes de paiement"
 
@@ -1278,7 +1286,7 @@ msgstr "Identifiant ou mot de passe incorrect"
 msgid "Invalid email."
 msgstr "E-mail invalide."
 
-#: src/components/RecipientSelector.vue:218
+#: src/components/RecipientSelector.vue:220
 msgid "Invalid QR code content format"
 msgstr "Format du code QR invalide"
 
@@ -1288,7 +1296,7 @@ msgstr "Format du code QR invalide"
 msgid "invoiced"
 msgstr "facturée"
 
-#: src/components/LangPrefs.vue:23 src/main.ts:292
+#: src/components/LangPrefs.vue:23 src/main.ts:296
 msgid "Language settings"
 msgstr "Préférences de langue"
 
@@ -1301,7 +1309,7 @@ msgstr "Nom"
 msgid "Later"
 msgstr "Plus tard"
 
-#: src/main.ts:168
+#: src/main.ts:172
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -1309,11 +1317,15 @@ msgstr "Se connecter"
 msgid "Login"
 msgstr "Connection"
 
-#: src/main.ts:167
+#: src/main.ts:171
 msgid "Login into Monujo"
 msgstr "S'authentifier pour accéder à Monujo"
 
-#: src/main.ts:195 src/main.ts:202
+#: src/utils/account.ts:163
+msgid "main"
+msgstr "compte principal"
+
+#: src/utils/account.ts:64 src/utils/account.ts:78
 msgid "Main"
 msgstr "Principal"
 
@@ -1397,7 +1409,7 @@ msgstr "Mensuel"
 msgid "mutual"
 msgstr "mutuel"
 
-#: src/main.ts:199
+#: src/main.ts:203
 msgid "Mutual"
 msgstr "Mutuel"
 
@@ -1419,13 +1431,13 @@ msgstr "Mes demandes de paiement impayées"
 msgid "My unpaid top-up requests"
 msgstr "Mes demandes de crédit non payées"
 
-#: src/components/RecipientSelector.vue:15
-#: src/components/RecipientSelector.vue:18
+#: src/components/RecipientSelector.vue:16
 #: src/components/RecipientSelector.vue:19
-#: src/components/RecipientSelector.vue:21
-#: src/components/RecipientSelector.vue:26
-msgid "Name, email address or phone number"
-msgstr "Nom, adresse email ou téléphone"
+#: src/components/RecipientSelector.vue:20
+#: src/components/RecipientSelector.vue:22
+#: src/components/RecipientSelector.vue:27
+msgid "Name, wallet name, email address or phone number"
+msgstr "Nom, nom du portefeuille, adresse e-mail ou numéro de téléphone"
 
 #: src/components/RecurrentContractModal.vue:258
 msgid "New recurring payment"
@@ -1465,12 +1477,12 @@ msgstr "Non"
 msgid "No previous transactions in your history."
 msgstr "Aucune opération dans votre historique"
 
-#: src/components/RecipientSelector.vue:48
-#: src/components/RecipientSelector.vue:49
-#: src/components/RecipientSelector.vue:58
-#: src/components/RecipientSelector.vue:59
-#: src/components/RecipientSelector.vue:73
-#: src/components/RecipientSelector.vue:78
+#: src/components/RecipientSelector.vue:50
+#: src/components/RecipientSelector.vue:51
+#: src/components/RecipientSelector.vue:60
+#: src/components/RecipientSelector.vue:61
+#: src/components/RecipientSelector.vue:75
+#: src/components/RecipientSelector.vue:80
 msgid "No recipients found"
 msgstr "Aucun destinataire de paiement à afficher"
 
@@ -1531,11 +1543,15 @@ msgstr "Pas encore adhérent ?"
 msgid "Ok"
 msgstr "Ok"
 
+#: src/components/AuthPrefs.vue:5
+msgid "On this device"
+msgstr "Sur cet appareil"
+
 #: src/utils/pdf.ts:757
 msgid "Opening balance"
 msgstr "Solde d'ouverture"
 
-#: src/components/AuthChallenge.vue:72
+#: src/components/AuthChallenge.vue:78
 msgid "Operation canceled"
 msgstr "Opération annulée"
 
@@ -1716,6 +1732,10 @@ msgstr "Confirmation code PIN"
 msgid "PIN code must contain %{ pinLength }"
 msgstr "le code PIN doit contenir %{ pinLength}"
 
+#: src/utils/account.ts:112
+msgid "Please enter a wallet name."
+msgstr "Veuillez saisir un nom de portefeuille."
+
 #: src/components/PaymentRequestModal.vue:329
 msgid "Please enter an explanation of at least 10 characters"
 msgstr "Veuillez saisir une explication d’au moins 10 caractères."
@@ -1757,7 +1777,7 @@ msgstr ""
 "Attention, ce mot de passe n'est pas récupérable, alors veillez à le garder "
 "dans un endroit sûr et accessible."
 
-#: src/components/MoneyRequestModal.vue:306 src/main.ts:381
+#: src/components/MoneyRequestModal.vue:306 src/main.ts:385
 msgid "Please scan the QR code above to proceed"
 msgstr "Veuillez scanner le code QR ci-dessus pour continuer"
 
@@ -1813,7 +1833,7 @@ msgstr "Gestionnaire des attributs"
 #: src/components/MoneyRequestModal.vue:30
 #: src/components/MoneyRequestModal.vue:44
 #: src/components/MoneyRequestModal.vue:50
-#: src/components/MoneyRequestModal.vue:54 src/main.ts:376 src/main.ts:380
+#: src/components/MoneyRequestModal.vue:54 src/main.ts:380 src/main.ts:384
 msgid "QR code"
 msgstr "Code QR"
 
@@ -1821,7 +1841,7 @@ msgstr "Code QR"
 msgid "QR code - Payment request to %{ name } of %{ amount } %{ currency }"
 msgstr "Code QR - demande de paiement à %{ name } de %{ amount } %{ currency }"
 
-#: src/main.ts:382
+#: src/main.ts:386
 msgid "QR code wallet - %{name}"
 msgstr "Code QR portefeuille - %{ name }"
 
@@ -1953,6 +1973,14 @@ msgstr "Demandes refusées uniquement"
 msgid "Remove file"
 msgstr "Retirer le fichier"
 
+#: src/main.ts:424
+msgid "Rename"
+msgstr "Renommer"
+
+#: src/components/WalletLabelModal.vue:6 src/components/WalletLabelModal.vue:7
+msgid "Rename wallet"
+msgstr "Renommer le portefeuille"
+
 #: src/components/RecurrenceOptions.vue:19
 #: src/components/RecurrenceOptions.vue:20
 msgid "Repeat every"
@@ -2027,6 +2055,11 @@ msgstr "Ligne %{ row } : related_wallet est vide."
 
 #: src/components/AuthPrefPin.vue:33 src/components/AuthPrefPin.vue:34
 #: src/components/AuthPrefPin.vue:37 src/components/AuthPrefPin.vue:58
+#: src/components/WalletLabelModal.vue:38
+#: src/components/WalletLabelModal.vue:39
+#: src/components/WalletLabelModal.vue:59
+#: src/components/WalletLabelModal.vue:68
+#: src/components/WalletLabelModal.vue:73
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -2038,7 +2071,7 @@ msgstr "Enregistrer"
 msgid "Save changes"
 msgstr "Enregistrer"
 
-#: src/main.ts:263
+#: src/main.ts:267
 msgid "Security settings"
 msgstr "Préférences de sécurité"
 
@@ -2201,11 +2234,11 @@ msgstr "Partager le fichier CSV"
 msgid "Share PDF file"
 msgstr "Partager le fichier PDF"
 
-#: src/main.ts:363
+#: src/main.ts:367
 msgid "Show more info"
 msgstr "Voir plus"
 
-#: src/main.ts:349
+#: src/main.ts:353
 msgid "Show transactions"
 msgstr "Voir les opérations"
 
@@ -2231,8 +2264,19 @@ msgstr "Créer un compte"
 msgid "Sign-Up"
 msgstr "Créer un compte"
 
-#: src/components/AuthPref.vue:12 src/components/AuthPref.vue:13
-#: src/components/AuthPref.vue:18
+#: src/components/AuthPrefs.vue:4
+msgid "Simplified authentication"
+msgstr "Authentification simplifiée"
+
+#: src/components/AuthPref.vue:12 src/components/AuthPref.vue:8
+#: src/components/AuthPref.vue:9
+msgid "Simplified authentication for %{ name }"
+msgstr "Authentification simplifiée pour %{ name }"
+
+#: src/components/AuthPref.vue:11 src/components/AuthPref.vue:12
+#: src/components/AuthPref.vue:15 src/components/AuthPref.vue:21
+#: src/components/AuthPref.vue:22 src/components/AuthPref.vue:28
+#: src/components/AuthPref.vue:32
 msgid "Simplified authentication for this device"
 msgstr "Authentification simplifiée sur ce périphérique"
 
@@ -2454,6 +2498,14 @@ msgstr "Votre demande de rechargement a été traitée avec succès"
 msgid "The transaction was sent but no confirmation was received. "
 msgstr "La transaction a été envoyée mais aucune confirmation n'a été reçue."
 
+#: src/components/WalletLabelModal.vue:163
+msgid "The wallet could not be renamed."
+msgstr "Le portefeuille n’a pas pu être renommé."
+
+#: src/utils/account.ts:114
+msgid "The wallet name must not exceed 30 characters."
+msgstr "Le nom du portefeuille ne doit pas dépasser 30 caractères."
+
 #: src/components/TheBankAccountList.vue:104
 #: src/components/TheBankAccountList.vue:105
 #: src/components/TheBankAccountList.vue:148
@@ -2490,6 +2542,13 @@ msgid ""
 msgstr ""
 "Ceci est une opération de création monétaire, pas un transfert. Le\n"
 "compte total d'unité monétaire de la monnaie va s'accroître."
+
+#: src/components/WalletLabelModal.vue:18
+#: src/components/WalletLabelModal.vue:19
+#: src/components/WalletLabelModal.vue:23
+#: src/components/WalletLabelModal.vue:28
+msgid "This name is visible to people who pay this wallet."
+msgstr "Ce nom est visible par les personnes qui paient ce portefeuille."
 
 #: src/components/RecurrentContractModal.vue:278
 msgid "This operation is automatically repeated at the selected frequency."
@@ -2536,7 +2595,7 @@ msgid "This payment request must be paid from its designated sender account."
 msgstr ""
 "Cette demande de paiement doit être réglée depuis le compte émetteur désigné."
 
-#: src/components/RecipientSelector.vue:233
+#: src/components/RecipientSelector.vue:235
 msgid "This QR code is for a payment request, not a wallet identifier"
 msgstr "Ce QR code représente une demande de transfert, pas un portefeuille"
 
@@ -2733,7 +2792,7 @@ msgstr ""
 "Impossible d’ouvrir le formulaire d’inscription. Veuillez contacter votre "
 "administrateur."
 
-#: src/components/RecipientSelector.vue:210
+#: src/components/RecipientSelector.vue:212
 msgid "Unable to read QR code"
 msgstr "Impossible de lire le code QR."
 
@@ -2856,6 +2915,15 @@ msgstr "Spécifier la langue"
 msgid "Use only for authorized and exceptional cases."
 msgstr "À utiliser uniquement dans des cas autorisés et exceptionnels."
 
+#: src/utils/account.ts:116
+msgid ""
+"Use only letters, digits, spaces, hyphens and apostrophes. The name must "
+"start and end with a letter or a digit."
+msgstr ""
+"Utilisez uniquement des lettres, des chiffres, des espaces, des traits "
+"d'union et des apostrophes. Le nom doit commencer et se terminer par une "
+"lettre ou un chiffre."
+
 #: src/components/MoneyTransaction.vue:114
 #: src/components/MoneyTransaction.vue:122
 #: src/components/MoneyTransaction.vue:130
@@ -2906,9 +2974,13 @@ msgstr "Compte déjà créé"
 msgid "Wallet creation unexpectedly failed."
 msgstr "Création de compte interrompue inopinément."
 
-#: src/main.ts:432
+#: src/main.ts:448
 msgid "Wallet export"
 msgstr "Export du portefeuille"
+
+#: src/components/WalletLabelModal.vue:24
+msgid "Wallet name"
+msgstr "Nom du portefeuille"
 
 #: src/components/RecipientTechnicalDetails.vue:17
 #: src/components/RecipientTechnicalDetails.vue:18
@@ -3004,11 +3076,15 @@ msgstr ""
 "Vous avez déjà une demande de rechargement en attente. Veuillez la payer ou "
 "la supprimer avant de poursuivre"
 
-#: src/components/RecipientSelector.vue:277
+#: src/utils/account.ts:121
+msgid "You already have a wallet with this name in this currency."
+msgstr "Vous avez déjà un portefeuille portant ce nom dans cette monnaie."
+
+#: src/components/RecipientSelector.vue:279
 msgid "You are not allowed to send money to %{ recipientName }"
 msgstr "Vous n'êtes pas autorisé à envoyer de l'argent à %{recipientName}"
 
-#: src/components/RecipientSelector.vue:241
+#: src/components/RecipientSelector.vue:243
 msgid "You can not transfer money to your own account"
 msgstr "Vous ne pouvez pas envoyer de l'argent vers votre propre compte."
 

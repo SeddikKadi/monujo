@@ -103,7 +103,11 @@ import AuthPrefPin from "@/components/AuthPrefPin.vue"
 import AuthChallengeRetention from "@/components/AuthChallengeRetention.vue"
 import AuthChallengeDirect from "@/components/AuthChallengeDirect.vue"
 import AuthChallengePin from "@/components/AuthChallengePin.vue"
-import { getWalletAuthName } from "@/utils/account"
+import {
+  getUserAccount,
+  getWalletName,
+  getWalletAuthName,
+} from "@/utils/account"
 
 // Plugins
 
@@ -192,14 +196,14 @@ fetchConfig("config.json").then(async (config: any) => {
       if (bankAccount.type) {
         const siblingAccounts = await bankAccount.parent.getAccounts()
         if (siblingAccounts.length == 1) {
-          return () => $gettext("Main")
+          return getWalletName(bankAccount.parent, $gettext)
         }
         return bankAccount.type === "Nant"
           ? () => $gettext("Converted")
           : () => $gettext("Mutual")
       }
     }
-    return () => $gettext("Main")
+    return getWalletName(bankAccount, $gettext)
   }
 
   const root = document.querySelector(":root") as HTMLElement
@@ -411,6 +415,18 @@ fetchConfig("config.json").then(async (config: any) => {
             transactionType: "reconversion",
             refreshTransaction,
             refreshAccounts,
+          })
+        },
+      })
+    }
+    if (obj.isVirtualRoot && getUserAccount(obj).setLabel) {
+      items.push({
+        label: $gettext("Rename"),
+        icon: "edit",
+        action: (component: any) => {
+          modal.open("WalletLabelModal", {
+            account: obj,
+            refreshAccounts: () => component.$emit("refreshAccounts"),
           })
         },
       })

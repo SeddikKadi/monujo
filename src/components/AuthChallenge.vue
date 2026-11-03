@@ -15,7 +15,7 @@
       </header>
       <section class="modal-card-body">
         <p v-if="accountName" class="account-name" id="auth-account-name">
-          {{ $gettext("Wallet: %{ name }", { name: accountName }) }}
+          {{ $gettext("Wallet: %{ name }", { name: translatedAccountName }) }}
         </p>
         <p class="failed-unlock" v-if="state === 'failedUnlock'">
           {{ $gettext("Failed authentication. Please try again.") }}
@@ -33,6 +33,7 @@
 </template>
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
+  import { translateWalletLabel } from "@/utils/account"
   import AuthChallengeRetention from "@/components/AuthChallengeRetention.vue"
   import AuthChallengeDirect from "@/components/AuthChallengeDirect.vue"
 
@@ -60,6 +61,11 @@
             this.show(handler, state, accountName)
           })
       )
+    },
+    computed: {
+      translatedAccountName(): string {
+        return translateWalletLabel(this.accountName || "", this.$gettext)
+      },
     },
     methods: {
       submitInput(credsInput: string) {

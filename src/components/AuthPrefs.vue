@@ -1,28 +1,37 @@
 <template>
-  <div v-for="account in userAccounts" :key="account.name">
-    <AuthPref
-      :name="account.name"
-      :handler="account.handler"
-      :requestCredentials="account.requestCredentials"
-      @saveConfig="saveConfig"
-    />
-  </div>
+  <PrefsSection
+    v-if="userAccounts.length > 0"
+    :title="$gettext('Simplified authentication')"
+    :description="$gettext('On this device')"
+  >
+    <div v-for="account in userAccounts" :key="account.id">
+      <AuthPref
+        :name="account.name()"
+        :identifier="account.id"
+        :showDescription="false"
+        :handler="account.handler"
+        :requestCredentials="account.requestCredentials"
+        @saveConfig="saveConfig"
+      />
+    </div>
+  </PrefsSection>
 </template>
 <script lang="ts">
   import { markRaw } from "vue"
   import { Options, Vue } from "vue-class-component"
+  import PrefsSection from "@/components/PrefsSection.vue"
   import AuthPref from "@/components/AuthPref.vue"
-  import { getWalletAuthName } from "@/utils/account"
+  import { getWalletName } from "@/utils/account"
 
   @Options({
     name: "AuthPrefs",
-    components: { AuthPref },
+    components: { AuthPref, PrefsSection },
     props: {
       prefsData: Object,
     },
     data() {
       return {
-        userAccounts: Array,
+        userAccounts: [],
       }
     },
     async mounted() {
@@ -36,14 +45,14 @@
 
       async getUserAccounts() {
         let userAccounts = this.prefsData.userAccountsRequiringAuth
-        const $auth = this.$auth
 
         // XXXvlab: typeforcing to 'any' as typescript doesn't seem to
         // understand that a 'allSettled' is actually a Promise of an
         // array.
         const preparedTemplateDataPromises = (await Promise.allSettled(
           userAccounts.map(async (userAccount: any) => ({
-            name: getWalletAuthName(userAccount, userAccounts),
+            id: userAccount.internalId,
+            name: getWalletName(userAccount, this.$gettext),
             handler: markRaw(
               (
                 await this.$auth.getAccountAuth(userAccount.internalId)
@@ -61,4 +70,3 @@
   })
   export default class AuthPrefs extends Vue {}
 </script>
-<style lang="scss" scoped></style>

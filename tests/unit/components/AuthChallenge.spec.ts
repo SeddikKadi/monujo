@@ -3,8 +3,10 @@ import { flushPromises, mount } from "@vue/test-utils"
 import AuthChallenge from "../../../src/components/AuthChallenge.vue"
 import { AccountAuthService } from "../../../src/services/AuthService"
 
+import { walletTranslations } from "../helpers/walletTranslations"
+
 /** Mount the dialog and return the credentials request it registered. */
-function mountChallenge() {
+function mountChallenge(gettext?: (message: string, params?: any) => string) {
   let requestCredentials: any
   const wrapper = mount(AuthChallenge, {
     global: {
@@ -13,8 +15,8 @@ function mountChallenge() {
         $auth: {
           registerRequestCredentials: (fn: any) => (requestCredentials = fn),
         },
-        $gettext: (message: string, params?: any) =>
-          params ? message.replace("%{ name }", params.name) : message,
+        $gettext: gettext || ((message: string, params?: any) =>
+          params ? message.replace("%{ name }", params.name) : message),
         $msg: { warning: vi.fn() },
       },
     },
@@ -24,6 +26,17 @@ function mountChallenge() {
 }
 
 describe("AuthChallenge", () => {
+  it("translates a default wallet name in the open password prompt", async () => {
+    const gettext = walletTranslations()
+    const { wrapper, ask } = mountChallenge(gettext.$gettext)
+    ask("compte principal")
+    await flushPromises()
+    expect(wrapper.get("#auth-account-name").text()).toContain("main")
+    gettext.current = "fr-FR"
+    await flushPromises()
+    expect(wrapper.get("#auth-account-name").text()).toContain("compte principal")
+  })
+
   it("names the wallet being unlocked", async () => {
     const { wrapper, ask } = mountChallenge()
 

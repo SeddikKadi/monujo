@@ -71,7 +71,7 @@ describe("CurrencyItem.vue", () => {
 
       await flushPromises()
 
-      expect(wrapper.find(".currency-name").text()).toBe("Euro")
+      expect(wrapper.find(".currency-name").text()).toContain("Euro")
       expect(wrapper.find(".currency-supply").text()).toBe("1000.00")
       expect(wrapper.find(".currency-symbol").text()).toBe("EUR")
       expect(msgErrorMock).not.toHaveBeenCalled()
@@ -101,7 +101,7 @@ describe("CurrencyItem.vue", () => {
 
         for (const field of fields) {
           const expected = field === failing ? field.fail : field.ok
-          expect(wrapper.find(field.selector).text()).toBe(expected)
+          expect(wrapper.find(field.selector).text()).toContain(expected)
           // Check that unavailable class is applied only to the failed field
           const hasUnavailableClass = wrapper.find(field.selector).classes().includes("unavailable")
           expect(hasUnavailableClass).toBe(field === failing)
@@ -158,6 +158,16 @@ describe("CurrencyItem.vue", () => {
     })
   })
 
+  it("shows the selected admin wallet name even with a single account", async () => {
+    const wrapper = mount(CurrencyItem, {
+      props: { currency: {...createMockCurrency(), label: "Treasury"}, disableDropDown:true },
+      global: createGlobalMocks(vi.fn()),
+    })
+    await flushPromises()
+    expect(wrapper.get(".wallet-name").text()).toBe("Treasury")
+    wrapper.unmount()
+  })
+
   describe("showAccountId", () => {
     it("displays account id when showAccountId is true", async () => {
       const msgErrorMock = vi.fn()
@@ -175,9 +185,9 @@ describe("CurrencyItem.vue", () => {
 
       await flushPromises()
 
-      const backendEl = wrapper.find(".currency-backend:not(.error-msg)")
-      expect(backendEl.exists()).toBe(true)
-      expect(backendEl.text()).toBe("as test-backend")
+      const backendEl = wrapper.findAll(".currency-backend").find(el => !el.classes().includes("error-msg") && !el.classes().includes("wallet-name"))
+      expect(backendEl).toBeDefined()
+      expect(backendEl!.text()).toBe("as test-backend")
     })
 
     it("does not display account id when showAccountId is false", async () => {
@@ -196,8 +206,8 @@ describe("CurrencyItem.vue", () => {
 
       await flushPromises()
 
-      const backendEl = wrapper.find(".currency-backend:not(.error-msg)")
-      expect(backendEl.exists()).toBe(false)
+      const backendEl = wrapper.findAll(".currency-backend").find(el => !el.classes().includes("error-msg") && !el.classes().includes("wallet-name"))
+      expect(backendEl).toBeUndefined()
     })
   })
 })

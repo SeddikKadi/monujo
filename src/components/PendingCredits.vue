@@ -26,7 +26,7 @@
 
       <TransactionItem
         v-for="transaction in topUpsPendingForApproval"
-        :key="transaction"
+        :key="transaction.jsonData.odoo.credit_id"
         :transaction="transaction"
         type="topUpsPendingForApproval"
         @refreshTransaction="refreshTransaction"
@@ -51,11 +51,13 @@
     },
     props: {
       refreshToggle: Boolean,
+      adminWallet: Object,
     },
     emits: ["hasCredits"],
     data() {
       return {
         hasLoadingError: false,
+        loadVersion: 0,
         topUpsPendingForApproval: [],
       }
     },
@@ -71,11 +73,15 @@
       updatePendingCreditRequests: applyDecorators(
         [showSpinnerMethod(".transactions")],
         async function (this: any): Promise<void> {
+          const version = ++this.loadVersion
           try {
-            this.topUpsPendingForApproval =
-              await this.$lokapi.getCreditRequests()
+            const credits = await this.adminWallet.getCreditRequests()
+            if (version !== this.loadVersion) return
+            this.topUpsPendingForApproval = credits
             this.hasLoadingError = false
           } catch (err: any) {
+            if (version !== this.loadVersion) return
+            this.topUpsPendingForApproval = []
             console.error("Failed to fetch pending credit requests", err)
             this.hasLoadingError = true
             throw new UIError(

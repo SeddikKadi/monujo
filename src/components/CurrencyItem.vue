@@ -13,6 +13,9 @@
         <div v-if="isTemporarilyUnavailable" class="currency-backend error-msg">
           {{ $gettext("Temporarily unavailable - please refresh") }}
         </div>
+        <div class="currency-backend wallet-name">
+          {{ walletName }}
+        </div>
         <div v-if="showAccountId" class="currency-backend">
           {{ $gettext("as %{ id }", { id: currency?.internalId }) }}
         </div>
@@ -46,6 +49,7 @@
 
 <script lang="ts">
   import { mapGetters } from "vuex"
+  import { getWalletName } from "@/utils/account"
   import { Options, Vue } from "vue-class-component"
 
   import { e as LokapiExc } from "@lokavaluto/lokapi-browser"
@@ -76,6 +80,9 @@
       }
     },
     computed: {
+      walletName() {
+        return getWalletName(this.currency, this.$gettext)()
+      },
       isTemporarilyUnavailable() {
         return (
           this.currency instanceof Array &&

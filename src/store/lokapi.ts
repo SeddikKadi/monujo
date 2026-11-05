@@ -16,7 +16,6 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
       isMultiCurrency: false, // Are we displaying accounts with different currencies ?
       backends: {},
       hasUserAccountValidationRights: false,
-      pendingUserAccounts: [],
       hasCreditRequestValidationRights: false,
       hasAnyInspectRights: false,
       pendingCreditRequests: [],
@@ -156,10 +155,6 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
         }
         commit("setHasUserAccountValidationRights", hasRight)
       },
-      async fetchPendingUserAccounts({ commit, state }: any) {
-        const accounts = await lokApiService.getStagingUserAccounts()
-        commit("setPendingUserAccounts", accounts)
-      },
       async fetchAnyInspectRights({ commit, state }: any) {
         let hasRight
         try {
@@ -235,7 +230,6 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
         state.isLog = false
         state.isMultiCurrency = false
         state.hasUserAccountValidationRights = false
-        state.pendingUserAccounts = []
         state.backends = {}
         state.hasCreditRequestValidationRights = false
         state.hasAnyInspectRights = false
@@ -270,9 +264,6 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
       },
       setHasUserAccountValidationRights(state: any, hasRight: boolean) {
         state.hasUserAccountValidationRights = hasRight
-      },
-      setPendingUserAccounts(state: any, accounts: Array<any>) {
-        state.pendingUserAccounts = accounts
       },
       setHasCreditRequestValidationRights(state: any, hasRight: boolean) {
         state.hasCreditRequestValidationRights = hasRight

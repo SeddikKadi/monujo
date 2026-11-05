@@ -317,7 +317,7 @@ msgstr ""
 "Une erreur s'est produite lors de la suppression de la demande de "
 "rechargement, veuillez ré-éssayer ou contacter votre administrateur"
 
-#: src/components/CurrencyItem.vue:135
+#: src/components/CurrencyItem.vue:142
 msgid "An error occurred while loading currency information"
 msgstr ""
 "Une erreur est survenue lors de la récupération des informations de la "
@@ -380,7 +380,7 @@ msgstr ""
 "Une erreur inattendue est survenue pendant le transfert d'argent. Veuillez "
 "nous excuser pour la gêne occasionnée."
 
-#: src/components/PendingAccounts.vue:155
+#: src/components/PendingAccounts.vue:161
 msgid ""
 "An unexpected issue occurred while approving the wallet account creation of "
 "user %{ name }"
@@ -403,7 +403,7 @@ msgstr ""
 "disponibles. votre transaction n'a pas été envoyée. Veuillez nous excuser "
 "pour le désagrément."
 
-#: src/components/PendingAccounts.vue:200
+#: src/components/PendingAccounts.vue:208
 msgid ""
 "An unexpected issue occurred while discarding the wallet account creation of "
 "user %{ name }"
@@ -476,7 +476,7 @@ msgstr ""
 "Il y a eu un problème lors de la bascule du status de favoris sur ce "
 "destinataire"
 
-#: src/components/PendingAccounts.vue:225 src/components/PendingCredits.vue:82
+#: src/components/PendingAccounts.vue:238 src/components/PendingCredits.vue:88
 msgid "An unexpected issue occurred while updating the pending accounts list"
 msgstr ""
 "Il y a eu un problème lors du rafraichissement de la liste des demandes de "
@@ -525,9 +525,9 @@ msgstr ""
 #: src/components/ConfirmPaymentModal.vue:144
 #: src/components/ConfirmPaymentModal.vue:157
 #: src/components/ConfirmPaymentModal.vue:161
-#: src/components/PendingAccounts.vue:62 src/components/PendingAccounts.vue:63
-#: src/components/PendingAccounts.vue:66 src/components/PendingAccounts.vue:67
-#: src/components/PendingAccounts.vue:70 src/components/PendingAccounts.vue:78
+#: src/components/PendingAccounts.vue:64 src/components/PendingAccounts.vue:65
+#: src/components/PendingAccounts.vue:68 src/components/PendingAccounts.vue:70
+#: src/components/PendingAccounts.vue:74 src/components/PendingAccounts.vue:80
 msgid "Approve"
 msgstr "Valider"
 
@@ -548,8 +548,8 @@ msgstr "Archiver"
 msgid "Are you sure you want to delete this recurring payment?"
 msgstr "Voulez-vous vraiment supprimer ce paiement récurrent ?"
 
-#: src/components/CurrencyItem.vue:10 src/components/CurrencyItem.vue:14
-#: src/components/CurrencyItem.vue:17 src/components/CurrencyItem.vue:9
+#: src/components/CurrencyItem.vue:12 src/components/CurrencyItem.vue:13
+#: src/components/CurrencyItem.vue:17 src/components/CurrencyItem.vue:20
 msgid "as %{ id }"
 msgstr "soit %{ id }"
 
@@ -930,9 +930,9 @@ msgstr "Désactivé"
 msgid "Disabled accounts"
 msgstr "Comptes désactivés"
 
-#: src/components/PendingAccounts.vue:47 src/components/PendingAccounts.vue:48
-#: src/components/PendingAccounts.vue:51 src/components/PendingAccounts.vue:55
-#: src/components/PendingAccounts.vue:59
+#: src/components/PendingAccounts.vue:49 src/components/PendingAccounts.vue:50
+#: src/components/PendingAccounts.vue:52 src/components/PendingAccounts.vue:53
+#: src/components/PendingAccounts.vue:59 src/components/PendingAccounts.vue:62
 msgid "Discard"
 msgstr "Annuler"
 
@@ -2939,11 +2939,11 @@ msgstr "Utiliser le même mémo pour le destinataire"
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/components/PendingAccounts.vue:164
+#: src/components/PendingAccounts.vue:170
 msgid "User %{ name }'s account creation was approved"
 msgstr "Le compte de l'utilisateur %{ name } a été validé"
 
-#: src/components/PendingAccounts.vue:209
+#: src/components/PendingAccounts.vue:217
 msgid "User %{ name }'s account creation was discarded"
 msgstr ""
 "La demande d'activation de portefeuille de l'utilisateur %{ name } a été "

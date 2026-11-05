@@ -29,12 +29,16 @@
       <div>
         <div
           v-for="account in pendingUserAccounts"
-          :key="account.id"
+          :key="account.internalId"
+          :data-wallet-id="encodeURIComponent(account.internalId)"
           class="mb-2 account-row shadow-bottom"
         >
           <div class="row-user">
             <span class="user-label">
               {{ account.name }}
+              <span v-if="account.walletLabel">
+                — {{ walletLabel(account.walletLabel) }}</span
+              >
               {{ account.markBackend ? `(via ${account.backendId})` : "" }}
             </span>
           </div>
@@ -49,7 +53,6 @@
                   discard-account
                   icon-btn
                 "
-                :id="`discard-${account.id}`"
                 @click="discardUserAccount(account)"
               >
                 <span class="icon">
@@ -68,7 +71,6 @@
                   validate-account
                   icon-btn
                 "
-                :id="`validate-${account.id}`"
                 @click="validateUserAccount(account)"
               >
                 <span class="icon">
@@ -88,6 +90,7 @@
 
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
+  import { translateWalletLabel } from "@/utils/account"
   import { UIError } from "@/exception"
   import { showSpinnerMethod, replaceWithLoader } from "@/utils/showSpinner"
   import { debounceMethodWithOpts } from "@/utils/debounce"
@@ -97,11 +100,14 @@
     name: "PendingAccounts",
     props: {
       refreshToggle: Boolean,
+      adminWallet: Object,
     },
     emits: ["hasAccounts"],
     data() {
       return {
         hasLoadingError: false,
+        pendingUserAccounts: [],
+        loadVersion: 0,
       }
     },
     mounted() {
@@ -112,12 +118,10 @@
         this.updatePendingAccount()
       },
     },
-    computed: {
-      pendingUserAccounts(): Array<any> {
-        return this.$store.state.lokapi.pendingUserAccounts
-      },
-    },
     methods: {
+      walletLabel(label: string) {
+        return translateWalletLabel(label, this.$gettext)
+      },
       validateUserAccount: applyDecorators(
         [
           debounceMethodWithOpts({
@@ -137,7 +141,9 @@
             account: any
           ) {
             return replaceWithLoader.apply(this, [
-              `#validate-${account.id}`,
+              `[data-wallet-id="${encodeURIComponent(
+                account.internalId
+              )}"] .validate-account`,
               "2em",
             ])
           }),
@@ -187,7 +193,9 @@
             account: any
           ) {
             return replaceWithLoader.apply(this, [
-              `#discard-${account.id}`,
+              `[data-wallet-id="${encodeURIComponent(
+                account.internalId
+              )}"] .discard-account`,
               "2em",
             ])
           }),
@@ -215,10 +223,15 @@
       updatePendingAccount: applyDecorators(
         [showSpinnerMethod(".accounts")],
         async function (this: any): Promise<void> {
+          const version = ++this.loadVersion
           try {
-            await this.$store.dispatch("fetchPendingUserAccounts")
+            const accounts = await this.adminWallet.getStagingUserAccounts()
+            if (version !== this.loadVersion) return
+            this.pendingUserAccounts = accounts
             this.hasLoadingError = false
           } catch (err: any) {
+            if (version !== this.loadVersion) return
+            this.pendingUserAccounts = []
             console.error("Failed to fetch pending accounts", err)
             this.hasLoadingError = true
             throw new UIError(

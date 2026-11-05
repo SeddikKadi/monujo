@@ -20,23 +20,27 @@
               />
             </div>
             <div
-              v-if="hasUserAccountValidationRights"
+              v-if="canValidateWallets"
               v-show="showPendingAccounts"
               class="mt-5 accounts card custom-card custom-card-padding"
             >
               <PendingAccounts
+                :key="currency.uri"
+                :adminWallet="currency"
                 :refreshToggle="refreshAccountsToggle"
                 @hasAccounts="showPendingAccounts = $event"
               />
             </div>
           </div>
           <div
-            v-if="hasCreditRequestValidationRights"
+            v-if="canValidateCredits"
             v-show="showPendingCredits"
             class="column is-half"
           >
             <div class="accounts card custom-card custom-card-padding">
               <PendingCredits
+                :key="currency.uri"
+                :adminWallet="currency"
                 :refreshToggle="refreshTransactionsToggle"
                 @hasCredits="showPendingCredits = $event"
                 @refreshTransaction="refreshTransaction"
@@ -78,9 +82,12 @@
         refreshAccountsToggle: false,
         refreshCurrencyToggle: false,
         currency: null,
+        selectionVersion: 0,
         showPendingCredits: false,
         showPendingAccounts: false,
         hasInspectRights: false,
+        canValidateWallets: false,
+        canValidateCredits: false,
       }
     },
     components: {
@@ -90,11 +97,7 @@
       PendingCredits,
     },
     computed: {
-      ...mapModuleState("lokapi", [
-        "hasUserAccountValidationRights",
-        "hasCreditRequestValidationRights",
-        "adminRightsLoaded",
-      ]),
+      ...mapModuleState("lokapi", ["adminRightsLoaded"]),
       ...mapGetters(["hasAnyAdminRights"]),
     },
     watch: {
@@ -122,20 +125,27 @@
         // This change is propagated through props to children components
         this.refreshCurrencyToggle = !this.refreshCurrencyToggle
       },
-      currencySelected(currency: any) {
+      async currencySelected(currency: any) {
+        const version = ++this.selectionVersion
         this.currency = currency
-        this.checkInspectRights(currency)
-      },
-      async checkInspectRights(currency: any) {
-        if (!currency?.canSearchAllRecipients) {
-          this.hasInspectRights = false
-          return
-        }
-        try {
-          this.hasInspectRights = await currency.canSearchAllRecipients()
-        } catch {
-          this.hasInspectRights = false
-        }
+        this.canValidateWallets = false
+        this.canValidateCredits = false
+        this.hasInspectRights = false
+        this.showPendingAccounts = false
+        this.showPendingCredits = false
+        if (!currency) return
+        const checks = await Promise.allSettled([
+          currency.hasUserAccountValidationRights?.(),
+          currency.hasCreditRequestValidationRights?.(),
+          currency.canSearchAllRecipients?.(),
+        ])
+        if (version !== this.selectionVersion) return
+        const allowed = checks.map((r) => r.status === "fulfilled" && !!r.value)
+        ;[
+          this.canValidateWallets,
+          this.canValidateCredits,
+          this.hasInspectRights,
+        ] = allowed
       },
     },
   })

@@ -30,16 +30,14 @@
       <h2 class="custom-card-title title-card">
         {{ $gettext("your currencies") }}
       </h2>
-      <div v-for="entry in adminUserAccounts">
+      <div v-for="entry in adminUserAccounts" :key="entry.userAccount.uri">
         <CurrencyItem
           class="mb-5"
           :class="{
-            selected: entry.userAccount?.internalId === currency?.internalId,
+            selected: entry.userAccount?.uri === currency?.uri,
           }"
           @currencySelected="$emit('currencySelected', entry.userAccount)"
-          :isCurrencySelected="
-            entry.userAccount?.internalId === currency?.internalId
-          "
+          :isCurrencySelected="entry.userAccount?.uri === currency?.uri"
           :currency="entry.userAccount"
           :showAccountId="entry.showAccountId"
           :refreshCurrency="refreshCurrency"
@@ -114,55 +112,39 @@
         if (!backends) {
           return []
         }
-        const backendList = Object.values(backends)
-
-        const backendChecks = await Promise.all(
-          backendList.map(async (backend: any) => {
-            // Backends whose user accounts don't implement
-            // getCurrencySupply are not yet fully administrable and
-            // should not appear in the admin dashboard currency list.
-            const userAccounts = Object.values(backend.userAccounts || {})
-            if (!userAccounts.some((ua: any) => ua.getCurrencySupply)) {
-              return false
-            }
-            return (
-              (await backend.hasCreditRequestValidationRights()) ||
-              (await backend.hasUserAccountValidationRights()) ||
-              (await backend.canSearchAllRecipients())
-            )
-          })
-        )
-        const filteredBackendList = backendList.filter(
-          (backend, index) => backendChecks[index]
-        )
-
-        // Flatten all user accounts from filtered backends
         const allUserAccounts: any[] = []
-        for (const backend of filteredBackendList as any[]) {
-          for (const ua of Object.values(backend.userAccounts || {})) {
-            allUserAccounts.push(ua)
+        for (const backend of Object.values(backends) as any[]) {
+          for (const ua of Object.values(backend.userAccounts || {}) as any[]) {
+            if (!ua.getCurrencySupply) continue
+            // A wallet is listed when it can act here. Being allowed to
+            // search every recipient is not enough: without one of these
+            // rights nothing can be done on the accounts it finds.
+            if (
+              (await ua.hasCreditRequestValidationRights?.()) ||
+              (await ua.hasUserAccountValidationRights?.())
+            ) {
+              allUserAccounts.push(ua)
+            }
           }
         }
-
-        // Detect duplicates: user accounts sharing the same
-        // backend have the same currency and need disambiguation.
         const backendCounts: Record<string, number> = {}
         for (const ua of allUserAccounts) {
-          const bid = (ua as any).backend?.internalId
-          backendCounts[bid] = (backendCounts[bid] || 0) + 1
+          const id = ua.parent.internalId
+          backendCounts[id] = (backendCounts[id] || 0) + 1
         }
-
-        const entries = allUserAccounts.map((ua: any) => ({
+        const entries = allUserAccounts.map((ua) => ({
           userAccount: ua,
-          showAccountId: backendCounts[ua.backend?.internalId] > 1,
+          showAccountId: backendCounts[ua.parent.internalId] > 1,
         }))
-
-        if (!this.currency && entries.length > 0) {
-          this.$emit("currencySelected", entries[0].userAccount)
-        }
+        const selected =
+          allUserAccounts.find((ua) => ua.uri === this.currency?.uri) ||
+          allUserAccounts[0] ||
+          null
+        if (selected !== this.currency) this.$emit("currencySelected", selected)
         return entries
       },
       async toggleRefreshBalance() {
+        this.adminUserAccounts = await this.getAdminUserAccounts()
         this.currencyRefreshing = true
         this.refreshCurrency = !this.refreshCurrency
         // Manual refresh also triggers sibling boxes on the admin dashboard:

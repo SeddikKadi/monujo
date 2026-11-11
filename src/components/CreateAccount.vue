@@ -42,7 +42,7 @@
                     :class="{ 'section-body': canImport }"
                   >
                     <div
-                      v-if="getUnconfiguredBackends().length > 1"
+                      v-if="creatableBackends.length > 1"
                       class="field mb-3 is-flex is-align-items-center"
                     >
                       <label class="has-text-weight-bold mr-3">{{
@@ -50,7 +50,7 @@
                       }}</label>
                       <div class="buttons mb-0">
                         <template
-                          v-for="backend in getUnconfiguredBackends()"
+                          v-for="backend in creatableBackends"
                           :key="backend"
                         >
                           <button
@@ -65,6 +65,49 @@
                         </template>
                       </div>
                     </div>
+                    <!-- Keep the public label out of the password manager's login form. -->
+                    <form
+                      id="new-wallet-name-form"
+                      class="field mb-3"
+                      autocomplete="off"
+                      @submit.prevent="createUserAccount()"
+                    >
+                      <label class="label" for="new-wallet-name">
+                        {{ $gettext("Wallet name") }}
+                      </label>
+                      <div class="control">
+                        <input
+                          id="new-wallet-name"
+                          ref="walletNameInput"
+                          name="wallet-label"
+                          autocomplete="off"
+                          v-model.trim="form.walletLabel"
+                          class="input"
+                          :class="{ 'is-danger': hasError('walletLabel') }"
+                          type="text"
+                          required
+                          maxlength="30"
+                          aria-describedby="new-wallet-name-help new-wallet-name-error"
+                          :aria-invalid="hasError('walletLabel')"
+                          @blur="checkWalletLabel"
+                        />
+                      </div>
+                      <p id="new-wallet-name-help" class="help">
+                        {{
+                          $gettext(
+                            "Give this wallet a name to tell it apart from your others. " +
+                              "This name is public: people who pay you will see it."
+                          )
+                        }}
+                      </p>
+                      <p
+                        v-if="hasError('walletLabel')"
+                        id="new-wallet-name-error"
+                        class="help is-danger"
+                      >
+                        {{ form.errors.walletLabel[0] }}
+                      </p>
+                    </form>
                     <p class="mb-3">
                       {{
                         $gettext(
@@ -108,7 +151,7 @@
                     <div class="field">
                       <div class="control has-icons-left has-icons-right">
                         <input
-                          @keyup.enter="createUserAccount"
+                          @keyup.enter="createUserAccount()"
                           class="input"
                           autocomplete="new-password"
                           v-bind:class="{
@@ -198,15 +241,15 @@
                     class="section-body"
                   >
                     <div
-                      v-for="configurableBackend in configurableBackends"
-                      :key="configurableBackend"
+                      v-for="importableBackend in importableBackends"
+                      :key="importableBackend.id"
                     >
                       <input
                         class="fileInput"
                         type="file"
                         @change="
                           (e) =>
-                            registerWalletHandle(e, configurableBackend.backend)
+                            registerWalletHandle(e, importableBackend.backend)
                         "
                         style="display: none"
                       />
@@ -216,14 +259,14 @@
                         id="import-wallet"
                         @click="triggerFileInput"
                         v-html="
-                          configurableBackends.length > 1
+                          importableBackends.length > 1
                             ? $gettextInterpolate(
                                 $gettext(
                                   'Upload&nbsp;<b>%{ backendName }</b>&nbsp;wallet file...'
                                 ),
                                 {
                                   backendName:
-                                    configurableBackend.backend.jsonData.type.split(
+                                    importableBackend.backend.jsonData.type.split(
                                       ':'
                                     )[1],
                                 }
@@ -245,6 +288,12 @@
 
 <script lang="ts">
   import { markRaw } from "vue"
+  import {
+    getDefaultWalletName,
+    getOtherWalletNames,
+    validateWalletName,
+    walletNameErrorMessage,
+  } from "@/utils/account"
   import { Options, Vue } from "vue-class-component"
   import { UIError } from "@/exception"
   import { LokAPIExc } from "@/services/lokapiService"
@@ -264,14 +313,15 @@
         useSimplifiedAuth: false,
         form: {
           accountBackend: "",
+          walletLabel: "",
           accountPassword: "",
           accountPasswordConfirm: "",
           errors: {
+            walletLabel: [],
             accountPassword: [],
             accountPasswordConfirm: [],
           },
         },
-        configurableBackends: [],
         walletAction: "create" as "create" | "import",
       }
     },
@@ -279,30 +329,32 @@
       const accountAuth = await this.$auth.getAccountAuth("new")
       this.handler = markRaw(accountAuth.authPrefHandler)
     },
-    async mounted() {
-      const unconfiguredBackends = this.getUnconfiguredBackends()
-      if (unconfiguredBackends.length === 0) {
-        this.$router.push("/")
+    mounted() {
+      if (this.creatableBackends.length === 0) {
+        this.$router.push({ name: "dashboard" })
         return
       }
-      this.form.accountBackend = unconfiguredBackends[0]
-
-      for (const backend of Object.values(this.getBackends()) as {
-        isUnconfigured(): Promise<boolean>
-      }[]) {
-        const isUnconfigured = await backend.isUnconfigured()
-        if (isUnconfigured) {
-          this.configurableBackends.push({ backend })
-        }
-      }
+      this.form.accountBackend = this.creatableBackends[0]
+      this.form.walletLabel = this.defaultWalletLabel
+      this.$nextTick(() => {
+        const input = this.$refs.walletNameInput as HTMLInputElement | undefined
+        input?.focus()
+        input?.select()
+      })
     },
 
-    // of backends as { isUnconfigured(): Promise<boolean> }[]
     watch: {
-      getUnconfiguredBackends(newval, oldval): void {
-        if (newval.length === 1) {
-          this.form.accountBackend = newval[0]
+      creatableBackends(backends: string[]): void {
+        if (!backends.includes(this.form.accountBackend)) {
+          this.form.accountBackend = backends[0] || ""
         }
+      },
+      "form.walletLabel": function (): void {
+        this.checkWalletLabel()
+      },
+      // A name is unique in its currency: check it against the chosen one.
+      "form.accountBackend": function (): void {
+        if (this.form.walletLabel) this.checkWalletLabel()
       },
       "form.accountPassword": function (): void {
         this.checkPasswordField("accountPassword")
@@ -313,14 +365,35 @@
       },
     },
     computed: {
+      creatableBackends(): string[] {
+        return this.getCreatableBackends()
+      },
+      importableBackends(): any[] {
+        const backends = this.getBackends()
+        return this.creatableBackends
+          .filter(
+            (id: string) => typeof backends[id].registerWallet === "function"
+          )
+          .map((id: string) => ({ id, backend: backends[id] }))
+      },
+      defaultWalletLabel(): string {
+        const walletCount = Object.values(this.getBackends()).reduce(
+          (count: number, backend: any) =>
+            count + Object.keys(backend.userAccounts).length,
+          0
+        )
+        return getDefaultWalletName(walletCount, this.$gettext)
+      },
       canImport(): boolean {
         return (
-          this.configurableBackends?.length > 0 &&
+          this.importableBackends?.length > 0 &&
           !this.$config.disableImportWallet
         )
       },
       hasFieldErrors(): boolean {
         if (
+          !this.creatableBackends.includes(this.form.accountBackend) ||
+          !this.isWalletLabelValid ||
           this.form.accountPassword.length === 0 ||
           this.form.accountPasswordConfirm.length === 0
         )
@@ -330,6 +403,19 @@
             return this.form.errors[field].length > 0
           }).length > 0
         )
+      },
+      walletLabelError(): string | null {
+        return validateWalletName(
+          this.form.walletLabel,
+          getOtherWalletNames(
+            this.getBackends()[this.form.accountBackend],
+            this.$gettext
+          ),
+          this.$gettext
+        )
+      },
+      isWalletLabelValid(): boolean {
+        return !this.walletLabelError
       },
       requestCredentials() {
         return () => {
@@ -342,7 +428,7 @@
         }
       },
 
-      ...mapGetters(["getUnconfiguredBackends", "getBackends"]),
+      ...mapGetters(["getCreatableBackends", "getBackends"]),
     },
     methods: {
       async readFileAsText(file: any) {
@@ -451,6 +537,10 @@
           this.$router.push("/")
         }
       ),
+      checkWalletLabel() {
+        const error = this.walletLabelError
+        this.form.errors.walletLabel = error ? [error] : []
+      },
       async checkPasswordField(fieldname: string, accountBackend: string) {
         this.form.errors[fieldname] = await this.$store.dispatch(
           "checkPasswordStrength",
@@ -473,17 +563,28 @@
       createUserAccount: applyDecorators(
         [debounceMethod, showSpinnerMethod(".main")],
         async function (this: any): Promise<void> {
+          this.form.walletLabel = this.form.walletLabel.trim()
+          this.checkWalletLabel()
+          if (this.hasFieldErrors) return
           let userAccount
           try {
             userAccount = await this.$store.dispatch("createUserAccount", [
               this.form["accountPassword"],
               this.form["accountBackend"],
+              this.form.walletLabel,
             ])
           } catch (err) {
             console.error(
               "Something went wrong on createUserAccount request",
               err
             )
+            // Refused by Odoo, e.g. a name used by a wallet in another currency.
+            if ((err as any)?.name === "InvalidWalletLabel") {
+              this.form.errors.walletLabel = [
+                walletNameErrorMessage((err as any).reason, this.$gettext),
+              ]
+              return // stay on page
+            }
             if (!(err instanceof LokAPIExc.UserAccountAlreadyExists)) {
               this.$msg.error(
                 this.$gettext("Wallet creation unexpectedly failed.") +

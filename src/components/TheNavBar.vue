@@ -83,7 +83,7 @@
               </router-link>
 
               <router-link
-                v-if="hasUnconfiguredBackend()"
+                v-if="getCreatableBackends().length > 0"
                 to="/create-account"
                 class="navbar-item"
               >
@@ -176,7 +176,7 @@
         "hasCreditRequestValidationRights",
         "userProfile",
       ]),
-      ...mapGetters(["hasUnconfiguredBackend", "hasAnyAdminRights"]),
+      ...mapGetters(["getCreatableBackends", "hasAnyAdminRights"]),
     },
   })
   export default class TheNavBar extends Vue {}

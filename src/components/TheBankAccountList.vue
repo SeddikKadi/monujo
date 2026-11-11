@@ -8,26 +8,44 @@
     />
 
     <div class="active" v-if="!accountsLoading || activeVirtualAccounts.length">
-      <a
-        @click="refreshBalance(), refreshTransactions()"
-        :title="$gettext('Refresh balance and transaction list')"
-        class="button is-default is-pulled-right is-rounded refresh"
-        :class="{
-          'active-refresh-button': accountsLoading || isAccountsLoadingRetrying,
-        }"
-      >
-        <span :class="{ hide: accountsLoading || isAccountsLoadingRetrying }">
-          {{ $gettext("Refresh") }}
-        </span>
-        <span class="icon is-small">
-          <fa-icon
-            :class="{
-              refreshing: accountsLoading || isAccountsLoadingRetrying,
-            }"
-            icon="sync"
-          />
-        </span>
-      </a>
+      <div class="account-actions is-pulled-right">
+        <button
+          v-if="totalAccountsLoaded > 0 && getCreatableBackends().length > 0"
+          id="create-wallet"
+          type="button"
+          class="button is-default is-rounded"
+          :title="$gettext('New Wallet')"
+          :aria-label="$gettext('New Wallet')"
+          @click="createImportWallet"
+        >
+          <span>{{ $gettext("New Wallet") }}</span>
+          <span class="icon is-small" aria-hidden="true">
+            <fa-icon icon="plus-circle" />
+          </span>
+        </button>
+        <button
+          type="button"
+          @click="refreshBalance(), refreshTransactions()"
+          :title="$gettext('Refresh balance and transaction list')"
+          class="button is-default is-rounded refresh"
+          :class="{
+            'active-refresh-button':
+              accountsLoading || isAccountsLoadingRetrying,
+          }"
+        >
+          <span :class="{ hide: accountsLoading || isAccountsLoadingRetrying }">
+            {{ $gettext("Refresh") }}
+          </span>
+          <span class="icon is-small">
+            <fa-icon
+              :class="{
+                refreshing: accountsLoading || isAccountsLoadingRetrying,
+              }"
+              icon="sync"
+            />
+          </span>
+        </button>
+      </div>
       <div
         class="notification is-danger is-light"
         v-if="accountsLoadingErrors.length > 0"
@@ -55,7 +73,7 @@
         v-else-if="
           accountsLoadingErrors.length == 0 &&
           totalAccountsLoaded === 0 &&
-          getUnconfiguredBackends().length === 0
+          getCreatableBackends().length === 0
         "
       >
         {{ $gettext("You don't have any wallet yet.") }}
@@ -65,7 +83,7 @@
         v-else-if="
           accountsLoadingErrors.length == 0 &&
           totalAccountsLoaded === 0 &&
-          getUnconfiguredBackends().length > 0
+          getCreatableBackends().length > 0
         "
       >
         <div class="no-wallet">
@@ -241,7 +259,7 @@
         "pendingVirtualAccounts",
         "inactiveVirtualAccounts",
         "getBackends",
-        "getUnconfiguredBackends",
+        "getCreatableBackends",
         "pathologicalVirtualAccounts",
       ]),
       ...mapModuleState("lokapi", ["accountsLoading", "accountsLoadingErrors"]),
@@ -310,8 +328,15 @@
 <style lang="scss" scoped>
   @import "../assets/custom-variables.scss";
 
-  .refresh {
+  .account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 0.5rem;
     margin-top: -1.2em;
+    position: relative;
     z-index: 1;
   }
   .active-refresh-button {

@@ -78,6 +78,17 @@ export function getRecipientWalletName(recipient: any, $gettext: any): string {
   return recipient?.hasSiblingWallets ? $gettext("Main") : ""
 }
 
+/**
+ * Return the default name of a new wallet: only the first wallet has one,
+ * every later wallet must be named by its owner.
+ */
+export function getDefaultWalletName(
+  existingWalletCount: number,
+  $gettext: (message: string) => string
+): string {
+  return existingWalletCount === 0 ? $gettext("main") : ""
+}
+
 /** Return the backend, that is the currency, holding ``userAccount``. */
 export function getAccountBackend(
   backends: { [id: string]: any },

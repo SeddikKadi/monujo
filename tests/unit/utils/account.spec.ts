@@ -3,6 +3,7 @@ import {
   getAccountBackend,
   getOtherWalletNames,
   validateWalletName,
+  getDefaultWalletName,
   getRecipientSearch,
   getRecipientWalletName,
   getSafeWalletRecipient,
@@ -184,6 +185,18 @@ describe("default wallet names across languages", () => {
       expect(translateWalletLabel(label, gettext.$gettext)).toBe(label)
     }
   )
+})
+
+describe("getDefaultWalletName", () => {
+  it("names only the first wallet", () => {
+    const gettext = walletTranslations()
+    expect(getDefaultWalletName(0, gettext.$gettext)).toBe("main")
+    gettext.current = "fr-FR"
+    expect(getDefaultWalletName(0, gettext.$gettext)).toBe("compte principal")
+    for (const count of [1, 2, 3, 10]) {
+      expect(getDefaultWalletName(count, gettext.$gettext)).toBe("")
+    }
+  })
 })
 
 const INVALID_CHARACTERS =

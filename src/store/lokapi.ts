@@ -115,15 +115,15 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
       },
       async createUserAccount(
         { commit, state, dispatch }: any,
-        [password, backendId]: Array<string>
+        [password, backendId, label]: Array<string>
       ) {
         const backend = state.backends[backendId]
         // Might throw some exception, leave it to the component
         // to display error messages.
-        const userAccount = await backend.createUserAccount({ password })
+        const userAccount = await backend.createUserAccount({ password, label })
         lokApiService.clearCaches()
-        dispatch("setBackends")
-        dispatch("fetchAccounts")
+        await dispatch("setBackends")
+        await dispatch("fetchAccounts", { flushBackendCaches: false })
         return userAccount
       },
       async setBackends({ commit, state }: any) {
@@ -300,24 +300,17 @@ export function lokapiStoreFactory(lokApiService: any, passwordUtils: any) {
           return state.apiToken
         }
       },
-      hasUnconfiguredBackend: (state: any, getters: any) => {
-        return function (): any {
-          const unconfiguredBackends = getters.getUnconfiguredBackends()
-          return unconfiguredBackends.length > 0
-        }
-      },
       getBackends: (state: any) => {
         return function (): any {
           return state.backends
         }
       },
-      getUnconfiguredBackends: (state: any) => {
-        return function (): object {
+      getCreatableBackends: (state: any) => {
+        return function (): string[] {
           return Object.entries(state.backends)
             .filter(
               ([_, backend]) =>
-                Object.keys((<any>backend).userAccounts).length === 0 &&
-                (<any>backend).createUserAccount
+                typeof (<any>backend).createUserAccount === "function"
             )
             .map(([backendId, _]) => backendId)
         }

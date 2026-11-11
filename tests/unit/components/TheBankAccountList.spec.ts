@@ -47,6 +47,7 @@ const mountComponent = (account: any = undefined) =>
       mocks: {
         $gettext: (msg: string) => msg,
         $config: { accountsRefreshInterval: -1 },
+        $router: { push: vi.fn() },
         $store: createStoreMock(1),
       },
     },
@@ -61,7 +62,7 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
       inactiveVirtualAccounts: [],
       pathologicalVirtualAccounts: [],
       getBackends: () => [],
-      getUnconfiguredBackends: () => [],
+      getCreatableBackends: () => [],
     }
 
     moduleState = {
@@ -78,6 +79,34 @@ describe("TheBankAccountList.vue - pathological accounts", () => {
     _obj: { internalId: id },
     name: () => id,
     ...overrides,
+  })
+
+  it("offers wallet creation for an existing wallet and opens the creation page", async () => {
+    const account = makeAccount("existing")
+    getters.activeVirtualAccounts = [account]
+    getters.getCreatableBackends = () => ["comchain:Test"]
+    const wrapper = mountComponent(account)
+    const button = wrapper.get("#create-wallet")
+    expect(button.attributes("aria-label")).toBe("New Wallet")
+    expect(button.text()).toBe("New Wallet")
+    await button.trigger("click")
+    expect((wrapper.vm as any).$router.push).toHaveBeenCalledWith("/create-account")
+    wrapper.unmount()
+  })
+
+  it("also offers creation while the first wallet is pending activation", () => {
+    getters.pendingVirtualAccounts = [makeAccount("pending", { active: false, status: "to_confirm" })]
+    getters.getCreatableBackends = () => ["comchain:Test"]
+    const wrapper = mountComponent()
+    expect(wrapper.find("#create-wallet").exists()).toBe(true)
+    wrapper.unmount()
+  })
+
+  it("hides creation when no currency supports it", () => {
+    getters.activeVirtualAccounts = [makeAccount("existing")]
+    const wrapper = mountComponent()
+    expect(wrapper.find("#create-wallet").exists()).toBe(false)
+    wrapper.unmount()
   })
 
   it("shows 'your accounts' when active accounts exist and no pathological accounts", () => {

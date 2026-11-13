@@ -363,13 +363,22 @@
                 this.recipientMemo
               )
             } catch (err: any) {
-              this.$msg.error(
-                this.$gettext(
-                  "An unexpected issue occurred during the money credit." +
-                    "We are sorry for the inconvenience.",
-                  err
+              if (err?.name === "PermissionDenied") {
+                this.errors = this.$gettext(
+                  "The selected administrator wallet is not allowed to credit money."
                 )
-              )
+              } else {
+                console.error("Credit preparation failed:", err)
+                this.$msg.error(
+                  this.$gettext(
+                    "An unexpected issue occurred during the money credit." +
+                      "We are sorry for the inconvenience.",
+                    err
+                  )
+                )
+              }
+              this.isReady = false
+              return false
             }
             this.plannedTransactions = txs
             this.isReady = true

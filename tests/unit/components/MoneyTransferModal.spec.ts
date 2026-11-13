@@ -321,6 +321,41 @@ describe("MoneyTransferModal", () => {
       expect(msg.error).not.toHaveBeenCalled()
     })
 
+    it("explains a credit refused because the admin wallet may not credit", async () => {
+      const recipient = makeRecipient("admin-wallet")
+      recipient.preparePledge.mockRejectedValue(
+        Object.assign(new Error("refused"), { name: "PermissionDenied" })
+      )
+      const { wrapper, msg } = await mountModal("adminCredit", { recipient })
+
+      wrapper.findComponent(MoneyTransactionStub).vm.$emit("update:amount", "10")
+      await flushPromises()
+
+      expect((wrapper.vm as any).errors).toBe(
+        "The selected administrator wallet is not allowed to credit money."
+      )
+      expect(msg.error).not.toHaveBeenCalled()
+      expect(
+        wrapper.get("#send-money-button").attributes("disabled")
+      ).toBeDefined()
+    })
+
+    it("keeps the send button disabled when a credit cannot be prepared", async () => {
+      const recipient = makeRecipient("admin-wallet")
+      recipient.preparePledge.mockRejectedValue(new Error("network"))
+      const error = vi.spyOn(console, "error").mockImplementation(() => undefined)
+      const { wrapper, msg } = await mountModal("adminCredit", { recipient })
+
+      wrapper.findComponent(MoneyTransactionStub).vm.$emit("update:amount", "10")
+      await flushPromises()
+
+      expect(msg.error).toHaveBeenCalledOnce()
+      expect(
+        wrapper.get("#send-money-button").attributes("disabled")
+      ).toBeDefined()
+      error.mockRestore()
+    })
+
     it("matches a payment request's sender to the wallet owning a selected subaccount", async () => {
       const selectedAccount = makeAccount("selected-wallet", true)
       const { wrapper, modal, msg } = await mountModal("paymentRequest", {

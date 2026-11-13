@@ -119,6 +119,12 @@ body {
   padding-bottom: 1em;
 }
 
+// The status title of a modal is larger than a card title and may wrap
+// on several lines.
+.modal-card-body .custom-card-title {
+  line-height: 1.25;
+}
+
 .custom-button {
   color: $color-2;
   border-color: $color-2;

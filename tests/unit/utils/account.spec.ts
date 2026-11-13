@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import {
+  canIssueCredit,
   getAccountBackend,
   getOtherWalletNames,
   validateWalletName,
@@ -185,6 +186,29 @@ describe("default wallet names across languages", () => {
       expect(translateWalletLabel(label, gettext.$gettext)).toBe(label)
     }
   )
+})
+
+describe("canIssueCredit", () => {
+  it("follows the credit right of the administrator wallet", async () => {
+    const admin = { hasCreditRequestValidationRights: vi.fn(async () => true) }
+    expect(await canIssueCredit(admin)).toBe(true)
+    admin.hasCreditRequestValidationRights.mockResolvedValue(false)
+    expect(await canIssueCredit(admin)).toBe(false)
+  })
+
+  it("refuses when the right is unknown or cannot be checked", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined)
+    expect(await canIssueCredit(undefined)).toBe(false)
+    expect(await canIssueCredit({})).toBe(false)
+    expect(
+      await canIssueCredit({
+        hasCreditRequestValidationRights: async () => {
+          throw new Error("offline")
+        },
+      })
+    ).toBe(false)
+    error.mockRestore()
+  })
 })
 
 describe("getDefaultWalletName", () => {

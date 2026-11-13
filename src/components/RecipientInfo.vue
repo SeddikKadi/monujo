@@ -250,6 +250,7 @@
   import DropdownMenu from "@/components/DropdownMenu.vue"
   import Loading from "vue-loading-overlay"
   import "vue-loading-overlay/dist/css/index.css"
+  import { canIssueCredit } from "@/utils/account"
 
   @Options({
     name: "RecipientInfo",
@@ -274,6 +275,7 @@
           fixable: boolean
         }[],
         isSyncing: false,
+        canIssueCredit: false,
         refreshToggle: false,
         isUserAccountLoaded: false,
         isAccountFormLoaded: false,
@@ -360,6 +362,8 @@
         return !!this.getMutualCreditLimitsAccount()
       },
       canCreditAnyAccount() {
+        // The selected administrator wallet must be allowed to credit
+        if (!this.canIssueCredit) return false
         const accounts = this.userAccount.subAccounts?.length
           ? this.userAccount.subAccounts
           : [this.userAccount]
@@ -446,6 +450,7 @@
           this.refreshAccounts(),
           this.fetchAccountTypes(),
           this.fetchCapabilities(),
+          this.fetchCreditRight(),
         ])
         this.isUserAccountLoaded = true
         await this.initializeAccountForm()
@@ -493,6 +498,12 @@
         } catch (err: any) {
           console.error("Failed to fetch account edit capabilities", err)
         }
+        this.emitAccountFormChange()
+      },
+      async fetchCreditRight() {
+        this.canIssueCredit = await canIssueCredit(
+          this.recipient.fromUserAccount
+        )
         this.emitAccountFormChange()
       },
       async fetchAccountTypes() {

@@ -56,6 +56,20 @@ export function getWalletAuthName(userAccount: any, userAccounts: any[]) {
   )
 }
 
+/**
+ * Tell whether the administrator wallet ``adminAccount`` may credit
+ * money to accounts. A wallet can be listed in the administration
+ * (for instance to search every recipient) without that right.
+ */
+export async function canIssueCredit(adminAccount: any): Promise<boolean> {
+  try {
+    return !!(await adminAccount?.hasCreditRequestValidationRights?.())
+  } catch (err) {
+    console.error("Failed to check the right to credit money", err)
+    return false
+  }
+}
+
 /** Return the owner-facing name of a wallet. */
 export function getWalletName(userAccount: any, $gettext: any) {
   return () =>

@@ -5,6 +5,7 @@ import {
   getOtherWalletNames,
   validateWalletName,
   getDefaultWalletName,
+  getRecipientFullName,
   getRecipientSearch,
   getRecipientWalletName,
   getSafeWalletRecipient,
@@ -227,6 +228,16 @@ const INVALID_CHARACTERS =
   "Use only letters, digits, spaces, hyphens and apostrophes. " +
   "The name must start and end with a letter or a digit."
 const NOT_UNIQUE = "You already have a wallet with this name in this currency."
+
+describe("getRecipientFullName", () => {
+  it.each([
+    [{ name: "Alice", walletLabel: "Shop" }, "Alice (Shop)"],
+    [{ name: "Alice", hasSiblingWallets: true }, "Alice (Main)"],
+    [{ name: "Alice" }, "Alice"],
+  ])("names the wallet of %j when it has a name to show", (recipient, name) => {
+    expect(getRecipientFullName(recipient, (text: string) => text)).toBe(name)
+  })
+})
 
 describe("wallet name validation", () => {
   const backends = {

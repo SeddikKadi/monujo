@@ -100,6 +100,7 @@ async function mountModal(
     step: { value: 1 },
   })
   const msg = { error: vi.fn(), success: vi.fn(), warning: vi.fn() }
+  const dialog = { show: vi.fn(async (_options: unknown) => "add") }
   const wrapper = mount(MoneyTransferModal, {
     global: {
       stubs: {
@@ -109,7 +110,9 @@ async function mountModal(
         RecipientSelector: true,
       },
       mocks: {
-        $gettext: (message: string) => message,
+        $gettext: (message: string, params: Record<string, string> = {}) =>
+          message.replace(/%{\s*(\w+)\s*}/g, (_, key) => params[key]),
+        $dialog: dialog,
         $modal: modal,
         $msg: msg,
         $store: {
@@ -125,7 +128,7 @@ async function mountModal(
     await (wrapper.vm as unknown as ModalVm).handleClickRecipient({ recipient })
   }
   await flushPromises()
-  return { wrapper, recipient, msg, modal, ownAccount, paymentRequest }
+  return { wrapper, recipient, msg, modal, dialog, ownAccount, paymentRequest }
 }
 
 describe("MoneyTransferModal", () => {
@@ -178,6 +181,63 @@ describe("MoneyTransferModal", () => {
         }
       }
     )
+  })
+
+  describe("favorite offered after a payment", () => {
+    async function pay(recipient: Record<string, unknown>) {
+      const execute = vi.fn(async () => ({ id: "comchain://test/tx/paid" }))
+      const mounted = await mountModal(undefined, {
+        recipient: {
+          ...makeRecipient(),
+          name: "Alice",
+          toggleFavorite: vi.fn(async () => undefined),
+          prepareTransfer: vi.fn(async () => [{ execute }]),
+          ...recipient,
+        } as unknown as ReturnType<typeof makeRecipient>,
+      })
+      mounted.wrapper
+        .findComponent(MoneyTransactionStub)
+        .vm.$emit("update:amount", "10")
+      await flushPromises()
+      await mounted.wrapper.get("#send-money-button").trigger("click")
+      await flushPromises()
+      return mounted
+    }
+
+    it("offers the wallet just paid, named with its owner", async () => {
+      const { dialog, recipient, msg } = await pay({
+        is_favorite: false,
+        walletLabel: "Shop",
+      })
+
+      expect(dialog.show).toHaveBeenCalledOnce()
+      expect(dialog.show.mock.calls[0][0]).toMatchObject({
+        content: "Do you want to add Alice (Shop) to your favorite list ?",
+      })
+      expect(
+        (recipient as unknown as { toggleFavorite: unknown }).toggleFavorite
+      ).toHaveBeenCalledOnce()
+      expect(msg.success).toHaveBeenCalledWith(
+        "Alice (Shop) was added to your favorite list"
+      )
+    })
+
+    it("keeps the owner's name alone for a wallet without a name to show", async () => {
+      const { dialog } = await pay({ is_favorite: false })
+
+      expect(dialog.show.mock.calls[0][0]).toMatchObject({
+        content: "Do you want to add Alice to your favorite list ?",
+      })
+    })
+
+    it("offers nothing for a wallet already favorite", async () => {
+      const { dialog, recipient } = await pay({ is_favorite: true })
+
+      expect(dialog.show).not.toHaveBeenCalled()
+      expect(
+        (recipient as unknown as { toggleFavorite: unknown }).toggleFavorite
+      ).not.toHaveBeenCalled()
+    })
   })
 
   describe("source wallet selection", () => {

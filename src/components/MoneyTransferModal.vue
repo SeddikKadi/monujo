@@ -152,7 +152,7 @@
   import { Options, Vue } from "vue-class-component"
   import { e as LokapiExc } from "@lokavaluto/lokapi-browser"
   import { makeUIProxyBackend } from "@/services/lokapiService"
-  import { getUserAccount } from "@/utils/account"
+  import { getRecipientFullName, getUserAccount } from "@/utils/account"
   import MoneyTransaction from "./MoneyTransaction.vue"
   import TransactionItem from "./TransactionItem.vue"
   import RecurrenceOptions from "./RecurrenceOptions.vue"
@@ -616,13 +616,18 @@
             !this.selectedRecipient.is_favorite &&
             this.transactionType !== "reconversion"
           ) {
+            // The favorite is the wallet just paid: name it with its owner
+            const name = getRecipientFullName(
+              this.selectedRecipient,
+              this.$gettext
+            )
             let answer
             try {
               answer = await this.$dialog.show({
                 title: this.$gettext("Add as favorite"),
                 content: this.$gettext(
                   "Do you want to add %{ name } to your favorite list ?",
-                  { name: this.selectedRecipient.name }
+                  { name }
                 ),
                 buttons: [
                   { label: this.$gettext("Add"), id: "add" },
@@ -640,7 +645,7 @@
               await this.selectedRecipient.toggleFavorite()
               this.$msg.success(
                 this.$gettext("%{ name } was added to your favorite list", {
-                  name: this.selectedRecipient.name,
+                  name,
                 })
               )
             }

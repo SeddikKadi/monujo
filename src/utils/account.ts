@@ -93,6 +93,15 @@ export function getRecipientWalletName(recipient: any, $gettext: any): string {
 }
 
 /**
+ * Return the name of a recipient with the name of its wallet, when it
+ * has one to show: a favorite is one wallet of a person, not the person.
+ */
+export function getRecipientFullName(recipient: any, $gettext: any): string {
+  const walletName = getRecipientWalletName(recipient, $gettext)
+  return walletName ? `${recipient.name} (${walletName})` : recipient.name
+}
+
+/**
  * Return the default name of a new wallet: only the first wallet has one,
  * every later wallet must be named by its owner.
  */

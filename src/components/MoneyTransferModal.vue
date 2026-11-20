@@ -611,6 +611,7 @@
               this.transactionType === "reconversion"
                 ? "reconversion"
                 : "paymentConfirmation",
+            account: this.ownSelectedAccount,
           })
           if (
             !this.selectedRecipient.is_favorite &&

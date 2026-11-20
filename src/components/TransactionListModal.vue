@@ -8,7 +8,7 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title is-title-shrink">
-          <span class="ml-2">{{ $gettext("All transactions") }}</span>
+          <span class="ml-2">{{ modalTitle }}</span>
         </p>
         <button
           class="delete"
@@ -128,6 +128,7 @@
   import { Capacitor } from "@capacitor/core"
 
   import TransactionList from "./TransactionList.vue"
+  import { withWalletName } from "@/utils/account"
 
   @Options({
     name: "TransactionListModal",
@@ -153,6 +154,11 @@
       this.selectedRecipient = params.recipient
       this.showAll = params.showAll
       this.caller = params.caller
+      this.modalTitle = withWalletName(
+        this.$gettext("All transactions"),
+        this.account,
+        this.$gettext
+      )
     },
     async mounted() {
       document.addEventListener("click", this.handleOutsideClick)

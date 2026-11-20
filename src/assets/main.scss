@@ -222,6 +222,15 @@ body {
   opacity: 0;
 }
 
+// Line naming the wallet ("Wallet: Shop") under the name of an owner who
+// has several, in summaries: same size as the name, lighter
+.party-wallet {
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .custom-amount-input {
   .frame3-sub-title {
     font-style: normal;

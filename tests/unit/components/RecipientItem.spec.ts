@@ -58,7 +58,7 @@ describe("RecipientItem public wallet name", () => {
   it("names an unnamed wallet listed with other wallets of the same person", () => {
     const unnamed = renderRecipient(undefined, undefined, true).wrapper
     const named = renderRecipient("Shop", undefined, true).wrapper
-    expect(unnamed.get(".wallet-label").text()).toBe("Main")
+    expect(unnamed.get(".wallet-label").text()).toBe("main")
     expect(named.get(".wallet-label").text()).toBe("Shop")
   })
 

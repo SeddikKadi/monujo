@@ -8,7 +8,7 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title is-title-shrink">
-          <span class="ml-2">{{ $gettext("My unpaid payment requests") }}</span>
+          <span class="ml-2">{{ title }}</span>
         </p>
         <button
           class="delete"
@@ -115,12 +115,7 @@
             <div class="recipient-filter is-flex is-flex-direction-row">
               <div class="recipient-filter-input">
                 <model-list-select
-                  :list="
-                    recipientBatchLoader.elements.map((r, idx) => ({
-                      name: r.name,
-                      idx,
-                    }))
-                  "
+                  :list="recipientFilterOptions"
                   option-value="idx"
                   option-text="name"
                   v-model="selectedRecipientIdx"
@@ -215,7 +210,12 @@
 
   import TransactionItem from "./TransactionItem.vue"
   import UseBatchLoading from "@/services/UseBatchLoading"
-  import { getRecipientSearch, getUserAccount } from "@/utils/account"
+  import {
+    getRecipientSearch,
+    getUserAccount,
+    withWalletName,
+  } from "@/utils/account"
+  import { getRecipientNames, isRequestWithRecipient } from "@/utils/recipient"
 
   import "vue-datepicker-next/index.css"
   import "vue-search-select/dist/VueSearchSelect.css"
@@ -293,6 +293,19 @@
       this._recipientsScroll?.abort()
     },
     computed: {
+      title(): string {
+        return withWalletName(
+          this.$gettext("My unpaid payment requests"),
+          this.account,
+          this.$gettext
+        )
+      },
+      recipientFilterOptions(): any[] {
+        return getRecipientNames(
+          this.recipientBatchLoader.elements,
+          this.$gettext
+        ).map((name: string, idx: number) => ({ name, idx }))
+      },
       isSelectionCurrent(): boolean {
         return moment().isBetween(this.filterDate[0], this.filterDate[1])
       },
@@ -312,8 +325,8 @@
       },
       filteredPaymentRequestList() {
         const [dateBegin, dateEnd] = this.filterDate
-        const selectedRecipientName =
-          this.recipientBatchLoader.elements[this.selectedRecipientIdx]?.name
+        const selectedRecipient =
+          this.recipientBatchLoader.elements[this.selectedRecipientIdx]
 
         return this.paymentRequestList.filter((paymentRequest: any) => {
           if (this.showRefusedOnly && paymentRequest.state !== "refused") {
@@ -321,11 +334,10 @@
           }
           if (dateBegin && paymentRequest.date < dateBegin) return false
           if (dateEnd && paymentRequest.date > dateEnd) return false
+          // By wallet, not by name: a person can have several wallets
           if (
-            selectedRecipientName &&
-            !this.getPaymentRequestRecipientNames(paymentRequest).includes(
-              selectedRecipientName
-            )
+            selectedRecipient &&
+            !isRequestWithRecipient(paymentRequest, selectedRecipient)
           ) {
             return false
           }
@@ -360,14 +372,6 @@
       },
       refreshPaymentRequestAccounts(...args: any[]) {
         if (this.refreshAccounts) this.refreshAccounts(...args)
-      },
-      getPaymentRequestRecipientNames(paymentRequest: any) {
-        return [
-          paymentRequest.related,
-          paymentRequest.jsonData?.sender_name,
-          paymentRequest.jsonData?.receiver_name,
-          paymentRequest.creatorName,
-        ].filter(Boolean)
       },
       disabledDates(date: Date) {
         return date > moment().endOf("day").toDate()

@@ -49,6 +49,12 @@
               >
                 {{ paymentRequest.jsonData.sender_name }}
               </p>
+              <p
+                v-if="senderWalletLine"
+                class="party-wallet is-size-3 hide-overflow"
+              >
+                {{ senderWalletLine }}
+              </p>
             </div>
             <div>
               <h2 class="frame3-sub-title">{{ $gettext("to") }}</h2>
@@ -61,6 +67,12 @@
                 "
               >
                 {{ paymentRequest.jsonData.receiver_name }}
+              </p>
+              <p
+                v-if="receiverWalletLine"
+                class="party-wallet is-size-3 hide-overflow"
+              >
+                {{ receiverWalletLine }}
               </p>
             </div>
 
@@ -208,7 +220,7 @@
   import moment from "moment"
   import { UIError } from "../exception"
   import { makeUIProxyBackend } from "@/services/lokapiService"
-  import { getUserAccount } from "@/utils/account"
+  import { getRequestWalletLine, getUserAccount } from "@/utils/account"
   import applyDecorators from "@/utils/applyDecorators"
   import { debounceMethod } from "@/utils/debounce"
   import { showSpinnerMethod } from "@/utils/showSpinner"
@@ -246,6 +258,24 @@
 
       currency() {
         return this.$modal.args.value[0].account?.curr || ""
+      },
+
+      /** Wallet of each side, named when its owner has several. */
+      senderWalletLine(): string {
+        return getRequestWalletLine(
+          this.paymentRequest,
+          "sender",
+          this.$modal.args.value[0].account,
+          this.$gettext
+        )
+      },
+      receiverWalletLine(): string {
+        return getRequestWalletLine(
+          this.paymentRequest,
+          "receiver",
+          this.$modal.args.value[0].account,
+          this.$gettext
+        )
       },
 
       statusTitle() {

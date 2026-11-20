@@ -8,7 +8,8 @@ vi.mock("vuex", () => ({
   }),
 }))
 
-vi.mock("@/utils/account", () => ({
+vi.mock("@/utils/account", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/account")>()),
   getUserAccount: () => ({ parent: {} }),
 }))
 
@@ -16,7 +17,14 @@ vi.mock("@/services/lokapiService", () => ({
   makeUIProxyBackend: () => ({}),
 }))
 
-function mountModal() {
+/** A wallet of the user, who has ``walletCount`` wallets in its currency. */
+function ownWallet(walletCount: number) {
+  const userAccounts: any = {}
+  for (let i = 0; i < walletCount; i++) userAccounts[`wallet${i}`] = {}
+  return { _obj: { getTransactions: vi.fn(), parent: { userAccounts } } }
+}
+
+function mountModal(step = 2, requestData: any = {}, account: any = {}) {
   const paymentRequest = {
     amount: "10",
     creatorName: "Alice",
@@ -30,15 +38,16 @@ function mountModal() {
     message: "",
     refuse: vi.fn(),
     state: "open",
+    ...requestData,
   }
   const modal = {
     args: {
-      value: [{ account: { curr: "EUR" }, paymentRequest }],
+      value: [{ account: { curr: "EUR", ...account }, paymentRequest }],
     },
     back: vi.fn(),
     close: vi.fn(),
     next: vi.fn(),
-    step: { value: 2 },
+    step: { value: step },
   }
 
   return {
@@ -50,7 +59,8 @@ function mountModal() {
           "fa-icon": true,
         },
         mocks: {
-          $gettext: (message: string) => message,
+          $gettext: (message: string, params: any = {}) =>
+            message.replace(/%\{\s*(\w+)\s*\}/g, (_, key) => params[key]),
           $modal: modal,
           $msg: { success: vi.fn() },
         },
@@ -60,6 +70,36 @@ function mountModal() {
 }
 
 describe("PaymentRequestModal.vue", () => {
+  it("names the wallet of each side whose owner has several", () => {
+    // The user pays from one of their two wallets, unnamed, to the "Shop"
+    // wallet of Bob, who has several too
+    const { wrapper } = mountModal(
+      1,
+      {
+        senderWalletLabel: null,
+        receiverWalletLabel: "Shop",
+        receiverWalletHasSiblings: true,
+      },
+      ownWallet(2)
+    )
+
+    expect(wrapper.findAll(".party-wallet").map((p) => p.text())).toEqual([
+      "Wallet main",
+      "Wallet Shop",
+    ])
+  })
+
+  it("shows the owners alone when each has a single wallet", () => {
+    // Even named, the only wallet of its owner needs no line
+    const { wrapper } = mountModal(
+      1,
+      { receiverWalletLabel: "Shop", receiverWalletHasSiblings: false },
+      ownWallet(1)
+    )
+
+    expect(wrapper.findAll(".party-wallet")).toHaveLength(0)
+  })
+
   it("requires a refusal explanation with at least ten trimmed characters", async () => {
     const { wrapper } = mountModal()
 

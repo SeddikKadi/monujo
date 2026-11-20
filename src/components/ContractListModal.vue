@@ -8,7 +8,7 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title is-title-shrink">
-          <span class="ml-2">{{ $gettext("All recurring payments") }}</span>
+          <span class="ml-2">{{ title }}</span>
         </p>
         <button
           class="delete"
@@ -115,12 +115,7 @@
             <div class="recipient-filter is-flex is-flex-direction-row">
               <div class="recipient-filter-input">
                 <model-list-select
-                  :list="
-                    recipientBatchLoader.elements.map((r, idx) => ({
-                      name: r.name,
-                      idx,
-                    }))
-                  "
+                  :list="recipientFilterOptions"
                   option-value="idx"
                   option-text="name"
                   v-model="selectedRecipientIdx"
@@ -216,7 +211,12 @@
   import "vue-search-select/dist/VueSearchSelect.css"
   import "@/assets/datepicker.scss"
 
-  import { getRecipientSearch, getUserAccount } from "@/utils/account"
+  import {
+    getRecipientSearch,
+    getUserAccount,
+    withWalletName,
+  } from "@/utils/account"
+  import { getRecipientNames, isRequestWithRecipient } from "@/utils/recipient"
   import UseBatchLoading from "@/services/UseBatchLoading"
 
   @Options({
@@ -245,6 +245,7 @@
         selectedRecipientIdx: null,
         recipientBatchLoader: null,
         allContracts: [],
+        title: "",
       }
     },
 
@@ -253,6 +254,11 @@
       const account = getUserAccount(opts.account)
 
       this.accountObj = account
+      this.title = withWalletName(
+        this.$gettext("All recurring payments"),
+        opts.account,
+        this.$gettext
+      )
 
       this.recipientBatchLoader = UseBatchLoading({
         genFactory: getRecipientSearch(account),
@@ -285,6 +291,12 @@
       this.fetchContracts()
     },
     computed: {
+      recipientFilterOptions(): any[] {
+        return getRecipientNames(
+          this.recipientBatchLoader.elements,
+          this.$gettext
+        ).map((name: string, idx: number) => ({ name, idx }))
+      },
       minFilterDate() {
         return moment().startOf("day").toDate()
       },
@@ -304,9 +316,8 @@
       },
       filteredContracts(): any[] {
         const [dateBegin, dateEnd] = this.filterDate
-        const selectedRecipientInternalId =
+        const selectedRecipient =
           this.recipientBatchLoader.elements[this.selectedRecipientIdx]
-            ?.userAccountInternalId
 
         return this.allContracts.filter((contract: any) => {
           if (dateBegin || dateEnd) {
@@ -316,9 +327,8 @@
             if (dateEnd && nextPaymentDate > dateEnd) return false
           }
           if (
-            selectedRecipientInternalId &&
-            selectedRecipientInternalId !== contract.senderWalletUri &&
-            selectedRecipientInternalId !== contract.receiverWalletUri
+            selectedRecipient &&
+            !isRequestWithRecipient(contract, selectedRecipient)
           ) {
             return false
           }

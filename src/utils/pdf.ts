@@ -2,6 +2,8 @@ import jsPDF from "jspdf"
 
 import moment from "moment"
 
+import { getAccountFullName, getRelatedFullName } from "@/utils/account"
+
 type Pos = { x: number; y: number }
 type Box = { w: number; h: number }
 
@@ -151,7 +153,7 @@ class PdfDocument {
         if (tx.isTopUp) {
           return this.$gettext("Top-up")
         }
-        return tx.related
+        return getRelatedFullName(tx, this.$gettext)
       },
       // cell text style
       style(tx: any) {
@@ -710,16 +712,23 @@ class PdfDocument {
     // }
   }
 
+  /**
+   * Name of the account of the statement. A balance of a wallet with
+   * several is named with its wallet, as in "Shop – Converted".
+   */
+  async _accountName(): Promise<string> {
+    const name = await this.parentVueComponent.$lokapi.getBankAccountName(
+      this.account._obj
+    )
+    return getAccountFullName({ ...this.account, name }, this.$gettext)
+  }
+
   async _balanceTable(verticalPos: number, txs: Record<string, any>[]) {
     const accountMsg =
       this.info.user.name +
       " – " +
       this.$gettext("Account %{ accountName }", {
-        accountName: (
-          await this.parentVueComponent.$lokapi.getBankAccountName(
-            this.account._obj
-          )
-        )(),
+        accountName: await this._accountName(),
       })
     const { w: accountTextWidth, h: textHeight } = await this.getTextDimensions(
       accountMsg,

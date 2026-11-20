@@ -45,6 +45,11 @@
             v-html="amountSentence"
           ></p>
 
+          <!-- The user's wallet that paid or received, among several -->
+          <p v-if="ownWalletLine" class="party-wallet is-size-4">
+            {{ ownWalletLine }}
+          </p>
+
           <!-- Requester info (when not own request) -->
           <div v-if="showRequesterInfo">
             <h2 class="frame3-sub-title">{{ $gettext("by") }}</h2>
@@ -72,6 +77,12 @@
               "
             >
               {{ recipientName }}
+            </p>
+            <p
+              v-if="relatedWalletLine"
+              class="party-wallet is-size-3 transaction-party-name"
+            >
+              {{ relatedWalletLine }}
             </p>
           </div>
 
@@ -180,6 +191,7 @@
   import { showSpinnerMethod, replaceWithLoader } from "@/utils/showSpinner"
   import { debounceMethod } from "@/utils/debounce"
   import applyDecorators from "@/utils/applyDecorators"
+  import { getOwnWalletLine, getRelatedWalletLine } from "@/utils/account"
   import TransactionItem from "./TransactionItem.vue"
   import WorkflowIndicator from "./WorkflowIndicator.vue"
 
@@ -455,6 +467,22 @@
       },
       recipientName() {
         return this.transactions[0].related
+      },
+      /** A payment sent or received: not a top-up nor a reconversion. */
+      isPayment(): boolean {
+        return this.isTransactionDetail || this.isPaymentConfirmation
+      },
+      /** Wallet of the other party, named when its owner has several. */
+      relatedWalletLine(): string {
+        return this.isPayment
+          ? getRelatedWalletLine(this.transactions[0], this.$gettext)
+          : ""
+      },
+      /** Wallet of the user, named when the user has several. */
+      ownWalletLine(): string {
+        return this.isPayment
+          ? getOwnWalletLine(this.account, this.$gettext)
+          : ""
       },
       showReconversionStatus() {
         return (

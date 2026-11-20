@@ -197,7 +197,13 @@
   import "@/assets/datepicker.scss"
 
   import { mapModuleState } from "@/utils/vuex"
-  import { getRecipientSearch, getUserAccount } from "@/utils/account"
+  import {
+    getAccountWalletName,
+    getRecipientSearch,
+    getRelatedFullName,
+    getUserAccount,
+    toFileNamePart,
+  } from "@/utils/account"
   import {
     getRecipientNames,
     isTransactionWithRecipient,
@@ -324,7 +330,7 @@
       },
       recipientFilterOptions(): any[] {
         const recipients = this.recipientBatchLoader.elements
-        const names = getRecipientNames(recipients)
+        const names = getRecipientNames(recipients, this.$gettext)
         return recipients.reduce((acc: any[], r: any, idx: number) => {
           if (this.recipient?.internalId !== r.internalId)
             acc.push({ name: names[idx], idx })
@@ -378,9 +384,27 @@
         const { account } = opts.params
         return account?.subAccounts || []
       },
+      /**
+       * Name of an exported file: it names the wallet, as a person can
+       * export the transactions of several wallets, and the period.
+       */
+      getExportFileName(extension: string): string {
+        const parts = ["transactions"]
+        const walletName = getAccountWalletName(this.account, this.$gettext)
+        if (walletName) {
+          parts.push(toFileNamePart(walletName).replace(/\s+/g, "-"))
+        }
+        const [dateBegin, dateEnd] = this.exportDate
+        if (dateBegin && dateEnd) {
+          parts.push(
+            moment(dateBegin).format("YYYY-MM-DD"),
+            moment(dateEnd).format("YYYY-MM-DD")
+          )
+        }
+        return `${parts.join("_")}.${extension}`
+      },
       async createCsvFile() {
         const transactions = []
-        const [dateBegin, dateEnd] = this.exportDate
 
         const hasMoreThanOneSubAccount = this.getSubAccounts().length > 1
         try {
@@ -396,14 +420,7 @@
           throw e
         }
 
-        let exportFileName
-        if (dateBegin && dateEnd) {
-          const dateBeginStr = moment(dateBegin).format("YYYY-MM-DD")
-          const dateEndStr = moment(dateEnd).format("YYYY-MM-DD")
-          exportFileName = `transactions_${dateBeginStr}_${dateEndStr}.csv`
-        } else {
-          exportFileName = "transactions.csv"
-        }
+        const exportFileName = this.getExportFileName("csv")
 
         const columnOrder = [
           "sender",
@@ -428,7 +445,7 @@
         ]
 
         for (let e of transactions) {
-          const name = e.related
+          const name = getRelatedFullName(e, this.$gettext)
           const [sender, receiver] = e.amount.startsWith("-")
             ? [this.userProfile.name, name]
             : [name, this.userProfile.name]
@@ -488,14 +505,7 @@
       async createPdfReport(this: any) {
         const [dateBegin, dateEnd] = this.exportDate
 
-        let exportFileName
-        if (dateBegin && dateEnd) {
-          const dateBeginStr = moment(dateBegin).format("YYYY-MM-DD")
-          const dateEndStr = moment(dateEnd).format("YYYY-MM-DD")
-          exportFileName = `transactions_${dateBeginStr}_${dateEndStr}.pdf`
-        } else {
-          exportFileName = "transactions.pdf"
-        }
+        const exportFileName = this.getExportFileName("pdf")
 
         const toBigInt = (amount: string) => {
           const [int, frac = ""] = amount.split(".")

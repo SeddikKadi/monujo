@@ -104,9 +104,13 @@ import AuthChallengeRetention from "@/components/AuthChallengeRetention.vue"
 import AuthChallengeDirect from "@/components/AuthChallengeDirect.vue"
 import AuthChallengePin from "@/components/AuthChallengePin.vue"
 import {
+  getAccountWalletName,
+  getOwnerFullName,
   getUserAccount,
   getWalletName,
   getWalletAuthName,
+  toFileNamePart,
+  withWalletName,
 } from "@/utils/account"
 
 // Plugins
@@ -379,20 +383,32 @@ fetchConfig("config.json").then(async (config: any) => {
       items.push({
         label: $gettext("QR code"),
         icon: "qrcode",
-        action: () =>
-          modal.open("QrCodeModal", {
-            title: $gettext("QR code"),
+        action: () => {
+          // A person can have several wallets: the title and the file
+          // name tell which one this QR code pays. The wallet of somebody
+          // else, seen by an administrator, is named by its owner.
+          const isOwnWallet = !obj.administrativeBackendId
+          const ownerName = store.state.lokapi.userProfile.name
+          return modal.open("QrCodeModal", {
+            title: isOwnWallet
+              ? withWalletName($gettext("QR code"), obj, $gettext)
+              : $gettext("QR code"),
             label: $gettext("Please scan the QR code above to proceed"),
-            name: $gettext("QR code wallet - %{name}", {
-              name: store.state.lokapi.userProfile.name,
-            }),
+            name: toFileNamePart(
+              $gettext("QR code wallet - %{name}", {
+                name: isOwnWallet
+                  ? getOwnerFullName(ownerName, obj, $gettext)
+                  : ownerName,
+              })
+            ),
             data: {
               rp:
                 obj.administrativeBackendId ||
                 store.state.lokapi.userProfile.id,
               rpb: obj.id,
             },
-          }),
+          })
+        },
       })
     }
     if (
@@ -437,8 +453,20 @@ fetchConfig("config.json").then(async (config: any) => {
         icon: "wallet",
         action: async () => {
           const wallet = obj.walletData
+          // The address identifies the wallet, its name tells its owner
+          // which one it is.
           const mkFilename = (a: any) =>
-            `${a.curr}_${a.backend}_${a.userAccountId.split(":")[1]}.json`
+            [
+              a.curr,
+              a.backend,
+              toFileNamePart(getAccountWalletName(a, $gettext)).replace(
+                /\s+/g,
+                "-"
+              ),
+              a.userAccountId.split(":")[1],
+            ]
+              .filter(Boolean)
+              .join("_") + ".json"
           const filename = mkFilename(obj)
           try {
             if (app.config.globalProperties.$platform !== "web") {

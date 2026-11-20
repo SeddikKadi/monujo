@@ -72,6 +72,47 @@ describe("TransactionItem.vue", () => {
     expect(wrapper.find(".custom-card-type").text()).toBe("Top-up")
   })
 
+  it("names the wallet of the other party when it has a name", () => {
+    const mountItem = (transaction: any) =>
+      mount(TransactionItem, {
+        props: { transaction },
+        global: {
+          stubs: { WorkflowIndicator: true, "fa-icon": true },
+          mocks: {
+            $gettext: (msg: string) => msg,
+            $config: {},
+            $modal: { open: vi.fn() },
+          },
+        },
+      })
+    const transfer = {
+      amount: "-10",
+      currency: "EUR",
+      date: "2026-01-01T00:00:00Z",
+      isTopUp: false,
+      isReconversion: false,
+      related: "Bob",
+    }
+
+    expect(
+      mountItem({ ...transfer, relatedWalletLabel: "Shop" })
+        .find("h4.custom-card-related")
+        .text()
+    ).toBe("Bob (Shop)")
+    expect(mountItem(transfer).find("h4.custom-card-related").text()).toBe("Bob")
+    expect(
+      mountItem({
+        ...transfer,
+        isPaymentRequest: true,
+        isSender: true,
+        relatedWalletLabel: "Shop",
+        state: "open",
+      })
+        .find("h4.custom-card-related")
+        .text()
+    ).toBe("to Bob (Shop)")
+  })
+
   it("prefixes the receiver with to when the current account is the sender", () => {
     const wrapper = mount(TransactionItem, {
       props: {

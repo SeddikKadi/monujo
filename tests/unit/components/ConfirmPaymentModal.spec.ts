@@ -207,6 +207,77 @@ describe("ConfirmPaymentModal", () => {
       expect(names()).toEqual(["Recipient"])
     })
 
+    describe("wallets of the two parties", () => {
+      /** A wallet of the user, who has ``walletCount`` in its currency. */
+      const ownWallet = (label: string | undefined, walletCount: number) => {
+        const userAccounts: any = {}
+        for (let i = 0; i < walletCount; i++) userAccounts[`wallet${i}`] = {}
+        return {
+          _obj: { label, getTransactions: vi.fn(), parent: { userAccounts } },
+        }
+      }
+      const walletLines = (wrapper: any) =>
+        wrapper.findAll(".party-wallet").map((p: any) => p.text())
+
+      it("names each wallet whose owner has several", () => {
+        // Received on the unnamed wallet of the user, who has two, from the
+        // "Shop" wallet of somebody who has several too
+        const { wrapper } = mountModal({
+          type: "transactionDetail",
+          account: ownWallet(undefined, 2),
+          transaction: {
+            ...transaction,
+            relatedWalletLabel: "Shop",
+            relatedWalletHasSiblings: true,
+          },
+        })
+        expect(walletLines(wrapper)).toEqual(["Wallet main", "Wallet Shop"])
+      })
+
+      it("shows the other party alone when each side has a single wallet", () => {
+        // Even named, the only wallet of its owner needs no line
+        const { wrapper, names } = mountModal({
+          type: "transactionDetail",
+          account: ownWallet("Home", 1),
+          transaction: {
+            ...transaction,
+            relatedWalletLabel: "Shop",
+            relatedWalletHasSiblings: false,
+          },
+        })
+        expect(walletLines(wrapper)).toEqual([])
+        expect(names()).toEqual(["Recipient"])
+      })
+
+      it("names them when confirming a payment just sent", () => {
+        const { wrapper } = mountModal({
+          type: "paymentConfirmation",
+          account: ownWallet("Home", 2),
+          transaction: {
+            ...transaction,
+            amount: "-12.50",
+            relatedWalletHasSiblings: true,
+          },
+        })
+        expect(walletLines(wrapper)).toEqual(["Wallet Home", "Wallet main"])
+      })
+
+      it("leaves top-ups and administrative approvals as they are", () => {
+        const several = {
+          account: { ...ownWallet("Home", 2), isTopUpAllowed: true },
+          transaction: { ...creditRequest, relatedWalletHasSiblings: true },
+        }
+        expect(walletLines(mountModal({ type: "topup", ...several }).wrapper)).toEqual(
+          []
+        )
+        expect(
+          walletLines(
+            mountModal({ type: "topUpsPendingForApproval", ...several }).wrapper
+          )
+        ).toEqual([])
+      })
+    })
+
     it("does not apply top-up wording to ordinary transaction details", () => {
       const { wrapper } = mountModal({
         type: "transactionDetail",

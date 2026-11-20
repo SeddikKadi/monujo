@@ -14,9 +14,16 @@ vi.mock("@/utils/account", async (importOriginal) => ({
   getUserAccount: vi.fn(),
 }))
 
-function mountModal(paymentRequestList: any[] = []) {
+function mountModal(
+  paymentRequestList: any[] = [],
+  otherRecipients: any[] = []
+) {
   const batchLoader = {
-    elements: [{ name: "Alice" }, { name: "Bob" }],
+    elements: [
+      { name: "Alice", userAccountInternalId: "comchain:alice" },
+      { name: "Bob", userAccountInternalId: "comchain:bob" },
+      ...otherRecipients,
+    ] as any[],
     getNextElements: vi.fn(),
     isNewBatchLoading: false,
     newGen: vi.fn(),
@@ -76,12 +83,19 @@ function mountModal(paymentRequestList: any[] = []) {
   }
 }
 
+// A second wallet of Alice, listed like any other recipient
+const aliceShop = {
+  name: "Alice",
+  userAccountInternalId: "comchain:alice-shop",
+  walletLabel: "Shop",
+}
+
 describe("PaymentRequestListModal.vue", () => {
   it("combines status, date, and contact filters", async () => {
     const includedRequest = {
       date: new Date("2026-03-10T12:00:00Z"),
       id: "included",
-      jsonData: { sender_name: "Alice" },
+      senderWalletUri: "comchain:alice",
       state: "refused",
     }
     const { wrapper } = mountModal([
@@ -89,17 +103,17 @@ describe("PaymentRequestListModal.vue", () => {
       {
         date: new Date("2026-03-11T12:00:00Z"),
         id: "open",
-        related: "Alice",
+        senderWalletUri: "comchain:alice",
         state: "open",
       },
       {
         date: new Date("2026-03-12T12:00:00Z"),
         id: "other-contact",
-        related: "Bob",
+        senderWalletUri: "comchain:bob",
         state: "refused",
       },
       {
-        creatorName: "Alice",
+        creatorWalletUri: "comchain:alice",
         date: new Date("2026-04-01T12:00:00Z"),
         id: "outside-range",
         state: "refused",
@@ -107,10 +121,7 @@ describe("PaymentRequestListModal.vue", () => {
     ])
 
     await wrapper.setData({
-      filterDate: [
-        new Date(2026, 2, 1),
-        new Date(2026, 2, 31),
-      ],
+      filterDate: [new Date(2026, 2, 1), new Date(2026, 2, 31)],
       selectedRecipientIdx: 0,
       showRefusedOnly: true,
     })
@@ -118,6 +129,51 @@ describe("PaymentRequestListModal.vue", () => {
 
     expect((wrapper.vm as any).filteredPaymentRequestList).toEqual([
       includedRequest,
+    ])
+  })
+
+  it("filters by wallet: two wallets of one person are two contacts", async () => {
+    const date = new Date("2026-03-10T12:00:00Z")
+    // Same names everywhere: only the wallets tell the requests apart
+    const names = {
+      creatorName: "Alice",
+      jsonData: { receiver_name: "Alice", sender_name: "Alice" },
+      related: "Alice",
+    }
+    const shopRequest = {
+      ...names,
+      date,
+      id: "shop",
+      receiverWalletUri: "comchain:alice-shop",
+      state: "open",
+    }
+    const homeRequest = {
+      ...names,
+      date,
+      id: "home",
+      senderWalletUri: "comchain:alice",
+      state: "open",
+    }
+    const { wrapper } = mountModal([shopRequest, homeRequest], [aliceShop])
+
+    await wrapper.setData({ selectedRecipientIdx: 2 })
+    expect((wrapper.vm as any).filteredPaymentRequestList).toEqual([
+      shopRequest,
+    ])
+
+    await wrapper.setData({ selectedRecipientIdx: 0 })
+    expect((wrapper.vm as any).filteredPaymentRequestList).toEqual([
+      homeRequest,
+    ])
+  })
+
+  it("names the wallets in the contact filter", () => {
+    const { wrapper } = mountModal([], [aliceShop])
+
+    expect((wrapper.vm as any).recipientFilterOptions).toEqual([
+      { name: "Alice", idx: 0 },
+      { name: "Bob", idx: 1 },
+      { name: "Alice (Shop)", idx: 2 },
     ])
   })
 

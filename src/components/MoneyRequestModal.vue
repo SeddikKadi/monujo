@@ -144,9 +144,15 @@
               <p class="party-name has-text-weight-bold is-size-5">
                 {{ selectedSender?.name }}
               </p>
+              <p v-if="senderWalletLine" class="party-wallet is-size-5">
+                {{ senderWalletLine }}
+              </p>
               <p class="frame3-sub-title mt-2">{{ $gettext("to") }}</p>
               <p class="party-name has-text-weight-bold is-size-5">
                 {{ userProfile.name }}
+              </p>
+              <p v-if="receiverWalletLine" class="party-wallet is-size-5">
+                {{ receiverWalletLine }}
               </p>
             </div>
           </div>
@@ -190,7 +196,12 @@
   import RecurrenceOptions from "@/components/RecurrenceOptions.vue"
   import { UIError } from "@/exception"
   import { makeUIProxyBackend } from "@/services/lokapiService"
-  import { getUserAccount } from "@/utils/account"
+  import {
+    getOwnerFullName,
+    getOwnWalletLine,
+    getRecipientWalletLine,
+    getUserAccount,
+  } from "@/utils/account"
   import applyDecorators from "@/utils/applyDecorators"
   import { showSpinnerMethod } from "@/utils/showSpinner"
 
@@ -243,6 +254,13 @@
       currency() {
         return this.$modal.args.value[0].account?.curr || ""
       },
+      /** Wallet of each side, named when its owner has several. */
+      senderWalletLine(): string {
+        return getRecipientWalletLine(this.selectedSender, this.$gettext)
+      },
+      receiverWalletLine(): string {
+        return getOwnWalletLine(this.account, this.$gettext)
+      },
       isPaymentRequestAllowed(): boolean {
         return (
           this.$modal.args.value[0].account?.isPaymentRequestAllowed === true
@@ -293,7 +311,11 @@
         let name = this.$gettext(
           "QR code - Payment request to %{ name } of %{ amount } %{ currency }",
           {
-            name: this.userProfile.name,
+            name: getOwnerFullName(
+              this.userProfile.name,
+              this.account,
+              this.$gettext
+            ),
             amount: this.form.amount,
             currency: this.account?.curr,
           }

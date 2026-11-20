@@ -133,6 +133,7 @@
   import { mapModuleState } from "@/utils/vuex"
   import { Options, Vue } from "vue-class-component"
   import moment from "moment"
+  import { getRelatedFullName } from "@/utils/account"
 
   import WorkflowIndicator from "./WorkflowIndicator.vue"
   @Options({
@@ -256,15 +257,17 @@
       },
 
       relatedLabel() {
+        // With the wallet of the other party, who can have several
+        const related = getRelatedFullName(this.transaction, this.$gettext)
         if (!this.transaction?.isPaymentRequest) {
-          return this.transaction?.related
+          return related
         }
 
         const direction = this.transaction.isSender
           ? this.$gettext("to")
           : this.$gettext("from")
 
-        return direction + " " + this.transaction.related
+        return direction + " " + related
       },
 
       paymentRequestStateLabel() {

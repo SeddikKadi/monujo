@@ -2,11 +2,12 @@ import { describe, expect, it, vi } from "vitest"
 import { mount } from "@vue/test-utils"
 import ImportPaymentRequestsModal from "../../../src/components/ImportPaymentRequestsModal.vue"
 
-vi.mock("@/utils/account", () => ({
+vi.mock("@/utils/account", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/account")>()),
   getUserAccount: () => ({ internalId: "comchain:self" }),
 }))
 
-function mountModal() {
+function mountModal(account: any = {}) {
   return mount(ImportPaymentRequestsModal, {
     global: {
       stubs: {
@@ -17,7 +18,7 @@ function mountModal() {
         $ngettext: (singular: string, plural: string, count: number) =>
           count === 1 ? singular : plural,
         $modal: {
-          args: { value: [{ account: {} }] },
+          args: { value: [{ account }] },
           close: vi.fn(),
         },
       },
@@ -26,6 +27,16 @@ function mountModal() {
 }
 
 describe("ImportPaymentRequestsModal.vue", () => {
+  it("names in its title the wallet the requests are created for", () => {
+    const title = (account?: any) =>
+      mountModal(account).get(".modal-card-title").text()
+
+    expect(title({ _obj: { label: "Shop", getTransactions: vi.fn() } })).toBe(
+      "Import payment requests – Shop"
+    )
+    expect(title()).toBe("Import payment requests")
+  })
+
   it("shows the import action in the status area initially", () => {
     const wrapper = mountModal()
     const status = wrapper.get(".is-file-picker")

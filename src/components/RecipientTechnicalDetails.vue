@@ -9,6 +9,10 @@
         <span class="label">{{ $gettext("Administrative backend id:") }}</span
         ><span class="value">{{ recipient.id }}</span>
       </div>
+      <div v-if="walletName" class="info-row">
+        <span class="label">{{ $gettext("Wallet name:") }}</span
+        ><span class="value">{{ walletName }}</span>
+      </div>
     </div>
     <div class="info-row">
       <span class="label">{{ $gettext("Wallet URI:") }}</span>
@@ -36,6 +40,8 @@
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
   import QrCodeVue from "qrcode.vue"
+  import { getRecipientWalletName } from "@/utils/account"
+
   @Options({
     name: "RecipientTechnicalDetails",
     components: {
@@ -43,6 +49,11 @@
     },
     props: {
       recipient: Object,
+    },
+    computed: {
+      walletName(): string {
+        return getRecipientWalletName(this.recipient, this.$gettext)
+      },
     },
   })
   export default class RecipientTechnicalDetails extends Vue {}

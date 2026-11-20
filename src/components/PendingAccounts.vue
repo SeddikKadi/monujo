@@ -122,6 +122,12 @@
       walletLabel(label: string) {
         return translateWalletLabel(label, this.$gettext)
       },
+      /** Name of a pending wallet in messages: its owner and its name. */
+      accountName(account: any): string {
+        return account.walletLabel
+          ? `${account.name} — ${this.walletLabel(account.walletLabel)}`
+          : account.name
+      },
       validateUserAccount: applyDecorators(
         [
           debounceMethodWithOpts({
@@ -161,14 +167,14 @@
               this.$gettext(
                 "An unexpected issue occurred while approving " +
                   "the wallet account creation of user %{ name }",
-                { name: account.name }
+                { name: this.accountName(account) }
               ),
               err
             )
           }
           this.$msg.success(
             this.$gettext("User %{ name }'s account creation was approved", {
-              name: account.name,
+              name: this.accountName(account),
             })
           )
         }
@@ -208,14 +214,14 @@
               this.$gettext(
                 "An unexpected issue occurred while discarding " +
                   "the wallet account creation of user %{ name }",
-                { name: account.name }
+                { name: this.accountName(account) }
               ),
               err
             )
           }
           this.$msg.success(
             this.$gettext("User %{ name }'s account creation was discarded", {
-              name: account.name,
+              name: this.accountName(account),
             })
           )
         }

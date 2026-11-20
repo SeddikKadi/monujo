@@ -48,6 +48,12 @@
               >
                 {{ contractData.senderName }}
               </p>
+              <p
+                v-if="senderWalletLine"
+                class="party-wallet is-size-3 hide-overflow"
+              >
+                {{ senderWalletLine }}
+              </p>
             </div>
             <div>
               <h2 class="frame3-sub-title">{{ $gettext("to") }}</h2>
@@ -60,6 +66,12 @@
                 "
               >
                 {{ contractData.receiverName }}
+              </p>
+              <p
+                v-if="receiverWalletLine"
+                class="party-wallet is-size-3 hide-overflow"
+              >
+                {{ receiverWalletLine }}
               </p>
             </div>
             <hr class="participant-divider" />
@@ -187,7 +199,12 @@
   import { Options, Vue } from "vue-class-component"
   import { mapGetters } from "vuex"
   import { mapModuleState } from "@/utils/vuex"
-  import { getUserAccount } from "@/utils/account"
+  import {
+    getOwnWalletLine,
+    getRecipientWalletLine,
+    getRequestWalletLine,
+    getUserAccount,
+  } from "@/utils/account"
   import { UIError } from "../exception"
   import moment from "moment"
 
@@ -247,6 +264,14 @@
           }
         }
         return this.contract
+      },
+
+      /** Wallet of each side, named when its owner has several. */
+      senderWalletLine(): string {
+        return this.getPartyWalletLine("sender")
+      },
+      receiverWalletLine(): string {
+        return this.getPartyWalletLine("receiver")
       },
 
       currency() {
@@ -317,6 +342,31 @@
       },
     },
     methods: {
+      /**
+       * Line naming the wallet of the sender or of the receiver. At
+       * creation one side is the wallet the user creates from, the other
+       * the selected wallet; afterwards the names come with the contract.
+       */
+      getPartyWalletLine(side: "sender" | "receiver"): string {
+        const args = this.$modal.args.value[0]
+        if (!this.isCreateMode) {
+          return getRequestWalletLine(
+            this.contract,
+            side,
+            args.account,
+            this.$gettext
+          )
+        }
+        const isOwnSide = this.isRequestMode
+          ? side === "receiver"
+          : side === "sender"
+        return isOwnSide
+          ? getOwnWalletLine(args.account, this.$gettext)
+          : getRecipientWalletLine(
+              this.isRequestMode ? args.selectedSender : args.selectedRecipient,
+              this.$gettext
+            )
+      },
       formatDate(dateStr: string | null) {
         if (!dateStr) return ""
         return this.dateFormat(moment(dateStr).toDate())

@@ -2,6 +2,18 @@ import { describe, expect, it, vi } from "vitest"
 import {
   canIssueCredit,
   getAccountBackend,
+  getAccountFullName,
+  getAccountWalletName,
+  getOwnerFullName,
+  getRelatedFullName,
+  getOwnWalletLine,
+  getRecipientWalletLine,
+  getRelatedWalletLine,
+  getRequestWalletLine,
+  getWalletLine,
+  hasSeveralWallets,
+  toFileNamePart,
+  withWalletName,
   getOtherWalletNames,
   validateWalletName,
   getDefaultWalletName,
@@ -13,6 +25,8 @@ import {
   getWalletName,
   translateWalletLabel,
 } from "../../../src/utils/account"
+
+import { createGettext } from "vue3-gettext"
 
 import { walletTranslations } from "../helpers/walletTranslations"
 
@@ -140,7 +154,7 @@ describe("getRecipientWalletName", () => {
 
   it("gives an unnamed wallet the default name among the owner's other wallets only", () => {
     expect(getRecipientWalletName({ hasSiblingWallets: true }, gettext)).toBe(
-      "[Main]"
+      "[main]"
     )
     expect(getRecipientWalletName({ hasSiblingWallets: false }, gettext)).toBe("")
     expect(getRecipientWalletName({}, gettext)).toBe("")
@@ -232,7 +246,7 @@ const NOT_UNIQUE = "You already have a wallet with this name in this currency."
 describe("getRecipientFullName", () => {
   it.each([
     [{ name: "Alice", walletLabel: "Shop" }, "Alice (Shop)"],
-    [{ name: "Alice", hasSiblingWallets: true }, "Alice (Main)"],
+    [{ name: "Alice", hasSiblingWallets: true }, "Alice (main)"],
     [{ name: "Alice" }, "Alice"],
   ])("names the wallet of %j when it has a name to show", (recipient, name) => {
     expect(getRecipientFullName(recipient, (text: string) => text)).toBe(name)
@@ -253,13 +267,35 @@ describe("wallet name validation", () => {
     const own = currency.userAccounts.a1
     expect(getAccountBackend(backends, own)).toBe(currency)
     expect(getAccountBackend(backends, {})).toBeUndefined()
-    expect(getOtherWalletNames(currency, gettext.$gettext, own)).toEqual(["Main"])
-    expect(getOtherWalletNames(currency, gettext.$gettext)).toEqual(["Shop", "Main"])
+    expect(getOtherWalletNames(currency, gettext.$gettext, own)).toEqual(["Main", "main"])
+    expect(getOtherWalletNames(currency, gettext.$gettext)).toEqual(["Shop", "Main", "main"])
     gettext.current = "fr-FR"
     expect(getOtherWalletNames(backends["cyclos:b"], gettext.$gettext)).toEqual(
       ["compte principal", "Bank"]
     )
     expect(getOtherWalletNames(undefined, gettext.$gettext)).toEqual([])
+  })
+
+  it("refuses in French both names an unnamed wallet is displayed with", () => {
+    const gettext = createGettext({
+      availableLanguages: { "fr-FR": "Français" },
+      defaultLanguage: "fr-FR",
+      translations: {
+        "fr-FR": { main: "compte principal", Main: "Principal" },
+      },
+    })
+    gettext.muted = ["fr-FR"]
+    const others = getOtherWalletNames(
+      backends["comchain:a"],
+      gettext.$gettext,
+      backends["comchain:a"].userAccounts.a1
+    )
+    // The dashboard name and the name used in lists and transaction screens
+    expect(others).toEqual(["Principal", "compte principal"])
+    for (const name of ["Compte principal", "principal", "Main"]) {
+      expect(validateWalletName(name, others, gettext.$gettext)).not.toBeNull()
+    }
+    expect(validateWalletName("Atelier", others, gettext.$gettext)).toBeNull()
   })
 
   it.each([
@@ -282,5 +318,195 @@ describe("wallet name validation", () => {
     const gettext = walletTranslations()
     const others = getOtherWalletNames(backends["comchain:a"], gettext.$gettext)
     expect(validateWalletName(name, others, gettext.$gettext)).toBe(expected)
+  })
+})
+
+
+describe("wallet line under the name of its owner", () => {
+  const $gettext = (message: string, params: any = {}) =>
+    message.replace(/%\{\s*(\w+)\s*\}/g, (_, key) => params[key])
+  // Wallets of the user as listed on the dashboard: the only one of its
+  // currency, and one of two
+  const ownWallet = (label: string | undefined, walletCount: number) => {
+    const userAccounts: any = {}
+    for (let i = 0; i < walletCount; i++) userAccounts[`wallet${i}`] = {}
+    return {
+      _obj: { label, getTransactions: () => null, parent: { userAccounts } },
+    }
+  }
+  const only = ownWallet("Shop", 1)
+  const oneOfTwo = ownWallet("Shop", 2)
+  const unnamedOfTwo = ownWallet(undefined, 2)
+
+  it("writes the wallet name after a caption", () => {
+    expect(getWalletLine("Shop", $gettext)).toBe("Wallet Shop")
+    expect(getWalletLine("", $gettext)).toBe("")
+  })
+
+  it("tells whether the user has several wallets in a currency", () => {
+    expect(hasSeveralWallets(oneOfTwo)).toBe(true)
+    expect(hasSeveralWallets(only)).toBe(false)
+    // A balance of a wallet with several balances
+    expect(hasSeveralWallets({ _obj: { parent: oneOfTwo._obj } })).toBe(true)
+    expect(hasSeveralWallets({ curr: "EUR" })).toBe(false)
+    expect(hasSeveralWallets(null)).toBe(false)
+  })
+
+  it("names the user's wallet only when the user has several", () => {
+    expect(getOwnWalletLine(oneOfTwo, $gettext)).toBe("Wallet Shop")
+    expect(getOwnWalletLine(unnamedOfTwo, $gettext)).toBe("Wallet main")
+    expect(getOwnWalletLine(only, $gettext)).toBe("")
+  })
+
+  it("names the wallet of a recipient only among its other wallets", () => {
+    expect(
+      getRecipientWalletLine(
+        { walletLabel: "Shop", hasSiblingWallets: true },
+        $gettext
+      )
+    ).toBe("Wallet Shop")
+    expect(getRecipientWalletLine({ hasSiblingWallets: true }, $gettext)).toBe(
+      "Wallet main"
+    )
+    // The only wallet listed for a person, even named
+    expect(getRecipientWalletLine({ walletLabel: "Shop" }, $gettext)).toBe("")
+    expect(getRecipientWalletLine(undefined, $gettext)).toBe("")
+  })
+
+  it("names the wallets of a payment request or recurring payment", () => {
+    // Received by a wallet of the user, paid by Bob
+    const request = {
+      isSender: false,
+      isReceiver: true,
+      senderWalletLabel: "Home",
+      senderWalletHasSiblings: true,
+    }
+    // The other party has several wallets: the public name of this one
+    expect(getRequestWalletLine(request, "sender", only, $gettext)).toBe(
+      "Wallet Home"
+    )
+    // The user's side follows the user's own wallets
+    expect(getRequestWalletLine(request, "receiver", only, $gettext)).toBe("")
+    expect(getRequestWalletLine(request, "receiver", oneOfTwo, $gettext)).toBe(
+      "Wallet Shop"
+    )
+    // An unnamed wallet among several gets the name of a first wallet,
+    // which is translated when saved as a label
+    expect(
+      getRequestWalletLine(
+        { senderWalletHasSiblings: true },
+        "sender",
+        only,
+        $gettext
+      )
+    ).toBe("Wallet main")
+    expect(
+      getRequestWalletLine(
+        { senderWalletLabel: "compte principal", senderWalletHasSiblings: true },
+        "sender",
+        only,
+        $gettext
+      )
+    ).toBe("Wallet main")
+    // The only wallet of the other party, even named, and an older server
+    expect(
+      getRequestWalletLine(
+        { senderWalletLabel: "Home", senderWalletHasSiblings: false },
+        "sender",
+        only,
+        $gettext
+      )
+    ).toBe("")
+    expect(
+      getRequestWalletLine({ senderWalletLabel: "Home" }, "sender", only, $gettext)
+    ).toBe("")
+  })
+})
+
+describe("wallet line of the other party of a transaction", () => {
+  const $gettext = (message: string, params: any = {}) =>
+    message.replace(/%\{\s*(\w+)\s*\}/g, (_, key) => params[key])
+
+  it("names the wallet when its owner has several", () => {
+    expect(
+      getRelatedWalletLine(
+        { relatedWalletLabel: "Shop", relatedWalletHasSiblings: true },
+        $gettext
+      )
+    ).toBe("Wallet Shop")
+    expect(
+      getRelatedWalletLine({ relatedWalletHasSiblings: true }, $gettext)
+    ).toBe("Wallet main")
+  })
+
+  it("shows nothing for the only wallet of its owner", () => {
+    expect(
+      getRelatedWalletLine(
+        { relatedWalletLabel: "Shop", relatedWalletHasSiblings: false },
+        $gettext
+      )
+    ).toBe("")
+    // An older server, an administrative operation
+    expect(getRelatedWalletLine({ relatedWalletLabel: "Shop" }, $gettext)).toBe(
+      ""
+    )
+    expect(getRelatedWalletLine({}, $gettext)).toBe("")
+  })
+})
+
+describe("wallet names outside the dashboard", () => {
+  const $gettext = (message: string) => message
+  const wallet = (label?: string) => ({ label, getTransactions: () => null })
+  // Dashboard entries: a wallet with one balance, and one balance of a
+  // wallet with two
+  const shop = { name: () => "Shop", _obj: wallet("Shop") }
+  const converted = {
+    name: () => "Converted",
+    _obj: { parent: wallet("Shop") },
+  }
+  const unnamed = { name: () => "Main", _obj: wallet() }
+
+  it("gives the name of the wallet of a dashboard entry", () => {
+    expect(getAccountWalletName(shop, $gettext)).toBe("Shop")
+    expect(getAccountWalletName(converted, $gettext)).toBe("Shop")
+    expect(getAccountWalletName(unnamed, $gettext)).toBe("main")
+    expect(getAccountWalletName({ curr: "EUR" }, $gettext)).toBe("")
+    expect(getAccountWalletName(null, $gettext)).toBe("")
+  })
+
+  it("names a balance of a wallet with several with its wallet", () => {
+    expect(getAccountFullName(converted, $gettext)).toBe("Shop – Converted")
+    expect(getAccountFullName(shop, $gettext)).toBe("Shop")
+    expect(getAccountFullName(unnamed, $gettext)).toBe("main")
+    expect(getAccountFullName({ name: () => "Other" }, $gettext)).toBe("Other")
+  })
+
+  it("adds the wallet to a title and to the name of its owner", () => {
+    expect(withWalletName("All transactions", shop, $gettext)).toBe(
+      "All transactions – Shop"
+    )
+    expect(withWalletName("All transactions", {}, $gettext)).toBe(
+      "All transactions"
+    )
+    expect(getOwnerFullName("Alice", converted, $gettext)).toBe("Alice (Shop)")
+    expect(getOwnerFullName("Alice", {}, $gettext)).toBe("Alice")
+  })
+
+  it("names the other party of a transaction with its wallet", () => {
+    expect(
+      getRelatedFullName({ related: "Bob", relatedWalletLabel: "Shop" }, $gettext)
+    ).toBe("Bob (Shop)")
+    expect(getRelatedFullName({ related: "Bob" }, $gettext)).toBe("Bob")
+    expect(
+      getRelatedFullName({ related: "Bob", relatedWalletLabel: null }, $gettext)
+    ).toBe("Bob")
+  })
+
+  it("makes a wallet name safe for a file name", () => {
+    expect(toFileNamePart("Shop")).toBe("Shop")
+    expect(toFileNamePart("L'atelier d'Anne-Marie")).toBe(
+      "L'atelier d'Anne-Marie"
+    )
+    expect(toFileNamePart('a/b\\c:d*e?f"g<h>i|j')).toBe("a-b-c-d-e-f-g-h-i-j")
   })
 })

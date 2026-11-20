@@ -28,7 +28,7 @@
           :showSubAccounts="false"
           :disableDropDown="true"
         >
-          <template v-slot:name>{{ account.name() }}</template>
+          <template v-slot:name>{{ accountName }}</template>
         </BankAccountItem>
       </div>
       <div v-if="selectedRecipient && transactionType !== 'reconversion'">
@@ -165,7 +165,7 @@
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
   import { mapModuleState } from "@/utils/vuex"
-  import { getUserAccount } from "@/utils/account"
+  import { getAccountFullName, getUserAccount } from "@/utils/account"
   import RecipientItem from "@/components/RecipientItem.vue"
   import BankAccountItem from "@/components/BankAccountItem.vue"
   import {
@@ -223,6 +223,11 @@
       this.backend = getUserAccount(this.account).parent
     },
     computed: {
+      /** A balance of a wallet with several is named with its wallet. */
+      accountName(): string {
+        return getAccountFullName(this.account, this.$gettext)
+      },
+
       hasSplitMemoSupport() {
         return this.backend?.splitMemoSupport && !this.$config.disableSplitMemo
       },

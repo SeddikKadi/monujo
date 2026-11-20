@@ -37,7 +37,9 @@
           showInactiveAccountBalance="true"
         >
           <template v-slot:name>{{
-            userAccount.name ? userAccount.name() : $gettext("Unavailable")
+            userAccount.name
+              ? accountName(userAccount)
+              : $gettext("Unavailable")
           }}</template>
         </BankAccountItem>
       </div>
@@ -250,7 +252,7 @@
   import DropdownMenu from "@/components/DropdownMenu.vue"
   import Loading from "vue-loading-overlay"
   import "vue-loading-overlay/dist/css/index.css"
-  import { canIssueCredit } from "@/utils/account"
+  import { canIssueCredit, getAccountFullName } from "@/utils/account"
 
   @Options({
     name: "RecipientInfo",
@@ -413,6 +415,10 @@
       },
     },
     methods: {
+      /** Name of the inspected wallet, as in the transaction screens. */
+      accountName(account: any): string {
+        return getAccountFullName(account, this.$gettext)
+      },
       isLookupUserAccount(obj: any) {
         return (
           !!obj &&

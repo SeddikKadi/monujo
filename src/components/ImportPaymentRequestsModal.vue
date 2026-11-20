@@ -11,7 +11,7 @@
           id="import-payment-requests-title"
           class="modal-card-title is-title-shrink"
         >
-          {{ $gettext("Import payment requests") }}
+          {{ title }}
         </p>
         <button
           class="delete"
@@ -196,7 +196,7 @@
 <script lang="ts">
   import { Options, Vue } from "vue-class-component"
   import { UIError } from "@/exception"
-  import { getUserAccount } from "@/utils/account"
+  import { getUserAccount, withWalletName } from "@/utils/account"
   import applyDecorators from "@/utils/applyDecorators"
   import { showSpinnerMethod } from "@/utils/showSpinner"
 
@@ -223,6 +223,14 @@
       this.account = getUserAccount(opts.account)
     },
     computed: {
+      /** The requests are created for one wallet: the title names it. */
+      title(): string {
+        return withWalletName(
+          this.$gettext("Import payment requests"),
+          this.$modal.args.value[0].account,
+          this.$gettext
+        )
+      },
       readyRequestsMessage() {
         const count = this.parsedRequests.length
         return this.$ngettext(

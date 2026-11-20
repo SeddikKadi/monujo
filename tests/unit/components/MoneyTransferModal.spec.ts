@@ -164,6 +164,8 @@ describe("MoneyTransferModal", () => {
           type: transactionType === "reconversion"
             ? "reconversion"
             : "paymentConfirmation",
+          // The confirmation names the wallet that paid, among several
+          account: ownAccount,
         })
         expect(msg.error).not.toHaveBeenCalled()
         expect(msg.warning).not.toHaveBeenCalled()

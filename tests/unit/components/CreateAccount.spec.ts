@@ -236,8 +236,8 @@ describe("CreateAccount wallet name", () => {
     const { wrapper, vm, create, router, backendId } = await renderCreation([1])
     await wrapper.get("#new-wallet-name").setValue("  Shop  ")
     expect(wrapper.get("#new-wallet-name-help").text()).toBe(
-      "Give this wallet a name to tell it apart from your others. " +
-        "This name is public: people who pay you will see it."
+      "Give this wallet a name to tell it apart from the others. " +
+        "This name is public and can be seen by other users of the currency."
     )
     expect(vm.hasFieldErrors).toBe(false)
     await wrapper.findAll("button").find(b => b.text() === "Create my wallet")!.trigger("click")

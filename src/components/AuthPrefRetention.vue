@@ -4,6 +4,7 @@
       :is="handler.subHandler.Ui.Pref.name"
       :handler="handler.subHandler"
       @submitConfig="submitConfig"
+      @cancel="$emit('cancel')"
     />
   </div>
 </template>
@@ -23,6 +24,7 @@
     props: {
       handler: Object,
     },
+    emits: ["submitConfig", "cancel"],
     methods: {
       submitConfig(subUserConfig: string) {
         const userConfig = {

@@ -19,19 +19,14 @@
                   'wallet-option': canImport,
                 }"
               >
-                <label class="radio radio-title mt-2 mb-2">
+                <label v-if="canImport" class="radio radio-title mt-2 mb-2">
                   <input
-                    v-if="canImport"
                     type="radio"
                     name="walletAction"
                     value="create"
                     v-model="walletAction"
                   />
-                  <span
-                    v-if="canImport"
-                    :class="{ 'custom-card-title': !canImport }"
-                    class="ml-2"
-                  >
+                  <span class="ml-2">
                     {{ $gettext("Create my wallet") }}
                   </span>
                 </label>
@@ -68,13 +63,19 @@
                     <!-- Keep the public label out of the password manager's login form. -->
                     <form
                       id="new-wallet-name-form"
-                      class="field mb-3"
+                      class="field mb-5"
                       autocomplete="off"
                       @submit.prevent="createUserAccount()"
                     >
-                      <label class="label" for="new-wallet-name">
-                        {{ $gettext("Wallet name") }}
-                      </label>
+                      <p id="new-wallet-name-help" class="mb-3">
+                        {{
+                          $gettext(
+                            "Give this wallet a name to tell it apart from the others. " +
+                              "This name is public and can be seen by other users " +
+                              "of the currency."
+                          )
+                        }}
+                      </p>
                       <div class="control">
                         <input
                           id="new-wallet-name"
@@ -85,6 +86,7 @@
                           class="input"
                           :class="{ 'is-danger': hasError('walletLabel') }"
                           type="text"
+                          :aria-label="$gettext('Wallet name')"
                           required
                           maxlength="30"
                           aria-describedby="new-wallet-name-help new-wallet-name-error"
@@ -92,14 +94,6 @@
                           @blur="checkWalletLabel"
                         />
                       </div>
-                      <p id="new-wallet-name-help" class="help">
-                        {{
-                          $gettext(
-                            "Give this wallet a name to tell it apart from your others. " +
-                              "This name is public: people who pay you will see it."
-                          )
-                        }}
-                      </p>
                       <p
                         v-if="hasError('walletLabel')"
                         id="new-wallet-name-error"
@@ -183,7 +177,7 @@
                       </p>
                     </div>
 
-                    <div class="card-content p-0" v-if="!hasFieldErrors">
+                    <div class="card-content p-0 mb-5" v-if="!hasFieldErrors">
                       <AuthPref
                         :handler="handler"
                         :requestCredentials="requestCredentials"

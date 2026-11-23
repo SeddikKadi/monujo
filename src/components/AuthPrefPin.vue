@@ -1,17 +1,11 @@
 <template>
-  <div>
-    <label
-      class="label edit-pin"
-      @click=";(editMode = !editMode), setFocusPin()"
-      >{{ $gettext("configure PIN code") }}
-      <span class="icon" v-if="isConfigured">
-        <fa-icon icon="edit" class="fa-large" />
-      </span>
-    </label>
-    <template v-if="editMode">
+  <div class="auth-pref-pin">
+    <div class="auth-pref-pin-fields">
       <div class="field">
+        <label class="label" :for="pinId">{{ $gettext("New PIN code") }}</label>
         <div class="control has-icons-left has-icons-right">
           <PasswordField
+            :id="pinId"
             :password="pin"
             @update:password="(x) => (pin = x)"
             v-on:keypress="onlyNumbers"
@@ -19,15 +13,19 @@
             pattern="[0-9]{4}"
             inputmode="numeric"
             maxlength="4"
-            @input="showConfirmPin"
+            autocomplete="new-password"
+            @input="focusConfirmPin"
             ref="pin"
           />
         </div>
       </div>
-      <div class="field" v-if="showConfPin">
-        <label class="label">{{ $gettext("PIN code confirmation") }}</label>
-        <div class="control has-icons-left has-icons-right">
+      <div class="field">
+        <label class="label" :for="pinConfId">{{
+          $gettext("Confirmation")
+        }}</label>
+        <div class="control has-icons-left">
           <input
+            :id="pinConfId"
             class="input"
             type="password"
             v-on:keypress="onlyNumbers"
@@ -35,8 +33,8 @@
             pattern="[0-9]{4}"
             inputmode="numeric"
             maxlength="4"
+            autocomplete="new-password"
             v-model="pinConf"
-            @input="isPinValid"
             ref="confirmPin"
           />
           <span class="icon is-small is-left">
@@ -44,28 +42,21 @@
           </span>
         </div>
       </div>
-      <p v-if="errors.pinSize" class="help is-danger">
-        {{ errors.pinSize }}
-      </p>
-      <p v-if="errors.pinConfirmation" class="help is-danger">
-        {{ errors.pinConfirmation }}
-      </p>
-      <div>
-        <div v-if="isPinValid()">
-          <div class="mr-2 mt-5">
-            <div class="control">
-              <button
-                class="button is-primary"
-                @click="submitConfig()"
-                ref="submit"
-              >
-                {{ $gettext("Save") }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
+    </div>
+    <p v-if="error" class="help is-danger">{{ error }}</p>
+    <div class="auth-pref-pin-actions">
+      <button
+        class="button custom-button-modal has-text-weight-medium"
+        :disabled="!isPinValid"
+        @click="submitConfig()"
+        ref="submit"
+      >
+        {{ $gettext("Save") }}
+      </button>
+      <button class="button is-default is-rounded" @click="$emit('cancel')">
+        {{ $gettext("Cancel") }}
+      </button>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -80,27 +71,56 @@
     props: {
       handler: Object,
     },
+    emits: ["submitConfig", "cancel"],
     data() {
       return {
-        editMode: true,
         pinLength: 4,
         pin: "",
         pinConf: "",
-        showConfPin: false,
-        isConfigured: false,
-        errors: {
-          pinSize: false,
-          pinConfirmation: false,
-        },
       }
     },
-    created() {
-      if (this.handler.userConfig) {
-        this.isConfigured = true
-        this.editMode = false
-      } else {
-        this.setFocusPin()
-      }
+    computed: {
+      // Several wallets can have their form open at the same time.
+      pinId(): string {
+        return `auth-pref-pin-${this.$.uid}`
+      },
+      pinConfId(): string {
+        return `auth-pref-pin-conf-${this.$.uid}`
+      },
+      isPinComplete(): boolean {
+        return new RegExp(`^[0-9]{${this.pinLength}}$`).test(this.pin)
+      },
+      isPinValid(): boolean {
+        return this.isPinComplete && this.pin === this.pinConf
+      },
+      error(): string | false {
+        // Nothing to report while the confirmation is being typed.
+        if (this.pinConf.length !== this.pinLength) return false
+        if (!this.isPinComplete) {
+          return this.$gettext("PIN code must contain %{ pinLength }", {
+            pinLength: this.$ngettext(
+              "%{ pinLength } digit",
+              "%{ pinLength } digits",
+              this.pinLength,
+              {
+                pinLength: this.pinLength,
+              }
+            ),
+          })
+        }
+        if (this.pin !== this.pinConf) {
+          return this.$gettext("Given PINs are different")
+        }
+        return false
+      },
+    },
+    watch: {
+      isPinValid(valid: boolean) {
+        if (valid) this.setFocusSubmit()
+      },
+    },
+    mounted() {
+      this.setFocusPin()
     },
     methods: {
       onlyNumbers($event: any) {
@@ -109,50 +129,17 @@
           $event.preventDefault()
         }
       },
-      showConfirmPin() {
+      focusConfirmPin() {
         if (this.pin.length == this.pinLength) {
           this.$nextTick(() => {
             this.$refs.confirmPin.focus()
             this.$refs.confirmPin.select()
           })
-          this.showConfPin = true
-        }
-      },
-      isPinValid() {
-        if (this.pinConf.length !== this.pinLength) {
-          return
-        }
-
-        if (this.pin !== this.pinConf) {
-          this.errors.pinConfirmation = this.$gettext(
-            "Given PINs are different"
-          )
-        } else {
-          this.errors.pinConfirmation = false
-        }
-        if (this.pin.length < this.pinLength) {
-          const msgNbDigits = this.$ngettext("digit", "digits", this.pinLength)
-          this.errors.pinSize = this.$gettext(
-            "PIN code must contain %{ pinLength }",
-            {
-              pinLength: this.$ngettext("digit", "digits", this.pinLength),
-            }
-          )
-        } else {
-          this.errors.pinSize = false
-        }
-
-        if (!this.errors.pinSize && !this.errors.pinConfirmation) {
-          this.setFocusSubmit()
-          return true
-        } else {
-          return false
         }
       },
       submitConfig() {
+        if (!this.isPinValid) return
         this.$emit("submitConfig", this.handler.toUserConfigJson(this.pin))
-        this.editMode = false
-        this.isConfigured = true
       },
       setFocusPin() {
         this.$nextTick(() => {
@@ -173,7 +160,19 @@
   export default class AuthPrefPin extends Vue {}
 </script>
 <style lang="scss" scoped>
-  .edit-pin:hover {
-    cursor: pointer;
+  .auth-pref-pin-fields {
+    display: grid;
+    // Side by side when there is room, one under the other otherwise
+    grid-template-columns: repeat(auto-fit, minmax(9em, 1fr));
+    gap: 1rem;
+    .field {
+      margin-bottom: 0;
+    }
+  }
+  .auth-pref-pin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
 </style>

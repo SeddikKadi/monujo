@@ -46,16 +46,17 @@ describe("AuthPref wallet label", () => {
     expect(wrapper.get(".auth-pref-name").text()).toBe("Main")
     expect(wrapper.get(".auth-pref-identifier").text()).toBe(accounts[0].internalId)
     expect(wrapper.get(".auth-pref-identifier").attributes("title")).toBe(accounts[0].internalId)
-    expect(wrapper.get("h3").text()).toBe("Simplified authentication")
+    expect(wrapper.get("h3").text()).toBe("PIN code for payments")
     expect(wrapper.find(".auth-pref-description").exists()).toBe(false)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("Password")
     expect(wrapper.get('input[type="checkbox"]').attributes("aria-label"))
-      .toBe("Simplified authentication for Main")
+      .toBe("PIN code for Main")
     wrapper.unmount()
   })
 
   it("keeps each wallet's authentication row when duplicate names are renamed", async () => {
     const { wrapper, accounts, handlers } = await renderSettings(["Shop", "Shop"])
-    expect(wrapper.get("h3").text()).toBe("Simplified authentication")
+    expect(wrapper.get("h3").text()).toBe("PIN code for payments")
     expect(wrapper.findAll(".auth-pref-description")).toHaveLength(0)
     const originalRows = wrapper.findAllComponents(AuthPref)
     accounts[0].label = "Office"
@@ -69,6 +70,12 @@ describe("AuthPref wallet label", () => {
     wrapper.unmount()
   })
 })
+
+// Stands in for the PIN form: the tests send its events themselves.
+const TestAuthEditor = {
+  name: "TestAuthEditor",
+  template: '<div class="test-auth-editor">PIN settings</div>',
+}
 
 function renderAuthentication(configured = false) {
   const gettext = walletTranslations()
@@ -84,7 +91,7 @@ function renderAuthentication(configured = false) {
       mocks: { $gettext: gettext.$gettext },
       stubs: {
         "fa-icon": true,
-        TestAuthEditor: { template: '<div class="test-auth-editor">PIN settings</div>' },
+        TestAuthEditor,
       },
     },
   })
@@ -92,11 +99,11 @@ function renderAuthentication(configured = false) {
 }
 
 describe("AuthPref edit action", () => {
-  it("keeps Edit visible and disabled until the switch is enabled, then opens the editor on click", async () => {
+  it("asks for the code as soon as the switch is enabled and offers Edit once a code is saved", async () => {
     const { wrapper, handler, requestCredentials } = renderAuthentication()
     await wrapper.vm.$nextTick()
-    const button = wrapper.get<HTMLButtonElement>(".auth-pref-edit button")
-    expect(button.element.disabled).toBe(true)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("Password")
+    expect(wrapper.find(".auth-pref-edit").exists()).toBe(false)
     expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
 
     await wrapper.get('input[type="checkbox"]').trigger("click")
@@ -104,35 +111,74 @@ describe("AuthPref edit action", () => {
     expect(requestCredentials).toHaveBeenCalledOnce()
     expect(requestCredentials).toHaveBeenCalledWith(expect.any(Function))
     expect(handler.accountAuthService.secret).toBe("verified-wallet-secret")
-    expect(button.element.disabled).toBe(false)
-    expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
+    expect(wrapper.get(".test-auth-editor").text()).toBe("PIN settings")
+    expect(wrapper.get(".auth-pref-status").text()).toBe("PIN code to set")
+    expect(wrapper.find(".auth-pref-edit").exists()).toBe(false)
     expect(wrapper.emitted("saveConfig")).toBeUndefined()
+
+    wrapper.getComponent(TestAuthEditor).vm.$emit("submitConfig", { pin: "hashed" })
+    await flushPromises()
+    expect(wrapper.emitted("saveConfig")?.[0])
+      .toEqual([handler.accountAuthService, { subConfig: { pin: "hashed" } }])
+    expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("PIN code active")
+    const button = wrapper.get<HTMLButtonElement>(".auth-pref-edit button")
+    expect(button.element.disabled).toBe(false)
+    expect(button.attributes("aria-label")).toBe("Edit the PIN code for Shop")
 
     await button.trigger("click")
     await flushPromises()
-    expect(wrapper.get(".test-auth-editor").text()).toBe("PIN settings")
+    expect(wrapper.find(".test-auth-editor").exists()).toBe(true)
     expect(requestCredentials).toHaveBeenCalledOnce()
     expect(button.element.disabled).toBe(true)
     await new Promise(resolve => setTimeout(resolve, 1))
     wrapper.unmount()
   })
 
-  it("keeps Edit disabled when enabling authentication is cancelled", async () => {
+  it("leaves the switch off when enabling the code is cancelled", async () => {
     const { wrapper, requestCredentials } = renderAuthentication()
     requestCredentials.mockRejectedValueOnce(new Error("User canceled the dialog box"))
     await wrapper.get('input[type="checkbox"]').trigger("click")
     await flushPromises()
-    expect(wrapper.get<HTMLButtonElement>(".auth-pref-edit button").element.disabled).toBe(true)
     expect(wrapper.get<HTMLInputElement>('input[type="checkbox"]').element.checked).toBe(false)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("Password")
+    expect(wrapper.find(".auth-pref-edit").exists()).toBe(false)
     expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
     expect(wrapper.emitted("saveConfig")).toBeUndefined()
     await new Promise(resolve => setTimeout(resolve, 1))
     wrapper.unmount()
   })
 
+  it("turns the switch back off when the first code is given up", async () => {
+    const { wrapper, requestCredentials } = renderAuthentication()
+    const checkbox = wrapper.get<HTMLInputElement>('input[type="checkbox"]')
+    await checkbox.trigger("click")
+    await flushPromises()
+    wrapper.getComponent(TestAuthEditor).vm.$emit("cancel")
+    await flushPromises()
+    await new Promise(resolve => setTimeout(resolve, 1))
+    expect(checkbox.element.checked).toBe(false)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("Password")
+    expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
+
+    // Same through the switch: nothing was saved, so no password is asked.
+    await checkbox.trigger("click")
+    await flushPromises()
+    expect(wrapper.find(".test-auth-editor").exists()).toBe(true)
+    await checkbox.trigger("click")
+    await flushPromises()
+    await new Promise(resolve => setTimeout(resolve, 1))
+    expect(checkbox.element.checked).toBe(false)
+    expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
+    expect(requestCredentials).toHaveBeenCalledTimes(2)
+    expect(wrapper.emitted("saveConfig")).toBeUndefined()
+    wrapper.unmount()
+  })
+
   it("authenticates before editing an already configured wallet", async () => {
     const { wrapper, requestCredentials } = renderAuthentication(true)
     await wrapper.vm.$nextTick()
+    expect(wrapper.get(".auth-pref-status").text()).toBe("PIN code active")
     const button = wrapper.get<HTMLButtonElement>(".auth-pref-edit button")
     expect(button.element.disabled).toBe(false)
     requestCredentials.mockRejectedValueOnce(new Error("User canceled the dialog box"))
@@ -149,7 +195,25 @@ describe("AuthPref edit action", () => {
     wrapper.unmount()
   })
 
-  it("closes the editor and disables Edit after switching authentication off", async () => {
+  it("keeps the saved code when a change is given up", async () => {
+    const { wrapper, handler } = renderAuthentication(true)
+    await wrapper.vm.$nextTick()
+    const button = wrapper.get<HTMLButtonElement>(".auth-pref-edit button")
+    await button.trigger("click")
+    await flushPromises()
+    wrapper.getComponent(TestAuthEditor).vm.$emit("cancel")
+    await flushPromises()
+    await new Promise(resolve => setTimeout(resolve, 1))
+    expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
+    expect(wrapper.get<HTMLInputElement>('input[type="checkbox"]').element.checked).toBe(true)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("PIN code active")
+    expect(button.element.disabled).toBe(false)
+    expect(handler.userConfig).not.toBeNull()
+    expect(wrapper.emitted("saveConfig")).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it("closes the editor and removes Edit after switching the code off", async () => {
     const { wrapper, handler, requestCredentials } = renderAuthentication(true)
     await wrapper.vm.$nextTick()
     await wrapper.get(".auth-pref-edit button").trigger("click")
@@ -168,7 +232,8 @@ describe("AuthPref edit action", () => {
     expect(requestCredentials).toHaveBeenLastCalledWith(expect.any(Function))
     expect(handler.userConfig).toBeNull()
     expect(wrapper.find(".test-auth-editor").exists()).toBe(false)
-    expect(wrapper.get<HTMLButtonElement>(".auth-pref-edit button").element.disabled).toBe(true)
+    expect(wrapper.find(".auth-pref-edit").exists()).toBe(false)
+    expect(wrapper.get(".auth-pref-status").text()).toBe("Password")
     expect(wrapper.emitted("saveConfig")?.[0]).toEqual([handler.accountAuthService, null])
     await new Promise(resolve => setTimeout(resolve, 1))
     wrapper.unmount()

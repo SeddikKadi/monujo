@@ -61,7 +61,7 @@ msgid_plural "%{ nbChar } characters"
 msgstr[0] "%{ nbChar } caractère"
 msgstr[1] "%{ nbChar } caractères"
 
-#: src/components/AuthChallengePin.vue:61
+#: src/components/AuthChallengePin.vue:61 src/components/AuthPrefPin.vue:101
 msgid "%{ pinLength } digit"
 msgid_plural "%{ pinLength } digits"
 msgstr[0] "%{ pinLength } chiffre"
@@ -584,6 +584,8 @@ msgstr "par"
 msgid "Can be updated:"
 msgstr "Peut être mis à jour :"
 
+#: src/components/AuthPrefPin.vue:27 src/components/AuthPrefPin.vue:28
+#: src/components/AuthPrefPin.vue:52 src/components/AuthPrefPin.vue:57
 #: src/components/InspectRecipientModal.vue:159
 #: src/components/PaymentRequestModal.vue:111
 #: src/components/PaymentRequestModal.vue:123
@@ -647,10 +649,6 @@ msgstr "Fermer"
 msgid "Closing balance"
 msgstr "Solde de clôture"
 
-#: src/components/AuthPrefPin.vue:2 src/components/AuthPrefPin.vue:3
-msgid "configure PIN code"
-msgstr "Configurer le code PIN"
-
 #: src/components/ContractListModal.vue:101
 #: src/components/ContractListModal.vue:63
 #: src/components/ContractListModal.vue:64
@@ -682,6 +680,10 @@ msgstr "valider"
 #: src/views/Signup.vue:74 src/views/Signup.vue:79 src/views/Signup.vue:83
 msgid "Confirm password"
 msgstr "Confirmez votre mot de passe"
+
+#: src/components/AuthPrefPin.vue:24
+msgid "Confirmation"
+msgstr "Confirmation"
 
 #: src/views/Login.vue:170
 msgid "Connection successful"
@@ -894,12 +896,6 @@ msgstr "Supprimer le paiement récurrent"
 msgid "Description"
 msgstr "Description"
 
-#: src/components/AuthPrefPin.vue:134 src/components/AuthPrefPin.vue:138
-msgid "digit"
-msgid_plural "digits"
-msgstr[0] "chiffre"
-msgstr[1] "chiffres"
-
 #: src/components/RecipientInfo.vue:123 src/components/RecipientInfo.vue:124
 #: src/components/RecipientInfo.vue:140 src/components/RecipientInfo.vue:146
 #: src/components/RecipientInfo.vue:149 src/components/RecipientInfo.vue:174
@@ -971,20 +967,22 @@ msgstr "Brouillon"
 msgid "e.g. 50"
 msgstr "ex: 50"
 
-#: src/components/AuthPref.vue:29 src/components/AuthPref.vue:30
-#: src/components/AuthPref.vue:31 src/components/AuthPref.vue:32
-#: src/components/AuthPref.vue:38 src/components/AuthPref.vue:40
-#: src/components/AuthPref.vue:42 src/components/AuthPref.vue:43
-#: src/components/AuthPref.vue:48
+#: src/components/AuthPref.vue:32 src/components/AuthPref.vue:33
+#: src/components/AuthPref.vue:34 src/components/AuthPref.vue:35
+#: src/components/AuthPref.vue:36 src/components/AuthPref.vue:38
+#: src/components/AuthPref.vue:44 src/components/AuthPref.vue:46
+#: src/components/AuthPref.vue:48 src/components/AuthPref.vue:49
+#: src/components/AuthPref.vue:54
 msgid "Edit"
 msgstr "Modifier"
 
-#: src/components/AuthPref.vue:28 src/components/AuthPref.vue:29
-#: src/components/AuthPref.vue:39 src/components/AuthPref.vue:42
-msgid "Edit authentication for %{ name }"
-msgstr "Modifier l’authentification pour %{ name }"
+#: src/components/AuthPref.vue:31 src/components/AuthPref.vue:32
+#: src/components/AuthPref.vue:35 src/components/AuthPref.vue:45
+#: src/components/AuthPref.vue:48
+msgid "Edit the PIN code for %{ name }"
+msgstr "Modifier le code PIN de %{ name }"
 
-#: src/components/AuthPrefs.vue:43
+#: src/components/AuthPrefs.vue:57
 msgid "Edits were successfully saved"
 msgstr "Modifications enregistrées"
 
@@ -1200,13 +1198,13 @@ msgstr "Générer la demande"
 #: src/components/CreateAccount.vue:53 src/components/CreateAccount.vue:65
 #: src/components/CreateAccount.vue:78 src/components/CreateAccount.vue:97
 msgid ""
-"Give this wallet a name to tell it apart from your others. This name is "
-"public: people who pay you will see it."
+"Give this wallet a name to tell it apart from the others. This name is "
+"public and can be seen by other users of the currency."
 msgstr ""
 "Donnez un nom à ce portefeuille pour le distinguer des autres. Ce nom est "
-"public : les personnes qui vous paient le verront."
+"public et peut être vu par d'autres utilisateurs de la monnaie."
 
-#: src/components/AuthPrefPin.vue:127
+#: src/components/AuthPrefPin.vue:112
 msgid "Given PINs are different"
 msgstr "Les codes PINs entrés ne sont pas identiques"
 
@@ -1429,6 +1427,10 @@ msgstr "Mes demandes de crédit non payées"
 msgid "Name, wallet name, email address or phone number"
 msgstr "Nom, nom du portefeuille, adresse e-mail ou numéro de téléphone"
 
+#: src/components/AuthPrefPin.vue:5
+msgid "New PIN code"
+msgstr "Nouveau code PIN"
+
 #: src/components/RecurrentContractModal.vue:283
 msgid "New recurring payment"
 msgstr "Nouveau paiement récurrent"
@@ -1542,9 +1544,13 @@ msgstr "Pas encore adhérent ?"
 msgid "Ok"
 msgstr "Ok"
 
-#: src/components/AuthPrefs.vue:5
-msgid "On this device"
-msgstr "Sur cet appareil"
+#: src/components/AuthPrefs.vue:6 src/components/AuthPrefs.vue:7
+msgid ""
+"On this device, confirm your payments with a 4-digit code instead of typing "
+"your whole password."
+msgstr ""
+"Sur cet appareil, validez vos paiements avec un code à 4 chiffres au lieu de "
+"saisir votre mot de passe en entier."
 
 #: src/utils/pdf.ts:766
 msgid "Opening balance"
@@ -1558,7 +1564,7 @@ msgstr "Opération annulée"
 msgid "paid"
 msgstr "payée"
 
-#: src/components/PasswordField.vue:7
+#: src/components/AuthPref.vue:123 src/components/PasswordField.vue:7
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -1717,19 +1723,34 @@ msgid "Personal"
 msgstr "Particulier"
 
 #: src/components/AuthChallengePin.vue:10 src/components/AuthChallengePin.vue:3
-#: src/components/AuthChallengePin.vue:4 src/components/AuthPrefPin.vue:18
+#: src/components/AuthChallengePin.vue:4 src/components/AuthPrefPin.vue:12
 msgid "PIN code"
 msgstr "Code PIN"
 
-#: src/components/AuthPrefPin.vue:14 src/components/AuthPrefPin.vue:15
-#: src/components/AuthPrefPin.vue:18 src/components/AuthPrefPin.vue:28
-#: src/components/AuthPrefPin.vue:34
+#: src/components/AuthPref.vue:125
+msgid "PIN code active"
+msgstr "Code PIN actif"
+
+#: src/components/AuthPrefPin.vue:32
 msgid "PIN code confirmation"
 msgstr "Confirmation code PIN"
 
-#: src/components/AuthChallengePin.vue:58 src/components/AuthPrefPin.vue:135
+#: src/components/AuthPref.vue:10 src/components/AuthPref.vue:6
+#: src/components/AuthPref.vue:7
+msgid "PIN code for %{ name }"
+msgstr "Code PIN pour %{ name }"
+
+#: src/components/AuthPrefs.vue:3 src/components/AuthPrefs.vue:4
+msgid "PIN code for payments"
+msgstr "Code PIN pour les paiements"
+
+#: src/components/AuthChallengePin.vue:58 src/components/AuthPrefPin.vue:100
 msgid "PIN code must contain %{ pinLength }"
 msgstr "le code PIN doit contenir %{ pinLength}"
+
+#: src/components/AuthPref.vue:126
+msgid "PIN code to set"
+msgstr "Code à définir"
 
 #: src/utils/account.ts:338
 msgid "Please enter a wallet name."
@@ -2053,9 +2074,8 @@ msgstr "Ligne %{ row } : 2 colonnes attendues, %{ count } trouvées."
 msgid "Row %{ row }: related_wallet is empty."
 msgstr "Ligne %{ row } : related_wallet est vide."
 
-#: src/components/AuthPrefPin.vue:33 src/components/AuthPrefPin.vue:34
-#: src/components/AuthPrefPin.vue:37 src/components/AuthPrefPin.vue:58
-#: src/components/WalletLabelModal.vue:38
+#: src/components/AuthPrefPin.vue:24 src/components/AuthPrefPin.vue:25
+#: src/components/AuthPrefPin.vue:49 src/components/WalletLabelModal.vue:38
 #: src/components/WalletLabelModal.vue:39
 #: src/components/WalletLabelModal.vue:59
 #: src/components/WalletLabelModal.vue:68
@@ -2264,19 +2284,10 @@ msgstr "Créer un compte"
 msgid "Sign-Up"
 msgstr "Créer un compte"
 
-#: src/components/AuthPrefs.vue:4
-msgid "Simplified authentication"
-msgstr "Authentification simplifiée"
-
-#: src/components/AuthPref.vue:12 src/components/AuthPref.vue:8
-#: src/components/AuthPref.vue:9
-msgid "Simplified authentication for %{ name }"
-msgstr "Authentification simplifiée pour %{ name }"
-
-#: src/components/AuthPref.vue:11 src/components/AuthPref.vue:12
-#: src/components/AuthPref.vue:15 src/components/AuthPref.vue:21
-#: src/components/AuthPref.vue:22 src/components/AuthPref.vue:28
-#: src/components/AuthPref.vue:32
+#: src/components/AuthPref.vue:11 src/components/AuthPref.vue:21
+#: src/components/AuthPref.vue:22 src/components/AuthPref.vue:25
+#: src/components/AuthPref.vue:31 src/components/AuthPref.vue:35
+#: src/components/AuthPref.vue:7 src/components/AuthPref.vue:8
 msgid "Simplified authentication for this device"
 msgstr "Authentification simplifiée sur ce périphérique"
 
@@ -3171,6 +3182,11 @@ msgstr "Vos identifiants seront enregistrés après votre prochaine connexion"
 #: src/components/TheCurrencyList.vue:23 src/components/TheCurrencyList.vue:31
 msgid "your currencies"
 msgstr "vos monnaies"
+
+#: src/components/AuthPrefs.vue:17 src/components/AuthPrefs.vue:18
+#: src/components/AuthPrefs.vue:29
+msgid "Your password is asked to turn a PIN code on or off."
+msgstr "Votre mot de passe est demandé pour activer ou désactiver un code PIN."
 
 #: src/components/PaymentRequestModal.vue:333
 msgid ""
